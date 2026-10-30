@@ -105,3 +105,35 @@ Mac Studio / Master TV / Office TV / Office / Michael's AirPort Express / Office
 ```
 Mac Studio / Master TV / Bedroom / Air TV Display@Mikes-iMac (if 26 and if 23) / Michael's AirPort Express / Office / Office TV / Office (2)
 ```
+
+## M1: registration from our own process
+Date: 2026-10-30. Code: `tools/discovery-cli/discovery-cli.c` (plain C, `DNSServiceRegister` from libSystem, no dependencies).
+
+**Build / run**
+```
+cc -Wall -o tools/discovery-cli/discovery-cli tools/discovery-cli/discovery-cli.c
+tools/discovery-cli/discovery-cli 7100 "Air TV Display M1"     # <port> [name]; Ctrl-C to stop
+```
+**Recipe**
+- Two registrations on the same port: `_airplay._tcp` with instance `<name>`, and `_raop._tcp` with instance `<DEVICEID12>@<name>` (deviceid as 12 uppercase hex digits, no colons). Default host and domain (`NULL`), all interfaces (`0`). Port passed as `htons(port)`.
+- TXT built with `TXTRecordCreate`/`TXTRecordSetValue`, same key order as UxPlay. Values are UxPlay's byte for byte, except these substitutions: `deviceid` (and the RAOP name prefix) from en0's MAC (`getifaddrs`, `AF_LINK`; stable), the instance name, and `pk`/`pi`.
+- `_airplay._tcp`: `deviceid features=0x527FFEE6,0x0 pw=false flags=0x4 model=AppleTV3,2 pk pi srcvers=220.68 vv=2`
+- `_raop._tcp`: `ch=2 cn=0,1,2,3 da=true et=0,3,5 vv=2 ft=0x527FFEE6,0x0 am=AppleTV3,2 md=0,1,2 rhd=5.6.0.0 pw=false sf=0x4 sr=44100 ss=16 sv=false tp=UDP txtvers=1 vs=220.68 vn=65537 pk`
+- **`pk`/`pi`: generated our own, not copied.** `pk` is UxPlay's Ed25519 public key and is only meaningful with its private key (used in pair-setup/pair-verify); copying it would advertise a key we cannot sign with, and make us indistinguishable from the running UxPlay. For M1 (no RTSP) `pk` is 32 random bytes (hex) and `pi` a random UUID, persisted in `~/.air-tv-display-m1.ids` so they stay stable. **M4 must replace `pk` with the real pairing public key** from the library (and keep `pi` stable).
+
+**Studio verification (macOS 26.6.2, over SSH, 17:05)**
+- `dns-sd -B _airplay._tcp local.` lists `Air TV Display M1` (if 26 and if 23), and `dns-sd -B _raop._tcp local.` lists `68FEF7129616@Air TV Display M1`.
+- `dns-sd -L "Air TV Display M1" _airplay._tcp local.` ->
+```
+Air\032TV\032Display\032M1._airplay._tcp.local. can be reached at Mikes-iMac.local.:7100
+ deviceid=68:fe:f7:12:96:16 features=0x527FFEE6,0x0 pw=false flags=0x4 model=AppleTV3,2 pk=335047d97b66329dfee39d1103b61808ee6a597de2d5c15fe667a5b2416cc6fc pi=556ea270-f25a-411c-9316-7ca30f321823 srcvers=220.68 vv=2
+```
+- `dns-sd -L "68FEF7129616@Air TV Display M1" _raop._tcp local.` ->
+```
+68FEF7129616@Air\032TV\032Display\032M1._raop._tcp.local. can be reached at Mikes-iMac.local.:7100
+ ch=2 cn=0,1,2,3 da=true et=0,3,5 vv=2 ft=0x527FFEE6,0x0 am=AppleTV3,2 md=0,1,2 rhd=5.6.0.0 pw=false sf=0x4 sr=44100 ss=16 sv=false tp=UDP txtvers=1 vs=220.68 vn=65537 pk=335047d9...cc6fc
+```
+- **Shared deviceid with the live stock UxPlay (same en0 MAC): both instances appear** in `-B` for both service types (different instance names, different ports 57380 vs 7100). The shared deviceid did not hide either at the Bonjour level. Whether Screen Mirroring de-duplicates by deviceid is a GUI question, see the pending check below.
+- Stock UxPlay (PID 29841) was left running and untouched.
+
+**Pending hands-on (Mike, Studio GUI):** Control Center -> Screen Mirroring lists "Air TV Display M1"; selecting it is expected to fail (no RTSP listener on 7100), record the exact error as the M3 baseline; also note whether the stock "Air TV Display@Mikes-iMac" is still listed alongside it.
