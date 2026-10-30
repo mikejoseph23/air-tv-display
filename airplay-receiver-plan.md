@@ -52,7 +52,7 @@ Goal: the iMac app runs fullscreen, presents itself as an Apple‑TV‑class Air
 | M1 — Discovery in our own process | Sonnet | ✅ Done (hands‑on deferred) | 2 | C CLI `tools/discovery-cli/`; Studio `dns-sd` resolves it. Control Center check deferred to end. |
 | M2 — App scaffold + vendored lib build | Sonnet | ✅ Done | 7 | Xcode Swift app, window, signing, UxPlay `lib/` compiling as a static lib. |
 | M2T — Testing: scaffold | Sonnet | ✅ Done (hands‑on deferred) | 5 | Build/launch/unit. |
-| M3 — RTSP + session via library | Opus | 🔵 In Progress | — | Wire `raop_start`/callbacks; sender reaches "connecting". |
+| M3 — RTSP + session via library | Opus | ✅ Done (live Studio session deferred) | 11 | Wire `raop_start`/callbacks; sender reaches "connecting". |
 | M4 — Pairing / FairPlay via library | Opus | ⬜ Not Started | — | pair‑setup/verify + fp‑setup through UxPlay code; encrypted video bytes arrive. |
 | M4T — Testing: session + auth | Opus | ⬜ Not Started | — | Mixed: unit + hands‑on pair. |
 | M5 — Video: H.264 decode + present | Opus | ⬜ Not Started | — | VideoToolbox → Metal fullscreen from library NAL callbacks. |
@@ -179,9 +179,9 @@ Stand up the Xcode Swift app the rest of the milestones plug into, with UxPlay's
 Bring up UxPlay's RTSP server (`raop_start`) inside the app and connect its callbacks to Swift. UxPlay already implements `OPTIONS`, `GET /info`, `SETUP`, `RECORD`, `SET_PARAMETER`, `TEARDOWN`, `FLUSH`, the event and timing channels, and SDP parsing — **we do not reimplement any of it.**
 
 **Worker task list:**
-- [ ] Start the raop server on the advertised port when the receiver is enabled; stop on disable. Ensure the port in the TXT and the server agree.
-- [ ] Implement `raop_callbacks_t` in Swift (via `@convention(c)` thunks): `conn_init`, `conn_destroy`, `audio_init/process/destroy`, `video_process`, `audio_set_volume`, etc. Initially log‑only.
-- [ ] Route UxPlay's internal logger into `os_log` and `logs/rtsp.log` so M4/M5 debugging is tractable.
+- [x] Start the raop server on the advertised port when the receiver is enabled; stop on disable. Ensure the port in the TXT and the server agree.
+- [x] Implement `raop_callbacks_t` in Swift (via `@convention(c)` thunks): `conn_init`, `conn_destroy`, `audio_init/process/destroy`, `video_process`, `audio_set_volume`, etc. Initially log‑only.
+- [x] Route UxPlay's internal logger into `os_log` and `logs/rtsp.log` so M4/M5 debugging is tractable.
 - [ ] Confirm the Studio's "connecting" progresses past discovery into an RTSP exchange identical to the M0 log (compare request sequence).
 
 > **Worker Completion Requirement:** complete ALL items; if the exchange diverges from M0's, capture both logs and flag it for M4.
@@ -366,6 +366,8 @@ When a milestone returns incomplete, follow‑up prompts must:
 ## Progress Log / Notes
 
 Reverse‑chronological. Newest first.
+
+**2026-10-30 17:55 — M3 done, live session deferred (Opus, ~11 min, merged as 8156ab3 + test fix).** New `RaopServer.swift` mirrors stock `uxplay.cpp` startup: UxPlay's own `dnssd_register_*` (the Swift `BonjourRegistrar` is now superseded), stock features `0x527FFEE6` (bit 27 legacy-pairing cleared; that was the M2 mismatch), Ed25519 `pk` derived from the en0 deviceid, fixed RTSP **port 7100**. All `raop_callbacks_t` slots are log-only thunks; logger goes to `logs/rtsp.log` + os_log. Start/stop/restart safe even with open connections and a busy port. `GET /info` from the iMac and from the Studio matches stock except the name. No way found to make the Studio start mirroring without a person, so the RTSP-sequence comparison is deferred. **The app shares deviceid/pk with stock UxPlay: stop stock UxPlay before any live test of the app.** Orchestrator: merged, re-generated project, added RaopServer/RtspLog to the unhosted test target; build OK, 6/6 unit tests, integration-bonjour 6/6.
 
 **2026-10-30 17:45 — M2T done, hands-on deferred (Sonnet, ~5 min, merged as 8c7c392).** Unhosted XCTest target `AirTVDisplayTests` (6 tests: deviceid = en0 MAC and stable, TXT keys match the M0 capture, call into vendored `lib/`). Run with `xcodebuild test -project AirTVDisplay.xcodeproj -scheme AirTVDisplayTests -derivedDataPath build` (orchestrator re-ran in main: 6/6 pass). `scripts/integration-bonjour.sh` checks TXT round-trip on the iMac and the Studio (6/6). The test target is unhosted because hosting broke the libcrypto embed/codesign step; it compiles `NetworkInfo`/`BonjourRegistrar`/`UxPlayBridge` directly, so update its `sources:` if M3 moves them. Window/menu-bar/Esc check deferred to end.
 
