@@ -56,12 +56,12 @@ Goal: the iMac app runs fullscreen, presents itself as an Apple‑TV‑class Air
 | M4 — Pairing / FairPlay via library | Opus | ✅ Done (live Studio session deferred) | 10 | pair‑setup/verify + fp‑setup through UxPlay code; encrypted video bytes arrive. |
 | M4T — Testing: session + auth | Opus | 🔵 In Progress | — | Mixed: unit + hands‑on pair. |
 | M5 — Video: H.264 decode + present | Opus | ✅ Done (live mirror deferred) | 14 | VideoToolbox → Metal fullscreen from library NAL callbacks. |
-| M5T — Testing: video path | Sonnet | ⬜ Not Started | — | Unit for assembly; hands‑on for realtime/latency. |
+| M5T — Testing: video path | Sonnet | 🔵 In Progress | — | Unit for assembly; hands‑on for realtime/latency. |
 | M6 — Audio (AAC‑ELD / ALAC) | Sonnet | ✅ Done (A/V wiring → M8, live deferred) | 14 | Library audio callbacks → CoreAudio, synced. |
-| M6T — Testing: audio sync | Sonnet | ⬜ Not Started | — | Hands‑on A/V lip‑sync. |
-| M7 — Extend‑mode verification | Sonnet | ⬜ Not Started | — | Confirm Extend offered & works; tune TXT only if M0 showed it isn't. |
-| M7T — Testing: mirror vs extend | Sonnet | ⬜ Not Started | — | Hands‑on with Studio picker. |
-| M8 — Latency & robustness hardening | Opus | ⬜ Not Started | — | End‑to‑end polish, reconnect, drop handling. |
+| M6T — Testing: audio sync | Sonnet | ⏸ Hands‑on deferred (unit done in M6) | — | Hands‑on A/V lip‑sync. |
+| M7 — Extend‑mode verification | Sonnet | ⏸ Hands‑on deferred (no worker; M0 extended by default, M3 `/info` matches stock) | — | Confirm Extend offered & works; tune TXT only if M0 showed it isn't. |
+| M7T — Testing: mirror vs extend | Sonnet | ⏸ Hands‑on deferred | — | Hands‑on with Studio picker. |
+| M8 — Latency & robustness hardening | Opus | 🔵 In Progress | — | End‑to‑end polish, reconnect, drop handling. |
 | M8T — Testing: end‑to‑end | Opus | ⬜ Not Started | — | Full hands‑on workflow over ethernet. |
 
 > **Model Assignment Guidelines** — *Haiku*: mechanical/boilerplate. *Sonnet*: most feature work, standard well‑defined tasks. *Opus*: complex architecture, ambiguous/undocumented protocol work, realtime systems, and any user‑facing interface design. Wrapping C protocol code and realtime decode qualify for Opus even though there's little "UI."
