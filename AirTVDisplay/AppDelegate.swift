@@ -16,6 +16,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         statusController = StatusItemController(receiver: receiver, onShowWindow: { [weak self] in self?.showWindow() })
 
         receiver.onStateChange = { [weak self] state in
+            print("[state] \(state.rawValue)")
             self?.statusController?.refresh()
             self?.window?.setState(state)
         }

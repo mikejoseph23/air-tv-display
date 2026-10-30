@@ -1,7 +1,5 @@
 import Foundation
 
-enum ReceiverState: String { case stopped, idle, pairing, streaming }
-
 /// Owns the receiver lifecycle: "start" brings up UxPlay's RAOP server on a fixed port and
 /// advertises it with UxPlay's own DNS-SD registration (stock TXT, real pk); "stop" tears
 /// both down. Start/stop/restart are safe in any order.
@@ -46,15 +44,6 @@ final class ReceiverController {
 
     private func handle(_ e: RaopEvent) {
         guard server != nil else { return }
-        switch e {
-        case .connectionOpened, .clientRequest:
-            if state == .idle { state = .pairing }
-        case .mirrorRunning(let on):
-            state = on ? .streaming : .pairing
-        case .connectionClosed(let open):
-            if open == 0 { state = .idle }
-        case .connectionReset:
-            state = .idle
-        }
+        state = ReceiverStateMachine.next(state, e)
     }
 }

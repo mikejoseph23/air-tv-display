@@ -27,6 +27,10 @@ enum RaopEvent {
     case clientRequest(name: String, model: String, deviceID: String)
     case mirrorRunning(Bool)
     case connectionReset(reason: Int32)
+    /// First decrypted video buffer of a mirror session (summary of its NAL units).
+    case videoStarted(nals: String)
+    /// First buffer of a session that UxPlay flagged as failed decrypt / bad NAL lengths.
+    case videoDecryptFailed
 }
 
 /// Owns one UxPlay RAOP/AirPlay server plus its DNS-SD advertisement, set up the same way
@@ -52,19 +56,36 @@ final class RaopServer {
     fileprivate var openConnections = 0
     fileprivate var videoPackets = 0
     fileprivate var audioPackets = 0
+    /// Per mirror session (reset by mirror_video_running(true)); guarded by `lock`.
+    fileprivate var session = VideoSession()
+    fileprivate var dump: StreamDump?
+
+    struct VideoSession {
+        var packets = 0
+        var valid = 0
+        var invalid = 0
+        var bytes = 0
+        var seenTypes = Set<UInt8>()
+    }
+    /// How many leading video buffers per session get a full NAL summary in the log.
+    static let loggedPacketsPerSession = 5
 
     deinit { stop() }
 
     // MARK: lifecycle
 
-    func start(name: String, port requested: UInt16, deviceID: String) throws {
+    /// `advertise: false` skips the DNS-SD registration (tests): the server still listens
+    /// and derives the same pk.
+    func start(name: String, port requested: UInt16, deviceID: String, advertise: Bool = true) throws {
         guard !isRunning else { return }
         let hw = deviceID.split(separator: ":").compactMap { UInt8($0, radix: 16) }
         guard hw.count == 6 else { throw RaopError.badDeviceID(deviceID) }
         do {
             try startDnssd(name: name, hw: hw)
             try startRaop(port: requested, deviceID: deviceID)
-            try register()
+            if advertise { try register() }
+            dump = StreamDump.fromEnvironment()
+            if let dump { log(.info, "stream dump on: first \(dump.seconds)s of each session -> \(dump.fileURL.path)") }
             isRunning = true
             log(.info, "server up name=\"\(name)\" deviceid=\(deviceID) port=\(port) "
                 + "features=0x\(String(Self.features(of: dnssd!), radix: 16, uppercase: true)) pk=\(publicKeyHex)")
@@ -95,7 +116,10 @@ final class RaopServer {
         if isRunning { log(.info, "server stopped") }
         isRunning = false
         port = 0
-        lock.lock(); openConnections = 0; videoPackets = 0; audioPackets = 0; lock.unlock()
+        lock.lock()
+        openConnections = 0; videoPackets = 0; audioPackets = 0; session = VideoSession()
+        dump?.close(); dump = nil
+        lock.unlock()
     }
 
     // MARK: setup steps (mirror uxplay.cpp)
@@ -199,6 +223,53 @@ final class RaopServer {
 
     fileprivate func log(_ level: RtspLog.Level, _ msg: String) { RtspLog.shared.log(level, "[raop-cb] " + msg) }
 
+    // MARK: video inspection
+
+    /// New mirror session: reset per-session stats and restart the optional dump.
+    fileprivate func beginVideoSession() {
+        lock.lock(); session = VideoSession(); dump?.beginSession(); lock.unlock()
+    }
+
+    fileprivate func endVideoSession() {
+        lock.lock(); let v = session; lock.unlock()
+        guard v.packets > 0 else { return }
+        let types = v.seenTypes.sorted().map { AnnexB.typeName($0) }.joined(separator: ",")
+        log(.info, "video session end: packets=\(v.packets) decrypted=\(v.valid) failed=\(v.invalid) bytes=\(v.bytes) nalTypes=[\(types)]")
+    }
+
+    /// Inspects one `video_process` buffer. UxPlay's mirror thread has already AES-CTR
+    /// decrypted it and replaced the 4-byte AVCC lengths with Annex-B start codes; it sets
+    /// byte 0 to 0x01 when that failed. Internal (not private) so tests can feed fixtures.
+    func handleVideo(_ p: UnsafePointer<UInt8>, _ len: Int, nalCount: Int, h265: Bool) {
+        let ok = !h265 && AnnexB.looksDecrypted(p, len)
+        lock.lock()
+        session.packets += 1
+        session.bytes += len
+        if ok { session.valid += 1 } else { session.invalid += 1 }
+        let n = session.packets, firstValid = ok && session.valid == 1, firstInvalid = !ok && session.invalid == 1
+        var nals: [AnnexB.NAL] = []
+        if ok && (n <= Self.loggedPacketsPerSession || firstValid || !session.seenTypes.isSuperset(of: [5, 7, 8])) {
+            nals = AnnexB.split(UnsafeRawBufferPointer(start: p, count: len)).nals
+            let before = session.seenTypes
+            session.seenTypes.formUnion(nals.map(\.type))
+            if session.seenTypes.isSuperset(of: [5, 7, 8]), !before.isSuperset(of: [5, 7, 8]) {
+                log(.info, "video: SPS+PPS+IDR seen by packet #\(n)")
+            }
+        }
+        if ok, let d = dump, d.append(p, len) {
+            log(.info, "stream dump done: \(d.bytesWritten) bytes -> \(d.fileURL.path)")
+        }
+        lock.unlock()
+
+        if n <= Self.loggedPacketsPerSession {
+            let head = (0..<min(8, len)).map { String(format: "%02x", p[$0]) }.joined(separator: " ")
+            log(.info, "video #\(n) len=\(len) nals=\(nalCount) h265=\(h265) "
+                + (ok ? "decrypted [\(head)] \(AnnexB.summary(nals))" : "NOT decrypted/invalid [\(head)]"))
+        }
+        if firstValid { emit(.videoStarted(nals: AnnexB.summary(nals))) }
+        if firstInvalid { emit(.videoDecryptFailed) }
+    }
+
     fileprivate func emit(_ e: RaopEvent) {
         DispatchQueue.main.async { [weak self] in self?.onEvent?(e) }
     }
@@ -234,11 +305,12 @@ final class RaopServer {
             }
         }
         c.video_process = { cls, _, data in
-            guard let s = me(cls), let d = data?.pointee else { return }
+            guard let s = me(cls), let d = data?.pointee, let p = d.data, d.data_len > 0 else { return }
             s.lock.lock(); s.videoPackets += 1; let n = s.videoPackets; s.lock.unlock()
-            if n == 1 || n % 300 == 0 {
+            if n % 300 == 0 {
                 s.log(.debug, "video_process #\(n) h265=\(d.is_h265) nals=\(d.nal_count) len=\(d.data_len)")
             }
+            s.handleVideo(p, Int(d.data_len), nalCount: Int(d.nal_count), h265: d.is_h265)
         }
         c.video_pause = { cls in me(cls)?.log(.info, "video_pause") }
         c.video_resume = { cls in me(cls)?.log(.info, "video_resume") }
@@ -249,6 +321,7 @@ final class RaopServer {
         }
         c.mirror_video_running = { cls, running in
             me(cls)?.log(.info, "mirror_video_running \(running)")
+            if running { me(cls)?.beginVideoSession() } else { me(cls)?.endVideoSession() }
             me(cls)?.emit(.mirrorRunning(running))
         }
 

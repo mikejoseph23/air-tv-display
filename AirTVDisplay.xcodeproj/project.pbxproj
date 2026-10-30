@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		01A2A66E99A2CB9105745820 /* compat.c in Sources */ = {isa = PBXBuildFile; fileRef = 1CC29A647D80DCDD486015F4 /* compat.c */; };
 		01ADA372549B42BF71EFE67F /* playfair.c in Sources */ = {isa = PBXBuildFile; fileRef = 6475BF91024C0C44705B1A51 /* playfair.c */; };
+		05FAA60A23D066E7479EB685 /* ReceiverState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F667FD30792AAB3F75DEF36 /* ReceiverState.swift */; };
 		0A5964DAE2F54DAE4DFB4BAE /* raop.c in Sources */ = {isa = PBXBuildFile; fileRef = 47C1FCCCA0F0EF1D6CD8DECB /* raop.c */; };
 		0AA8E88251A1CDAD9735D73D /* BonjourTXTTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCE556C8E940F9E7E39B992F /* BonjourTXTTests.swift */; };
 		0AAD3365E606C4CBC9B8A91E /* compat.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = D20D7AD95D0FF61B35C0C3B4 /* compat.h */; };
@@ -33,6 +34,7 @@
 		52394FC25CD06397032F70A6 /* playfair.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1F84360A466645CD0D9A23BC /* playfair.h */; };
 		588FBE73CD85B2D019EF0718 /* sap_hash.c in Sources */ = {isa = PBXBuildFile; fileRef = D52B2F734B8269D3A29A4D73 /* sap_hash.c */; };
 		5A7ACECD94E16A68354FF615 /* sockets.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4AC962F82E2D4475551AA5F8 /* sockets.h */; };
+		5B30C8E24C042F37866CE946 /* AnnexB.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6251A026DB7ABEAE00F1B7 /* AnnexB.swift */; };
 		5D0BC2F8D4224F61E7B673AE /* UxPlayBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF17C0DD7A13B35C0E7F5CAF /* UxPlayBridge.swift */; };
 		5DFD0E792C7736D00A05B772 /* NetworkInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFB10ED5A265994D7918374D /* NetworkInfo.swift */; };
 		5E0E368DAEF911C2BEE00682 /* utils.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B9DA4B8A408CEDDB6F1C5E3 /* utils.c */; };
@@ -45,9 +47,11 @@
 		7755B5CCE7978D8AF0DC36B9 /* http_request.c in Sources */ = {isa = PBXBuildFile; fileRef = 250E56C9C451E516D3CBF6E6 /* http_request.c */; };
 		817536A9A94C7F9BFD2119DC /* NetworkInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFB10ED5A265994D7918374D /* NetworkInfo.swift */; };
 		81F86DEA98B8448A049F1F62 /* StatusItemController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B103A0C73154FD6243599FAD /* StatusItemController.swift */; };
+		821FD9DF81E1E9F12D15A048 /* StreamDump.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E129CE65C6BDF65CBA3D8F /* StreamDump.swift */; };
 		876F5F5B7AC0161108ECF6F9 /* libUxPlayLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AD6A71498A9A153E24ABB37 /* libUxPlayLib.a */; };
 		886A8D209F1D539E04D12183 /* omg_hax.c in Sources */ = {isa = PBXBuildFile; fileRef = C2844F5A6FBD6635C794AC52 /* omg_hax.c */; };
 		8989704DBAEC199C3736117C /* ReceiverController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76176648ABBBAE4AE2183C85 /* ReceiverController.swift */; };
+		8A0E9F194493767B1DDFC4A6 /* PairingFairPlayTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FC032FBF2056A6432219FDF /* PairingFairPlayTests.swift */; };
 		8BF66C8518D69B4701A22109 /* srp.c in Sources */ = {isa = PBXBuildFile; fileRef = AA44A058A810852119069DE9 /* srp.c */; };
 		8D5714B687BAA07243E64F11 /* RaopServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBCB9F83DCD55ABF3B6F359D /* RaopServer.swift */; };
 		8D67DEA4C8A504273F76E30F /* http_handlers.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 01A7E5D9A3F8A79C627A0CBC /* http_handlers.h */; };
@@ -69,9 +73,12 @@
 		AFDCE15051E91DD1E03E85DD /* dnssdint.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = BC9314A39227D810F2FB70D6 /* dnssdint.h */; };
 		B0EB97AD7F4D0F243E1C429F /* raop_rtp.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 61D43D412D59EB7B98E538E8 /* raop_rtp.h */; };
 		B54AFFDB154322B7186088F9 /* httpd.c in Sources */ = {isa = PBXBuildFile; fileRef = DC913C7663328CE41E4A8FF3 /* httpd.c */; };
+		B740B1268A641A9CD2637E12 /* StreamDump.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E129CE65C6BDF65CBA3D8F /* StreamDump.swift */; };
+		B78DFEF366EDFA5C6B9CDBAE /* AnnexB.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6251A026DB7ABEAE00F1B7 /* AnnexB.swift */; };
 		C23CF891CCB4BF5528AAD487 /* raop_rtp_mirror.c in Sources */ = {isa = PBXBuildFile; fileRef = D18F70756340116793126379 /* raop_rtp_mirror.c */; };
 		C84326580F1A6EB317B32313 /* modified_md5.c in Sources */ = {isa = PBXBuildFile; fileRef = 57DF091C9E641413538D8557 /* modified_md5.c */; };
 		CA0D878FC1F9AC19825525EA /* raop_buffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 988D3BDD45FC61B77C4F6079 /* raop_buffer.c */; };
+		D33E7FAE1E78896A4F6B83CF /* ReceiverState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F667FD30792AAB3F75DEF36 /* ReceiverState.swift */; };
 		D3579BCF6C36618757E73EC3 /* http_response.c in Sources */ = {isa = PBXBuildFile; fileRef = 5555BDB6ED8499135620129C /* http_response.c */; };
 		D607D1C8F29967E8F3D9A2DA /* UxPlayBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF17C0DD7A13B35C0E7F5CAF /* UxPlayBridge.swift */; };
 		D665A420BBDAB7CFD0A13930 /* fairplay.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = A5341F4BA7800EC8DE634C50 /* fairplay.h */; };
@@ -161,7 +168,9 @@
 		250E56C9C451E516D3CBF6E6 /* http_request.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = http_request.c; sourceTree = "<group>"; };
 		260EC25BE4A5294F5D9D6879 /* raop_buffer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = raop_buffer.h; sourceTree = "<group>"; };
 		2B8ACF8CF620B1AF88F2CBE1 /* dnssd.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = dnssd.c; sourceTree = "<group>"; };
+		2F667FD30792AAB3F75DEF36 /* ReceiverState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiverState.swift; sourceTree = "<group>"; };
 		2F80C3DC2BB96ACB94519339 /* crypto.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = crypto.h; sourceTree = "<group>"; };
+		2FC032FBF2056A6432219FDF /* PairingFairPlayTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PairingFairPlayTests.swift; sourceTree = "<group>"; };
 		384E2AD721433BB44657E1C4 /* raop_handlers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = raop_handlers.h; sourceTree = "<group>"; };
 		394608EB7577B23F8D2FD2F4 /* hand_garble.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = hand_garble.c; sourceTree = "<group>"; };
 		3A1EF12EE13D7753A2CD3BBD /* llhttp.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = llhttp.c; sourceTree = "<group>"; };
@@ -201,6 +210,7 @@
 		AA44A058A810852119069DE9 /* srp.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = srp.c; sourceTree = "<group>"; };
 		AFB10ED5A265994D7918374D /* NetworkInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkInfo.swift; sourceTree = "<group>"; };
 		B103A0C73154FD6243599FAD /* StatusItemController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusItemController.swift; sourceTree = "<group>"; };
+		B3E129CE65C6BDF65CBA3D8F /* StreamDump.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamDump.swift; sourceTree = "<group>"; };
 		B914E50073D7FBD622A0F0E7 /* raop_ntp.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = raop_ntp.c; sourceTree = "<group>"; };
 		BC1CEA3D277B2D3B1BA7C9BC /* AirTVDisplay-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AirTVDisplay-Bridging-Header.h"; sourceTree = "<group>"; };
 		BC9314A39227D810F2FB70D6 /* dnssdint.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = dnssdint.h; sourceTree = "<group>"; };
@@ -210,6 +220,7 @@
 		C2E2953EC8E7267DAC531CCB /* pairing.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = pairing.c; sourceTree = "<group>"; };
 		C4FE0E33BC75DA0DCFC47DCB /* dns_sd.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = dns_sd.c; sourceTree = "<group>"; };
 		C95CA176345014187F3A01DD /* AirTVDisplay.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AirTVDisplay.entitlements; sourceTree = "<group>"; };
+		CE6251A026DB7ABEAE00F1B7 /* AnnexB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnexB.swift; sourceTree = "<group>"; };
 		D18F70756340116793126379 /* raop_rtp_mirror.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = raop_rtp_mirror.c; sourceTree = "<group>"; };
 		D20D7AD95D0FF61B35C0C3B4 /* compat.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = compat.h; sourceTree = "<group>"; };
 		D52B2F734B8269D3A29A4D73 /* sap_hash.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = sap_hash.c; sourceTree = "<group>"; };
@@ -262,6 +273,7 @@
 			children = (
 				BC1CEA3D277B2D3B1BA7C9BC /* AirTVDisplay-Bridging-Header.h */,
 				C95CA176345014187F3A01DD /* AirTVDisplay.entitlements */,
+				CE6251A026DB7ABEAE00F1B7 /* AnnexB.swift */,
 				40CDDE4CB8FB00BCF3B43929 /* AppDelegate.swift */,
 				F619758C2E38812E89D4C640 /* BonjourRegistrar.swift */,
 				1984BB941F9CB5DDC92BE326 /* Info.plist */,
@@ -269,9 +281,11 @@
 				AFB10ED5A265994D7918374D /* NetworkInfo.swift */,
 				FBCB9F83DCD55ABF3B6F359D /* RaopServer.swift */,
 				76176648ABBBAE4AE2183C85 /* ReceiverController.swift */,
+				2F667FD30792AAB3F75DEF36 /* ReceiverState.swift */,
 				90BB1BA117442D098B402BA9 /* ReceiverWindow.swift */,
 				10EE1B2297EF8A5D7272134B /* RtspLog.swift */,
 				B103A0C73154FD6243599FAD /* StatusItemController.swift */,
+				B3E129CE65C6BDF65CBA3D8F /* StreamDump.swift */,
 				BF17C0DD7A13B35C0E7F5CAF /* UxPlayBridge.swift */,
 			);
 			path = AirTVDisplay;
@@ -373,6 +387,7 @@
 			children = (
 				FCE556C8E940F9E7E39B992F /* BonjourTXTTests.swift */,
 				F7C240D657014B4D184FD1DC /* NetworkInfoTests.swift */,
+				2FC032FBF2056A6432219FDF /* PairingFairPlayTests.swift */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -569,12 +584,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5B30C8E24C042F37866CE946 /* AnnexB.swift in Sources */,
 				925FD9EC71DA58919CB9636C /* BonjourRegistrar.swift in Sources */,
 				0AA8E88251A1CDAD9735D73D /* BonjourTXTTests.swift in Sources */,
 				817536A9A94C7F9BFD2119DC /* NetworkInfo.swift in Sources */,
 				94F721BF62FC0680816A2ADB /* NetworkInfoTests.swift in Sources */,
+				8A0E9F194493767B1DDFC4A6 /* PairingFairPlayTests.swift in Sources */,
 				8D5714B687BAA07243E64F11 /* RaopServer.swift in Sources */,
+				05FAA60A23D066E7479EB685 /* ReceiverState.swift in Sources */,
 				2B2720AD33F8E5D7153DA79D /* RtspLog.swift in Sources */,
+				B740B1268A641A9CD2637E12 /* StreamDump.swift in Sources */,
 				D607D1C8F29967E8F3D9A2DA /* UxPlayBridge.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -583,14 +602,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B78DFEF366EDFA5C6B9CDBAE /* AnnexB.swift in Sources */,
 				EB177092EDC0B26787F0AD8D /* AppDelegate.swift in Sources */,
 				5157B6EBE2F0CD2F96C24C17 /* BonjourRegistrar.swift in Sources */,
 				5DFD0E792C7736D00A05B772 /* NetworkInfo.swift in Sources */,
 				94EB02151EA1C2287D4D0B28 /* RaopServer.swift in Sources */,
 				8989704DBAEC199C3736117C /* ReceiverController.swift in Sources */,
+				D33E7FAE1E78896A4F6B83CF /* ReceiverState.swift in Sources */,
 				97040FD032E88335EC715226 /* ReceiverWindow.swift in Sources */,
 				D833868D4308F71B466F8095 /* RtspLog.swift in Sources */,
 				81F86DEA98B8448A049F1F62 /* StatusItemController.swift in Sources */,
+				821FD9DF81E1E9F12D15A048 /* StreamDump.swift in Sources */,
 				5D0BC2F8D4224F61E7B673AE /* UxPlayBridge.swift in Sources */,
 				EE5F699A648E2CA1B89EC506 /* main.swift in Sources */,
 			);

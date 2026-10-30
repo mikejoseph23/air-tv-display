@@ -108,12 +108,18 @@ targets:
     type: bundle.unit-test
     platform: macOS
     sources:
-      - Tests
+      # Fixtures are read from the source tree (#filePath), not bundled.
+      - path: Tests
+        excludes:
+          - "Fixtures/**"
       - AirTVDisplay/NetworkInfo.swift
       - AirTVDisplay/BonjourRegistrar.swift
       - AirTVDisplay/UxPlayBridge.swift
       - AirTVDisplay/RaopServer.swift
       - AirTVDisplay/RtspLog.swift
+      - AirTVDisplay/AnnexB.swift
+      - AirTVDisplay/StreamDump.swift
+      - AirTVDisplay/ReceiverState.swift
     dependencies:
       - target: UxPlayLib
         link: true

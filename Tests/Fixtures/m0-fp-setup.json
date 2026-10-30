@@ -1,0 +1,10 @@
+{
+  "source": "docs/m0-uxplay-session.log lines 129-220: stock UxPlay 1.74 (534e2cc) -d, sender macOS 26.6.2 AirPlay/960.13.1, 2026-10-30",
+  "note": "FairPlay SAP exchange. m2 is a fixed table entry for the mode in m1[14]; m4 is the FPLY header plus the last 20 bytes of m3, so both responses are deterministic. setup_ekey (72 B, from the SETUP plist) and setup_aeskey (what stock fairplay_decrypt produced, log lines 279-284) form a FairPlay decrypt test vector for this m3.",
+  "m1_request": "46504c590301010000000004020002bb",
+  "m2_response": "46504c5903010200000000820202c169a352eeed35b18cdd9c58d64f16c1519a89eb5317bd0d4336cd68f638ff9d016a5b52b7fa9216b2b65482c78444118121a2c7fed83db7119e9182aad7d18c7063e2a457555910af9e0efc76347d164043807f581ee4fbe42ca9dedc1b5eb2a3aa3d2ecd59e7eee70b3629f22afd161d877353ddb99adc8e07006e56f850ce",
+  "m3_request": "46504c590301030000000098028f1a9cfce60bb58e8635e1ac3705c1cddd62d3a3553940f2675e180bb798d7cb5a928a14ee2947d81ac8663b44e68a130beff489bd15231f5bb8ed32a3c61f85834bcc4807c6aa07fd4c8a3d8a26dbb7b43a20b752139c1abdc54c5a916620204f9cba59b12822c8c89a69e2ac8cbc2dac710ea796aeca77c7c7dad20e49937a104147dead96135c1e1f08a7ee5621b16ca8d8593d76be",
+  "m4_response": "46504c590301040000000014dead96135c1e1f08a7ee5621b16ca8d8593d76be",
+  "setup_ekey": "46504c59010201000000003c000000005e9167861032a1b96b4746b68ffee6e2000000101e08943218b5b9e95fe933447e83237195c940c34a00214d1c830424c299b1572082620a",
+  "setup_aeskey": "9d60b3e784f67dc10988fb3a6381f2d6"
+}
