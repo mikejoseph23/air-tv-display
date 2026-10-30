@@ -1,6 +1,6 @@
 # M0 Discovery Findings: stock UxPlay on the iMac
 
-Date: 2026-10-30. Status: **PARTIAL.** Discovery and the iMac side are verified. Everything that needs the Mac Studio GUI is **pending hands-on** and is not guessed at below.
+Date: 2026-10-30. Status: **GATE PASSED (17:05).** The Studio streams to stock UxPlay with no PIN, and macOS extends to it by default. Latency is the only number still open.
 
 ## Environment
 - Receiver: iMac18,3, macOS 15.7.4, Intel. Firewall: disabled (`socketfilterfw --getglobalstate`). Hostname `Mikes-iMac`. Ethernet interface is "interface 7" in dns-sd, loopback is "1".
@@ -11,6 +11,7 @@ Date: 2026-10-30. Status: **PARTIAL.** Discovery and the iMac side are verified.
 ## How to reproduce
 ```
 # build (once)
+# micromamba env 'ux' must include zlib (cmake fails without it; found on the work-profile rebuild)
 P=$HOME/.cache/m0-mamba/root/envs/ux; export PATH=$P/bin:$PATH PKG_CONFIG_PATH=$P/lib/pkgconfig
 cd thirdparty/UxPlay-spike && mkdir build && cd build && cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=$P && make -j8
 # then install_name_tool -change /usr/local/opt/glib/lib/libgobject-2.0.0.dylib @rpath/libgobject-2.0.0.dylib uxplay  (same for libglib-2.0.0, libintl.8), codesign -f -s - uxplay
@@ -48,10 +49,16 @@ Key difference for the plan: UxPlay advertises `model=AppleTV3,2`, `features=0x5
 - SSH for workers: `ssh michaeljosephwork@Mac-Studio.local` now works non-interactively (host key ED25519 `SHA256:oK1TQBxEktMrOoeg9cPxdHwBF8yfvAq3NjDhbYw3/yI`, verified by Mike on the Studio; iMac `id_ed25519` installed in the Studio's authorized_keys).
 
 ## Handshake sequence (pairing, PIN, errors)
-**PENDING HANDS-ON.** UxPlay is running and logging; no client has connected yet (`docs/m0-uxplay-session.log` has only startup lines). Nothing was observed, so nothing is claimed.
+**OBSERVED 2026-10-30 17:00** (Studio work profile, macOS 26.6.2; iMac on gigabit ethernet `en0`, Wi-Fi off; UxPlay rebuilt in the work profile, port 57380).
+- Listed in Control Center → Screen Mirroring as "Air TV Display@Mikes-iMac".
+- Selecting it streamed straight away. **No PIN, no pairing prompt, no error.** No UxPlay flags were needed beyond `-n -fs -d`.
+- RTSP request sequence from `docs/m0-uxplay-session.log`: `GET /info` → `POST /fp-setup` ×2 → `SETUP` (rtsp://<fe80 link-local>/…) → `GET /info` → `SETUP` → `RECORD`, then `POST /feedback` heartbeats. The sender connected over the **IPv6 link-local address on en0**. No `pair-setup`/`pair-verify` appeared in the request list, so the sender skipped them for a `pw=false` AppleTV3,2 receiver.
 
 ## Mirror / Extend availability, resolution, frame rate, latency
-**PENDING HANDS-ON.** UxPlay's requested stream is `-s 1920x1080@60` by default (the client may negotiate differently). Expected values only: 1920x1080, h264. Not measured.
+- **Extend: YES, by default.** macOS extended the Studio's desktop onto the iMac as a separate display. Nobody had to pick it under Displays. M7 is a verification milestone only (stays Sonnet).
+- **Resolution:** 1920×1080 h264 (`raop_rtp_mirror width_source = 1920 height_source = 1080`; `/info` advertises 1920×1080, `maxFPS` 30).
+- **Frame rate:** about 30 fps (video packets every ~33 ms in the log, matching the advertised `maxFPS` 30).
+- **Latency:** PENDING (Mike's phone-video estimate).
 
 ## Flags and Sequoia notes (from the UxPlay 1.74 README; unverified against a Sequoia sender until Mike tries)
 - Used: `-n "Air TV Display" -fs -d`. **`-fs` does not work on macOS**: README says fullscreen only works with X11, Wayland, vaapi, kms and D3D11. On macOS the window comes up as a normal glimagesink window and must be zoomed manually (the app we build will own the window, so this is a non-issue for the product but affects M0 viewing).

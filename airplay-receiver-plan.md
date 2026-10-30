@@ -48,7 +48,7 @@ Goal: the iMac app runs fullscreen, presents itself as an Apple‑TV‑class Air
 
 | Milestone | Model | Status | Duration (min) | Notes |
 |-----------|-------|--------|----------------|-------|
-| M0 — Stock UxPlay spike | Sonnet | 🟡 Partial — awaiting hands‑on | 21 | **Go/no‑go gate.** UxPlay 1.74 built from source, running, discoverable on iMac. Studio‑side checks (Control Center, pairing, Extend, res/latency) pending Mike. |
+| M0 — Stock UxPlay spike | Sonnet | ✅ Done (latency # pending) | 21 + 6 rebuild | **Gate passed.** Studio streams to stock UxPlay, no PIN; macOS extends by default; 1920×1080 h264 @ ~30 fps over ethernet. |
 | M1 — Discovery in our own process | Sonnet | ⬜ Not Started | — | Register UxPlay's TXT via `DNSServiceRegister`; Studio lists us. |
 | M2 — App scaffold + vendored lib build | Sonnet | ⬜ Not Started | — | Xcode Swift app, window, signing, UxPlay `lib/` compiling as a static lib. |
 | M2T — Testing: scaffold | Sonnet | ⬜ Not Started | — | Build/launch/unit. |
@@ -102,9 +102,9 @@ Run an existing, working AirPlay receiver on the iMac and point the Studio at it
 **Worker task list:**
 - [x] Install UxPlay on the iMac: `brew install uxplay` if the formula is current, otherwise clone https://github.com/FDH2/UxPlay and build per its macOS instructions (`brew install openssl libplist gstreamer` + CMake). Record the version/commit.
 - [x] Run `uxplay -n "Air TV Display" -fs` (fullscreen) with verbose logging (`-d`). Capture the TXT record it registers: `dns-sd -L "Air TV Display" _airplay._tcp local.` — **this is our template**, not the Studio's.
-- [ ] On the **Mac Studio** (SSH `michaeljosephwork@Mac-Studio.local`): `dns-sd -B _airplay._tcp local.` shows the instance. Then (Mike) Control Center → Screen Mirroring: is it listed?
-- [ ] Select it. Record exactly what happens: pairing prompt? PIN? instant stream? error text? Capture UxPlay's log of the RTSP exchange to `docs/m0-uxplay-session.log`.
-- [ ] If video flows: in System Settings → Displays, is **"Use As Separate Display"** offered? Select it and confirm the iMac becomes an independent desktop.
+- [x] On the **Mac Studio** (SSH `michaeljosephwork@Mac-Studio.local`): `dns-sd -B _airplay._tcp local.` shows the instance. Then (Mike) Control Center → Screen Mirroring: is it listed?
+- [x] Select it. Record exactly what happens: pairing prompt? PIN? instant stream? error text? Capture UxPlay's log of the RTSP exchange to `docs/m0-uxplay-session.log`.
+- [x] If video flows: in System Settings → Displays, is **"Use As Separate Display"** offered? Select it and confirm the iMac becomes an independent desktop.
 - [ ] Record the **stream resolution and frame rate** UxPlay reports (expect 1920×1080) and a rough **latency** estimate (phone video of a cursor move, or clap test) over gigabit ethernet.
 - [x] Note any flags UxPlay needed for Sequoia (`-pk`, `-pin`, `-reg`, feature overrides) — these must carry into M1.
 - [x] Write `docs/discovery-findings.md`: TXT record, handshake sequence observed, Mirror/Extend availability, resolution, latency, flags. **Update the Summary's expectations if reality differs.**
@@ -366,6 +366,8 @@ When a milestone returns incomplete, follow‑up prompts must:
 ## Progress Log / Notes
 
 Reverse‑chronological. Newest first.
+
+**2026-10-30 17:05 — M0 gate PASSED (orchestrator + Mike hands-on).** Rebuilt UxPlay 1.74 in the work profile (Sonnet worker, ~6 min, no commit; recipe needs `zlib` in the micromamba env). iMac now on gigabit ethernet (`en0` 192.168.50.250), Wi-Fi off. From the Studio's work profile: listed in Screen Mirroring, selecting it **streamed instantly with no PIN**, and macOS **extended the desktop by default** (no Displays toggle needed). Log: `GET /info` → `fp-setup` ×2 → `SETUP` → `RECORD` → `/feedback`; no pair-setup/verify for this `pw=false` receiver; stream 1920×1080 h264, maxFPS 30. **M7 stays Sonnet, verification only.** Latency estimate still to come from Mike; the latency checkbox stays open. Next: Group A (M1 + M2 in parallel, Sonnet).
 
 **2026-10-30 16:20 — Repo moving to the work profile.** Mike does development in the `michaeljosephwork` profile; this repo moves from `/Users/michaeljoseph/git/air-tv-display` to `/Users/michaeljosephwork/git/air-tv-display` and gets a GitHub remote (`git@github.com:mikejoseph23/air-tv-display.git`, private). Handoff via `/Users/Shared/air-tv-display-handoff/` (git bundle + `.orchestrator/` + spike source tarball). `thirdparty/UxPlay-spike/` is now gitignored (M2 vendors UxPlay properly under `thirdparty/UxPlay`); `docs/run-uxplay-spike.sh` resolves the repo from its own path. The spike's micromamba toolchain lives in the personal home, so the work profile must rebuild UxPlay before running it there. The M0 hands-on test will run from the Studio's **work** profile.
 
