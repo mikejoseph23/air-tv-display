@@ -1,0 +1,808 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		01A2A66E99A2CB9105745820 /* compat.c in Sources */ = {isa = PBXBuildFile; fileRef = 1CC29A647D80DCDD486015F4 /* compat.c */; };
+		01ADA372549B42BF71EFE67F /* playfair.c in Sources */ = {isa = PBXBuildFile; fileRef = 6475BF91024C0C44705B1A51 /* playfair.c */; };
+		0A5964DAE2F54DAE4DFB4BAE /* raop.c in Sources */ = {isa = PBXBuildFile; fileRef = 47C1FCCCA0F0EF1D6CD8DECB /* raop.c */; };
+		0AAD3365E606C4CBC9B8A91E /* compat.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = D20D7AD95D0FF61B35C0C3B4 /* compat.h */; };
+		10E53BD32E091576DFBA0054 /* http_response.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3A2295901D59826D292269D4 /* http_response.h */; };
+		1641561E51A86F728725D92B /* libUxPlayLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AD6A71498A9A153E24ABB37 /* libUxPlayLib.a */; };
+		192F8E3FE36974FCC457B3E9 /* raop_handlers.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 384E2AD721433BB44657E1C4 /* raop_handlers.h */; };
+		1AF967D3692ACEC608994E1B /* srp.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 878A27B2049451EA5B354842 /* srp.h */; };
+		214218C47CF2445106A9659B /* fcup_request.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = F549488F6065DBCF458E0E68 /* fcup_request.h */; };
+		24206702FECF34EB205D0F3C /* pairing.c in Sources */ = {isa = PBXBuildFile; fileRef = C2E2953EC8E7267DAC531CCB /* pairing.c */; };
+		290437EB6FD279CBB97AB323 /* byteutils.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 489CA60284E4C4BA7EE8796E /* byteutils.h */; };
+		2970314F272FA15AB4D1D5CC /* netutils.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = A3AA4CD9785E879B5A5E78D6 /* netutils.h */; };
+		316D81C697C100F5249FB311 /* llhttp.c in Sources */ = {isa = PBXBuildFile; fileRef = 3A1EF12EE13D7753A2CD3BBD /* llhttp.c */; };
+		35406EC40B1268B87EE702F9 /* raop_ntp.c in Sources */ = {isa = PBXBuildFile; fileRef = B914E50073D7FBD622A0F0E7 /* raop_ntp.c */; };
+		3918F71217D7CCDD1DA7B6F7 /* raop_buffer.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 260EC25BE4A5294F5D9D6879 /* raop_buffer.h */; };
+		3C8100FA75D877DA23B33332 /* stream.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 815D5FB623695E3F7998AA27 /* stream.h */; };
+		3C97FE8FEA430FA6808CEA6E /* threads.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 74CA2E4F5C369710525BD8CA /* threads.h */; };
+		47784BF9E35EDFD28508B5B9 /* global.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 72A4968993A3DF2E42764994 /* global.h */; };
+		48C949BD046DE3300FC1D61C /* pairing.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 85B80CC5B5B0E1644145BC62 /* pairing.h */; };
+		4CAF8ECF20CF50C7EF6EF0CC /* raop_ntp.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 46A99BDF714D6A1864F5CF52 /* raop_ntp.h */; };
+		5157B6EBE2F0CD2F96C24C17 /* BonjourRegistrar.swift in Sources */ = {isa = PBXBuildFile; fileRef = F619758C2E38812E89D4C640 /* BonjourRegistrar.swift */; };
+		52394FC25CD06397032F70A6 /* playfair.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1F84360A466645CD0D9A23BC /* playfair.h */; };
+		588FBE73CD85B2D019EF0718 /* sap_hash.c in Sources */ = {isa = PBXBuildFile; fileRef = D52B2F734B8269D3A29A4D73 /* sap_hash.c */; };
+		5A7ACECD94E16A68354FF615 /* sockets.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4AC962F82E2D4475551AA5F8 /* sockets.h */; };
+		5D0BC2F8D4224F61E7B673AE /* UxPlayBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF17C0DD7A13B35C0E7F5CAF /* UxPlayBridge.swift */; };
+		5DFD0E792C7736D00A05B772 /* NetworkInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFB10ED5A265994D7918374D /* NetworkInfo.swift */; };
+		5E0E368DAEF911C2BEE00682 /* utils.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B9DA4B8A408CEDDB6F1C5E3 /* utils.c */; };
+		63215A09D16A36E72B4B1B58 /* dns_sd.c in Sources */ = {isa = PBXBuildFile; fileRef = C4FE0E33BC75DA0DCFC47DCB /* dns_sd.c */; };
+		6A8675548ADC676E0D85B7EC /* mirror_buffer.c in Sources */ = {isa = PBXBuildFile; fileRef = A163BCB46B5F9F3AC7600DD2 /* mirror_buffer.c */; };
+		6AC9812C3D36C511F816D191 /* netutils.c in Sources */ = {isa = PBXBuildFile; fileRef = 174A8527EB6B3FCB82DBF57D /* netutils.c */; };
+		6E24C1B6D0D393E533247DCD /* byteutils.c in Sources */ = {isa = PBXBuildFile; fileRef = A5E3122902E36E15F09FD334 /* byteutils.c */; };
+		747936CD6D81778FA2724ECD /* llhttp.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = E5003202A2E20E924FEBC792 /* llhttp.h */; };
+		74DCE71204F4F763590EB80C /* dnssd.c in Sources */ = {isa = PBXBuildFile; fileRef = 2B8ACF8CF620B1AF88F2CBE1 /* dnssd.c */; };
+		7755B5CCE7978D8AF0DC36B9 /* http_request.c in Sources */ = {isa = PBXBuildFile; fileRef = 250E56C9C451E516D3CBF6E6 /* http_request.c */; };
+		81F86DEA98B8448A049F1F62 /* StatusItemController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B103A0C73154FD6243599FAD /* StatusItemController.swift */; };
+		886A8D209F1D539E04D12183 /* omg_hax.c in Sources */ = {isa = PBXBuildFile; fileRef = C2844F5A6FBD6635C794AC52 /* omg_hax.c */; };
+		8989704DBAEC199C3736117C /* ReceiverController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76176648ABBBAE4AE2183C85 /* ReceiverController.swift */; };
+		8BF66C8518D69B4701A22109 /* srp.c in Sources */ = {isa = PBXBuildFile; fileRef = AA44A058A810852119069DE9 /* srp.c */; };
+		8D67DEA4C8A504273F76E30F /* http_handlers.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 01A7E5D9A3F8A79C627A0CBC /* http_handlers.h */; };
+		8EA2A567ADD90AC4CA6177C4 /* airplay_video.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = C074359F906E9F8498340202 /* airplay_video.h */; };
+		91D27DBC4C4AFBD3CE636CA7 /* crypto.c in Sources */ = {isa = PBXBuildFile; fileRef = F90AA0A3BAE14106D29C3EC6 /* crypto.c */; };
+		92576DC5CD7E56C7BB1D70F3 /* logger.c in Sources */ = {isa = PBXBuildFile; fileRef = 6151ED2922B6E643011FAAC3 /* logger.c */; };
+		94262C8539F539D8E3F6BCE5 /* api.c in Sources */ = {isa = PBXBuildFile; fileRef = 765DFE5B08F4EF15A6F71155 /* api.c */; };
+		96F3B111C6E41CDAB28AA4DC /* raop.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = E262320227A8BDDFF8DB6280 /* raop.h */; };
+		97040FD032E88335EC715226 /* ReceiverWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90BB1BA117442D098B402BA9 /* ReceiverWindow.swift */; };
+		9756A6AAAAB034277AD06BCF /* hand_garble.c in Sources */ = {isa = PBXBuildFile; fileRef = 394608EB7577B23F8D2FD2F4 /* hand_garble.c */; };
+		97E70B90EC7644B8E12B8C8B /* crypto.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2F80C3DC2BB96ACB94519339 /* crypto.h */; };
+		9B03A2B30D43E6DF7AA022B4 /* utils.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = F1A0DF1FFD61D02731D64AC8 /* utils.h */; };
+		9EF3C907BFD100588403304C /* mirror_buffer.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = EAB8F64EB44EA3371E9C8D70 /* mirror_buffer.h */; };
+		A305AF64620DC0BFCA138486 /* raop_rtp.c in Sources */ = {isa = PBXBuildFile; fileRef = A69081D28CBE3E3D5FDD95BD /* raop_rtp.c */; };
+		A7DD42EDD783ED58C074C458 /* httpd.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4254F2FC1D0B41229DD4A25C /* httpd.h */; };
+		AFDCE15051E91DD1E03E85DD /* dnssdint.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = BC9314A39227D810F2FB70D6 /* dnssdint.h */; };
+		B0EB97AD7F4D0F243E1C429F /* raop_rtp.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 61D43D412D59EB7B98E538E8 /* raop_rtp.h */; };
+		B54AFFDB154322B7186088F9 /* httpd.c in Sources */ = {isa = PBXBuildFile; fileRef = DC913C7663328CE41E4A8FF3 /* httpd.c */; };
+		C23CF891CCB4BF5528AAD487 /* raop_rtp_mirror.c in Sources */ = {isa = PBXBuildFile; fileRef = D18F70756340116793126379 /* raop_rtp_mirror.c */; };
+		C84326580F1A6EB317B32313 /* modified_md5.c in Sources */ = {isa = PBXBuildFile; fileRef = 57DF091C9E641413538D8557 /* modified_md5.c */; };
+		CA0D878FC1F9AC19825525EA /* raop_buffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 988D3BDD45FC61B77C4F6079 /* raop_buffer.c */; };
+		D3579BCF6C36618757E73EC3 /* http_response.c in Sources */ = {isa = PBXBuildFile; fileRef = 5555BDB6ED8499135620129C /* http_response.c */; };
+		D665A420BBDAB7CFD0A13930 /* fairplay.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = A5341F4BA7800EC8DE634C50 /* fairplay.h */; };
+		E0133AFA01DA6E2BC70316A4 /* http.c in Sources */ = {isa = PBXBuildFile; fileRef = A931B79BFC2D8676F9A85A6C /* http.c */; };
+		E142F0B41163E4633BB3EF06 /* http_request.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = F0B9E7126F0D0BD3340B1D05 /* http_request.h */; };
+		E6E25F4E18EF83C7FA457023 /* omg_hax.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 235694F76DF53BB86396859A /* omg_hax.h */; };
+		E78850E579D5990E807BE115 /* logger.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 5D329A07EC78134E8A8500BF /* logger.h */; };
+		EB177092EDC0B26787F0AD8D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40CDDE4CB8FB00BCF3B43929 /* AppDelegate.swift */; };
+		EE5F699A648E2CA1B89EC506 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475B5D1990FD3CEA51640BE9 /* main.swift */; };
+		F1DB8F17AC9F33B7500C62CB /* airplay_video.c in Sources */ = {isa = PBXBuildFile; fileRef = 14816F88B9ADF2DBC235E242 /* airplay_video.c */; };
+		F3794B2F5A88EA0044264888 /* fairplay_playfair.c in Sources */ = {isa = PBXBuildFile; fileRef = 12AC200E3BC7BC69AB14A594 /* fairplay_playfair.c */; };
+		F735F9FEC9F2BF21FB13F93F /* dnssd.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = FF6D70933F21D901F31E9736 /* dnssd.h */; };
+		FA82FB3B8E3F402F54B7EA6D /* raop_rtp_mirror.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = D684FD95A19B69B7F9F9AEF9 /* raop_rtp_mirror.h */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		F956C8AC0EE1F9CC5B0D8449 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7903EE8B560FC015B9975099 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 58AEB48FA16BF1CF5EFEA10E;
+			remoteInfo = UxPlayLib;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		0C7AA65F13912C3A634D387F /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/$(PRODUCT_NAME)";
+			dstSubfolderSpec = 16;
+			files = (
+				8EA2A567ADD90AC4CA6177C4 /* airplay_video.h in CopyFiles */,
+				290437EB6FD279CBB97AB323 /* byteutils.h in CopyFiles */,
+				0AAD3365E606C4CBC9B8A91E /* compat.h in CopyFiles */,
+				97E70B90EC7644B8E12B8C8B /* crypto.h in CopyFiles */,
+				F735F9FEC9F2BF21FB13F93F /* dnssd.h in CopyFiles */,
+				AFDCE15051E91DD1E03E85DD /* dnssdint.h in CopyFiles */,
+				D665A420BBDAB7CFD0A13930 /* fairplay.h in CopyFiles */,
+				214218C47CF2445106A9659B /* fcup_request.h in CopyFiles */,
+				47784BF9E35EDFD28508B5B9 /* global.h in CopyFiles */,
+				8D67DEA4C8A504273F76E30F /* http_handlers.h in CopyFiles */,
+				E142F0B41163E4633BB3EF06 /* http_request.h in CopyFiles */,
+				10E53BD32E091576DFBA0054 /* http_response.h in CopyFiles */,
+				A7DD42EDD783ED58C074C458 /* httpd.h in CopyFiles */,
+				747936CD6D81778FA2724ECD /* llhttp.h in CopyFiles */,
+				E78850E579D5990E807BE115 /* logger.h in CopyFiles */,
+				9EF3C907BFD100588403304C /* mirror_buffer.h in CopyFiles */,
+				2970314F272FA15AB4D1D5CC /* netutils.h in CopyFiles */,
+				E6E25F4E18EF83C7FA457023 /* omg_hax.h in CopyFiles */,
+				48C949BD046DE3300FC1D61C /* pairing.h in CopyFiles */,
+				52394FC25CD06397032F70A6 /* playfair.h in CopyFiles */,
+				96F3B111C6E41CDAB28AA4DC /* raop.h in CopyFiles */,
+				3918F71217D7CCDD1DA7B6F7 /* raop_buffer.h in CopyFiles */,
+				192F8E3FE36974FCC457B3E9 /* raop_handlers.h in CopyFiles */,
+				4CAF8ECF20CF50C7EF6EF0CC /* raop_ntp.h in CopyFiles */,
+				B0EB97AD7F4D0F243E1C429F /* raop_rtp.h in CopyFiles */,
+				FA82FB3B8E3F402F54B7EA6D /* raop_rtp_mirror.h in CopyFiles */,
+				5A7ACECD94E16A68354FF615 /* sockets.h in CopyFiles */,
+				1AF967D3692ACEC608994E1B /* srp.h in CopyFiles */,
+				3C8100FA75D877DA23B33332 /* stream.h in CopyFiles */,
+				3C97FE8FEA430FA6808CEA6E /* threads.h in CopyFiles */,
+				9B03A2B30D43E6DF7AA022B4 /* utils.h in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		01A7E5D9A3F8A79C627A0CBC /* http_handlers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = http_handlers.h; sourceTree = "<group>"; };
+		12AC200E3BC7BC69AB14A594 /* fairplay_playfair.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = fairplay_playfair.c; sourceTree = "<group>"; };
+		14816F88B9ADF2DBC235E242 /* airplay_video.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = airplay_video.c; sourceTree = "<group>"; };
+		174A8527EB6B3FCB82DBF57D /* netutils.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = netutils.c; sourceTree = "<group>"; };
+		1984BB941F9CB5DDC92BE326 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		1CC29A647D80DCDD486015F4 /* compat.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = compat.c; sourceTree = "<group>"; };
+		1F84360A466645CD0D9A23BC /* playfair.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = playfair.h; sourceTree = "<group>"; };
+		235694F76DF53BB86396859A /* omg_hax.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = omg_hax.h; sourceTree = "<group>"; };
+		250E56C9C451E516D3CBF6E6 /* http_request.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = http_request.c; sourceTree = "<group>"; };
+		260EC25BE4A5294F5D9D6879 /* raop_buffer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = raop_buffer.h; sourceTree = "<group>"; };
+		2B8ACF8CF620B1AF88F2CBE1 /* dnssd.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = dnssd.c; sourceTree = "<group>"; };
+		2F80C3DC2BB96ACB94519339 /* crypto.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = crypto.h; sourceTree = "<group>"; };
+		384E2AD721433BB44657E1C4 /* raop_handlers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = raop_handlers.h; sourceTree = "<group>"; };
+		394608EB7577B23F8D2FD2F4 /* hand_garble.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = hand_garble.c; sourceTree = "<group>"; };
+		3A1EF12EE13D7753A2CD3BBD /* llhttp.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = llhttp.c; sourceTree = "<group>"; };
+		3A2295901D59826D292269D4 /* http_response.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = http_response.h; sourceTree = "<group>"; };
+		40CDDE4CB8FB00BCF3B43929 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		4254F2FC1D0B41229DD4A25C /* httpd.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = httpd.h; sourceTree = "<group>"; };
+		46A99BDF714D6A1864F5CF52 /* raop_ntp.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = raop_ntp.h; sourceTree = "<group>"; };
+		475B5D1990FD3CEA51640BE9 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		47C1FCCCA0F0EF1D6CD8DECB /* raop.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = raop.c; sourceTree = "<group>"; };
+		489CA60284E4C4BA7EE8796E /* byteutils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = byteutils.h; sourceTree = "<group>"; };
+		4AC962F82E2D4475551AA5F8 /* sockets.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = sockets.h; sourceTree = "<group>"; };
+		4D1442780D0702AE67A3177B /* AirTVDisplay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AirTVDisplay.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		5555BDB6ED8499135620129C /* http_response.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = http_response.c; sourceTree = "<group>"; };
+		57DF091C9E641413538D8557 /* modified_md5.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = modified_md5.c; sourceTree = "<group>"; };
+		5D329A07EC78134E8A8500BF /* logger.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = logger.h; sourceTree = "<group>"; };
+		6151ED2922B6E643011FAAC3 /* logger.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = logger.c; sourceTree = "<group>"; };
+		61D43D412D59EB7B98E538E8 /* raop_rtp.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = raop_rtp.h; sourceTree = "<group>"; };
+		6475BF91024C0C44705B1A51 /* playfair.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = playfair.c; sourceTree = "<group>"; };
+		6AD6A71498A9A153E24ABB37 /* libUxPlayLib.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libUxPlayLib.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		72A4968993A3DF2E42764994 /* global.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = global.h; sourceTree = "<group>"; };
+		74CA2E4F5C369710525BD8CA /* threads.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = threads.h; sourceTree = "<group>"; };
+		76176648ABBBAE4AE2183C85 /* ReceiverController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiverController.swift; sourceTree = "<group>"; };
+		765DFE5B08F4EF15A6F71155 /* api.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = api.c; sourceTree = "<group>"; };
+		815D5FB623695E3F7998AA27 /* stream.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = stream.h; sourceTree = "<group>"; };
+		85B80CC5B5B0E1644145BC62 /* pairing.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = pairing.h; sourceTree = "<group>"; };
+		878A27B2049451EA5B354842 /* srp.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = srp.h; sourceTree = "<group>"; };
+		90BB1BA117442D098B402BA9 /* ReceiverWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiverWindow.swift; sourceTree = "<group>"; };
+		988D3BDD45FC61B77C4F6079 /* raop_buffer.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = raop_buffer.c; sourceTree = "<group>"; };
+		9B9DA4B8A408CEDDB6F1C5E3 /* utils.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = utils.c; sourceTree = "<group>"; };
+		A163BCB46B5F9F3AC7600DD2 /* mirror_buffer.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = mirror_buffer.c; sourceTree = "<group>"; };
+		A3AA4CD9785E879B5A5E78D6 /* netutils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = netutils.h; sourceTree = "<group>"; };
+		A5341F4BA7800EC8DE634C50 /* fairplay.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fairplay.h; sourceTree = "<group>"; };
+		A5E3122902E36E15F09FD334 /* byteutils.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = byteutils.c; sourceTree = "<group>"; };
+		A69081D28CBE3E3D5FDD95BD /* raop_rtp.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = raop_rtp.c; sourceTree = "<group>"; };
+		A931B79BFC2D8676F9A85A6C /* http.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = http.c; sourceTree = "<group>"; };
+		AA44A058A810852119069DE9 /* srp.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = srp.c; sourceTree = "<group>"; };
+		AFB10ED5A265994D7918374D /* NetworkInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkInfo.swift; sourceTree = "<group>"; };
+		B103A0C73154FD6243599FAD /* StatusItemController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusItemController.swift; sourceTree = "<group>"; };
+		B914E50073D7FBD622A0F0E7 /* raop_ntp.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = raop_ntp.c; sourceTree = "<group>"; };
+		BC1CEA3D277B2D3B1BA7C9BC /* AirTVDisplay-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AirTVDisplay-Bridging-Header.h"; sourceTree = "<group>"; };
+		BC9314A39227D810F2FB70D6 /* dnssdint.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = dnssdint.h; sourceTree = "<group>"; };
+		BF17C0DD7A13B35C0E7F5CAF /* UxPlayBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UxPlayBridge.swift; sourceTree = "<group>"; };
+		C074359F906E9F8498340202 /* airplay_video.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = airplay_video.h; sourceTree = "<group>"; };
+		C2844F5A6FBD6635C794AC52 /* omg_hax.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = omg_hax.c; sourceTree = "<group>"; };
+		C2E2953EC8E7267DAC531CCB /* pairing.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = pairing.c; sourceTree = "<group>"; };
+		C4FE0E33BC75DA0DCFC47DCB /* dns_sd.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = dns_sd.c; sourceTree = "<group>"; };
+		C95CA176345014187F3A01DD /* AirTVDisplay.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AirTVDisplay.entitlements; sourceTree = "<group>"; };
+		D18F70756340116793126379 /* raop_rtp_mirror.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = raop_rtp_mirror.c; sourceTree = "<group>"; };
+		D20D7AD95D0FF61B35C0C3B4 /* compat.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = compat.h; sourceTree = "<group>"; };
+		D52B2F734B8269D3A29A4D73 /* sap_hash.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = sap_hash.c; sourceTree = "<group>"; };
+		D684FD95A19B69B7F9F9AEF9 /* raop_rtp_mirror.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = raop_rtp_mirror.h; sourceTree = "<group>"; };
+		DC913C7663328CE41E4A8FF3 /* httpd.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = httpd.c; sourceTree = "<group>"; };
+		E262320227A8BDDFF8DB6280 /* raop.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = raop.h; sourceTree = "<group>"; };
+		E5003202A2E20E924FEBC792 /* llhttp.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = llhttp.h; sourceTree = "<group>"; };
+		EAB8F64EB44EA3371E9C8D70 /* mirror_buffer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mirror_buffer.h; sourceTree = "<group>"; };
+		F0B9E7126F0D0BD3340B1D05 /* http_request.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = http_request.h; sourceTree = "<group>"; };
+		F1A0DF1FFD61D02731D64AC8 /* utils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = utils.h; sourceTree = "<group>"; };
+		F549488F6065DBCF458E0E68 /* fcup_request.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fcup_request.h; sourceTree = "<group>"; };
+		F619758C2E38812E89D4C640 /* BonjourRegistrar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BonjourRegistrar.swift; sourceTree = "<group>"; };
+		F90AA0A3BAE14106D29C3EC6 /* crypto.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = crypto.c; sourceTree = "<group>"; };
+		FF6D70933F21D901F31E9736 /* dnssd.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = dnssd.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		7746A89398339AD3FF8FE064 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1641561E51A86F728725D92B /* libUxPlayLib.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		278154AC93BE910D9D5DB1A5 /* UxPlay */ = {
+			isa = PBXGroup;
+			children = (
+				58F45ED6774AC6838CAE15FE /* lib */,
+			);
+			path = UxPlay;
+			sourceTree = "<group>";
+		};
+		3C93CC22779B30379FFF141C /* AirTVDisplay */ = {
+			isa = PBXGroup;
+			children = (
+				BC1CEA3D277B2D3B1BA7C9BC /* AirTVDisplay-Bridging-Header.h */,
+				C95CA176345014187F3A01DD /* AirTVDisplay.entitlements */,
+				40CDDE4CB8FB00BCF3B43929 /* AppDelegate.swift */,
+				F619758C2E38812E89D4C640 /* BonjourRegistrar.swift */,
+				1984BB941F9CB5DDC92BE326 /* Info.plist */,
+				475B5D1990FD3CEA51640BE9 /* main.swift */,
+				AFB10ED5A265994D7918374D /* NetworkInfo.swift */,
+				76176648ABBBAE4AE2183C85 /* ReceiverController.swift */,
+				90BB1BA117442D098B402BA9 /* ReceiverWindow.swift */,
+				B103A0C73154FD6243599FAD /* StatusItemController.swift */,
+				BF17C0DD7A13B35C0E7F5CAF /* UxPlayBridge.swift */,
+			);
+			path = AirTVDisplay;
+			sourceTree = "<group>";
+		};
+		581232A927A0BA870B7AEF9D /* thirdparty */ = {
+			isa = PBXGroup;
+			children = (
+				278154AC93BE910D9D5DB1A5 /* UxPlay */,
+			);
+			path = thirdparty;
+			sourceTree = "<group>";
+		};
+		58F45ED6774AC6838CAE15FE /* lib */ = {
+			isa = PBXGroup;
+			children = (
+				14816F88B9ADF2DBC235E242 /* airplay_video.c */,
+				C074359F906E9F8498340202 /* airplay_video.h */,
+				A5E3122902E36E15F09FD334 /* byteutils.c */,
+				489CA60284E4C4BA7EE8796E /* byteutils.h */,
+				1CC29A647D80DCDD486015F4 /* compat.c */,
+				D20D7AD95D0FF61B35C0C3B4 /* compat.h */,
+				F90AA0A3BAE14106D29C3EC6 /* crypto.c */,
+				2F80C3DC2BB96ACB94519339 /* crypto.h */,
+				2B8ACF8CF620B1AF88F2CBE1 /* dnssd.c */,
+				FF6D70933F21D901F31E9736 /* dnssd.h */,
+				BC9314A39227D810F2FB70D6 /* dnssdint.h */,
+				12AC200E3BC7BC69AB14A594 /* fairplay_playfair.c */,
+				A5341F4BA7800EC8DE634C50 /* fairplay.h */,
+				F549488F6065DBCF458E0E68 /* fcup_request.h */,
+				72A4968993A3DF2E42764994 /* global.h */,
+				01A7E5D9A3F8A79C627A0CBC /* http_handlers.h */,
+				250E56C9C451E516D3CBF6E6 /* http_request.c */,
+				F0B9E7126F0D0BD3340B1D05 /* http_request.h */,
+				5555BDB6ED8499135620129C /* http_response.c */,
+				3A2295901D59826D292269D4 /* http_response.h */,
+				DC913C7663328CE41E4A8FF3 /* httpd.c */,
+				4254F2FC1D0B41229DD4A25C /* httpd.h */,
+				6151ED2922B6E643011FAAC3 /* logger.c */,
+				5D329A07EC78134E8A8500BF /* logger.h */,
+				A163BCB46B5F9F3AC7600DD2 /* mirror_buffer.c */,
+				EAB8F64EB44EA3371E9C8D70 /* mirror_buffer.h */,
+				174A8527EB6B3FCB82DBF57D /* netutils.c */,
+				A3AA4CD9785E879B5A5E78D6 /* netutils.h */,
+				C2E2953EC8E7267DAC531CCB /* pairing.c */,
+				85B80CC5B5B0E1644145BC62 /* pairing.h */,
+				988D3BDD45FC61B77C4F6079 /* raop_buffer.c */,
+				260EC25BE4A5294F5D9D6879 /* raop_buffer.h */,
+				384E2AD721433BB44657E1C4 /* raop_handlers.h */,
+				B914E50073D7FBD622A0F0E7 /* raop_ntp.c */,
+				46A99BDF714D6A1864F5CF52 /* raop_ntp.h */,
+				D18F70756340116793126379 /* raop_rtp_mirror.c */,
+				D684FD95A19B69B7F9F9AEF9 /* raop_rtp_mirror.h */,
+				A69081D28CBE3E3D5FDD95BD /* raop_rtp.c */,
+				61D43D412D59EB7B98E538E8 /* raop_rtp.h */,
+				47C1FCCCA0F0EF1D6CD8DECB /* raop.c */,
+				E262320227A8BDDFF8DB6280 /* raop.h */,
+				4AC962F82E2D4475551AA5F8 /* sockets.h */,
+				AA44A058A810852119069DE9 /* srp.c */,
+				878A27B2049451EA5B354842 /* srp.h */,
+				815D5FB623695E3F7998AA27 /* stream.h */,
+				74CA2E4F5C369710525BD8CA /* threads.h */,
+				9B9DA4B8A408CEDDB6F1C5E3 /* utils.c */,
+				F1A0DF1FFD61D02731D64AC8 /* utils.h */,
+				DD780E44967A7B94DFD0EA2E /* dns_sd */,
+				B363C280B5639A396844F542 /* llhttp */,
+				95284AA0BB8E51752C2F1386 /* playfair */,
+			);
+			path = lib;
+			sourceTree = "<group>";
+		};
+		95284AA0BB8E51752C2F1386 /* playfair */ = {
+			isa = PBXGroup;
+			children = (
+				394608EB7577B23F8D2FD2F4 /* hand_garble.c */,
+				57DF091C9E641413538D8557 /* modified_md5.c */,
+				C2844F5A6FBD6635C794AC52 /* omg_hax.c */,
+				235694F76DF53BB86396859A /* omg_hax.h */,
+				6475BF91024C0C44705B1A51 /* playfair.c */,
+				1F84360A466645CD0D9A23BC /* playfair.h */,
+				D52B2F734B8269D3A29A4D73 /* sap_hash.c */,
+			);
+			path = playfair;
+			sourceTree = "<group>";
+		};
+		B363C280B5639A396844F542 /* llhttp */ = {
+			isa = PBXGroup;
+			children = (
+				765DFE5B08F4EF15A6F71155 /* api.c */,
+				A931B79BFC2D8676F9A85A6C /* http.c */,
+				3A1EF12EE13D7753A2CD3BBD /* llhttp.c */,
+				E5003202A2E20E924FEBC792 /* llhttp.h */,
+			);
+			path = llhttp;
+			sourceTree = "<group>";
+		};
+		DD780E44967A7B94DFD0EA2E /* dns_sd */ = {
+			isa = PBXGroup;
+			children = (
+				C4FE0E33BC75DA0DCFC47DCB /* dns_sd.c */,
+			);
+			path = dns_sd;
+			sourceTree = "<group>";
+		};
+		E5FFEAD3EDB5EFF9C5F776E0 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				4D1442780D0702AE67A3177B /* AirTVDisplay.app */,
+				6AD6A71498A9A153E24ABB37 /* libUxPlayLib.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		FC5DBAAEA1D8F357665F82A9 = {
+			isa = PBXGroup;
+			children = (
+				3C93CC22779B30379FFF141C /* AirTVDisplay */,
+				581232A927A0BA870B7AEF9D /* thirdparty */,
+				E5FFEAD3EDB5EFF9C5F776E0 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		58AEB48FA16BF1CF5EFEA10E /* UxPlayLib */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9535467E6A095B067EB99F1B /* Build configuration list for PBXNativeTarget "UxPlayLib" */;
+			buildPhases = (
+				0C7AA65F13912C3A634D387F /* CopyFiles */,
+				1E4F1C8FCF505CFB5E487804 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = UxPlayLib;
+			packageProductDependencies = (
+			);
+			productName = UxPlayLib;
+			productReference = 6AD6A71498A9A153E24ABB37 /* libUxPlayLib.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		66CFB0C671D907EE88D45274 /* AirTVDisplay */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E19155D8B18F0E7276FEB7B7 /* Build configuration list for PBXNativeTarget "AirTVDisplay" */;
+			buildPhases = (
+				7CD310A6C7A97E633533CF35 /* Sources */,
+				7746A89398339AD3FF8FE064 /* Frameworks */,
+				3FDAF254F2B766BD70AD262E /* Embed libcrypto */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				73F6AA085B30CBD2DBBFC857 /* PBXTargetDependency */,
+			);
+			name = AirTVDisplay;
+			packageProductDependencies = (
+			);
+			productName = AirTVDisplay;
+			productReference = 4D1442780D0702AE67A3177B /* AirTVDisplay.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		7903EE8B560FC015B9975099 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					58AEB48FA16BF1CF5EFEA10E = {
+						ProvisioningStyle = Manual;
+					};
+					66CFB0C671D907EE88D45274 = {
+						ProvisioningStyle = Manual;
+					};
+				};
+			};
+			buildConfigurationList = DDA37514EA9313DBB86B2270 /* Build configuration list for PBXProject "AirTVDisplay" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = FC5DBAAEA1D8F357665F82A9;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				66CFB0C671D907EE88D45274 /* AirTVDisplay */,
+				58AEB48FA16BF1CF5EFEA10E /* UxPlayLib */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		3FDAF254F2B766BD70AD262E /* Embed libcrypto */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Embed libcrypto";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e\nFW=\"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH\"\nmkdir -p \"$FW\"\ncp -f \"$AIRTV_DEPS_PREFIX/lib/libcrypto.3.dylib\" \"$FW/libcrypto.3.dylib\"\nchmod u+w \"$FW/libcrypto.3.dylib\"\ncodesign --force --sign - \"$FW/libcrypto.3.dylib\"\ncodesign --force --sign - \"$TARGET_BUILD_DIR/$WRAPPER_NAME\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		1E4F1C8FCF505CFB5E487804 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F1DB8F17AC9F33B7500C62CB /* airplay_video.c in Sources */,
+				94262C8539F539D8E3F6BCE5 /* api.c in Sources */,
+				6E24C1B6D0D393E533247DCD /* byteutils.c in Sources */,
+				01A2A66E99A2CB9105745820 /* compat.c in Sources */,
+				91D27DBC4C4AFBD3CE636CA7 /* crypto.c in Sources */,
+				63215A09D16A36E72B4B1B58 /* dns_sd.c in Sources */,
+				74DCE71204F4F763590EB80C /* dnssd.c in Sources */,
+				F3794B2F5A88EA0044264888 /* fairplay_playfair.c in Sources */,
+				9756A6AAAAB034277AD06BCF /* hand_garble.c in Sources */,
+				E0133AFA01DA6E2BC70316A4 /* http.c in Sources */,
+				7755B5CCE7978D8AF0DC36B9 /* http_request.c in Sources */,
+				D3579BCF6C36618757E73EC3 /* http_response.c in Sources */,
+				B54AFFDB154322B7186088F9 /* httpd.c in Sources */,
+				316D81C697C100F5249FB311 /* llhttp.c in Sources */,
+				92576DC5CD7E56C7BB1D70F3 /* logger.c in Sources */,
+				6A8675548ADC676E0D85B7EC /* mirror_buffer.c in Sources */,
+				C84326580F1A6EB317B32313 /* modified_md5.c in Sources */,
+				6AC9812C3D36C511F816D191 /* netutils.c in Sources */,
+				886A8D209F1D539E04D12183 /* omg_hax.c in Sources */,
+				24206702FECF34EB205D0F3C /* pairing.c in Sources */,
+				01ADA372549B42BF71EFE67F /* playfair.c in Sources */,
+				0A5964DAE2F54DAE4DFB4BAE /* raop.c in Sources */,
+				CA0D878FC1F9AC19825525EA /* raop_buffer.c in Sources */,
+				35406EC40B1268B87EE702F9 /* raop_ntp.c in Sources */,
+				A305AF64620DC0BFCA138486 /* raop_rtp.c in Sources */,
+				C23CF891CCB4BF5528AAD487 /* raop_rtp_mirror.c in Sources */,
+				588FBE73CD85B2D019EF0718 /* sap_hash.c in Sources */,
+				8BF66C8518D69B4701A22109 /* srp.c in Sources */,
+				5E0E368DAEF911C2BEE00682 /* utils.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7CD310A6C7A97E633533CF35 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EB177092EDC0B26787F0AD8D /* AppDelegate.swift in Sources */,
+				5157B6EBE2F0CD2F96C24C17 /* BonjourRegistrar.swift in Sources */,
+				5DFD0E792C7736D00A05B772 /* NetworkInfo.swift in Sources */,
+				8989704DBAEC199C3736117C /* ReceiverController.swift in Sources */,
+				97040FD032E88335EC715226 /* ReceiverWindow.swift in Sources */,
+				81F86DEA98B8448A049F1F62 /* StatusItemController.swift in Sources */,
+				5D0BC2F8D4224F61E7B673AE /* UxPlayBridge.swift in Sources */,
+				EE5F699A648E2CA1B89EC506 /* main.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		73F6AA085B30CBD2DBBFC857 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 58AEB48FA16BF1CF5EFEA10E /* UxPlayLib */;
+			targetProxy = F956C8AC0EE1F9CC5B0D8449 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		2051B5642EB1E1502E74EEEA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = "NOHOLD=1 PLIST_210=1 PLIST_230=1";
+				GCC_WARN_INHIBIT_ALL_WARNINGS = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(UXPLAY_SRC)/lib",
+					"$(UXPLAY_SRC)/lib/playfair",
+					"$(UXPLAY_SRC)/lib/llhttp",
+				);
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				OTHER_CFLAGS = "-O2 -fno-common -idirafter $(AIRTV_DEPS_PREFIX)/include";
+				PRODUCT_BUNDLE_IDENTIFIER = net.iadev.UxPlayLib;
+				PRODUCT_NAME = uxplaylib;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		2476E0AACCB2AC9360E382A5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = "NOHOLD=1 PLIST_210=1 PLIST_230=1";
+				GCC_WARN_INHIBIT_ALL_WARNINGS = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(UXPLAY_SRC)/lib",
+					"$(UXPLAY_SRC)/lib/playfair",
+					"$(UXPLAY_SRC)/lib/llhttp",
+				);
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				OTHER_CFLAGS = "-O2 -fno-common -idirafter $(AIRTV_DEPS_PREFIX)/include";
+				PRODUCT_BUNDLE_IDENTIFIER = net.iadev.UxPlayLib;
+				PRODUCT_NAME = uxplaylib;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		30F750C7C106389381553036 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = AirTVDisplay/AirTVDisplay.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_DEBUG_DYLIB = NO;
+				ENABLE_HARDENED_RUNTIME = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(UXPLAY_SRC)/lib",
+					"$(UXPLAY_SRC)/lib/playfair",
+					"$(UXPLAY_SRC)/lib/llhttp",
+				);
+				INFOPLIST_FILE = AirTVDisplay/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				LD_RUNTIME_SEARCH_PATHS = (
+					"@executable_path/../Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(AIRTV_DEPS_PREFIX)/lib",
+				);
+				OTHER_LDFLAGS = (
+					"$(AIRTV_DEPS_PREFIX)/lib/libplist-2.0.a",
+					"-lcrypto",
+					"-ObjC",
+				);
+				OTHER_SWIFT_FLAGS = "-Xcc -idirafter -Xcc $(AIRTV_DEPS_PREFIX)/include";
+				PRODUCT_BUNDLE_IDENTIFIER = net.iadev.AirTVDisplay;
+				PRODUCT_NAME = AirTVDisplay;
+				SDKROOT = macosx;
+				SWIFT_OBJC_BRIDGING_HEADER = "AirTVDisplay/AirTVDisplay-Bridging-Header.h";
+			};
+			name = Release;
+		};
+		40F5CBE53A06B5DE5C7B09DF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				AIRTV_DEPS_PREFIX = "$(HOME)/.cache/m0-mamba/root/envs/ux";
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Manual;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				UXPLAY_SRC = "$(SRCROOT)/thirdparty/UxPlay";
+			};
+			name = Debug;
+		};
+		4E3E4934472907185A2EF16C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = AirTVDisplay/AirTVDisplay.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_DEBUG_DYLIB = NO;
+				ENABLE_HARDENED_RUNTIME = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(UXPLAY_SRC)/lib",
+					"$(UXPLAY_SRC)/lib/playfair",
+					"$(UXPLAY_SRC)/lib/llhttp",
+				);
+				INFOPLIST_FILE = AirTVDisplay/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				LD_RUNTIME_SEARCH_PATHS = (
+					"@executable_path/../Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(AIRTV_DEPS_PREFIX)/lib",
+				);
+				OTHER_LDFLAGS = (
+					"$(AIRTV_DEPS_PREFIX)/lib/libplist-2.0.a",
+					"-lcrypto",
+					"-ObjC",
+				);
+				OTHER_SWIFT_FLAGS = "-Xcc -idirafter -Xcc $(AIRTV_DEPS_PREFIX)/include";
+				PRODUCT_BUNDLE_IDENTIFIER = net.iadev.AirTVDisplay;
+				PRODUCT_NAME = AirTVDisplay;
+				SDKROOT = macosx;
+				SWIFT_OBJC_BRIDGING_HEADER = "AirTVDisplay/AirTVDisplay-Bridging-Header.h";
+			};
+			name = Debug;
+		};
+		4F07443F711B0502DB45A925 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				AIRTV_DEPS_PREFIX = "$(HOME)/.cache/m0-mamba/root/envs/ux";
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Manual;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				UXPLAY_SRC = "$(SRCROOT)/thirdparty/UxPlay";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		9535467E6A095B067EB99F1B /* Build configuration list for PBXNativeTarget "UxPlayLib" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2051B5642EB1E1502E74EEEA /* Debug */,
+				2476E0AACCB2AC9360E382A5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		DDA37514EA9313DBB86B2270 /* Build configuration list for PBXProject "AirTVDisplay" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				40F5CBE53A06B5DE5C7B09DF /* Debug */,
+				4F07443F711B0502DB45A925 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		E19155D8B18F0E7276FEB7B7 /* Build configuration list for PBXNativeTarget "AirTVDisplay" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4E3E4934472907185A2EF16C /* Debug */,
+				30F750C7C106389381553036 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 7903EE8B560FC015B9975099 /* Project object */;
+}

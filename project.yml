@@ -1,0 +1,104 @@
+name: AirTVDisplay
+options:
+  bundleIdPrefix: net.iadev
+  deploymentTarget:
+    macOS: "13.0"
+  createIntermediateGroups: true
+settings:
+  base:
+    # Single variable for the third-party dependency location (OpenSSL + libplist).
+    # Spike value: the micromamba env from M0. Repoint with:
+    #   xcodebuild ... AIRTV_DEPS_PREFIX=/other/prefix
+    AIRTV_DEPS_PREFIX: $(HOME)/.cache/m0-mamba/root/envs/ux
+    UXPLAY_SRC: $(SRCROOT)/thirdparty/UxPlay
+    SWIFT_VERSION: "5.0"
+    CODE_SIGN_IDENTITY: "-"
+    CODE_SIGN_STYLE: Manual
+targets:
+  UxPlayLib:
+    type: library.static
+    platform: macOS
+    sources:
+      - path: thirdparty/UxPlay/lib
+        includes:
+          - "*.c"
+          - "*.h"
+          - "playfair/*.c"
+          - "playfair/*.h"
+          - "llhttp/*.c"
+          - "llhttp/*.h"
+          - "dns_sd/dns_sd.c"
+    settings:
+      base:
+        PRODUCT_NAME: uxplaylib
+        GCC_PREPROCESSOR_DEFINITIONS: "NOHOLD=1 PLIST_210=1 PLIST_230=1"
+        HEADER_SEARCH_PATHS:
+          - $(UXPLAY_SRC)/lib
+          - $(UXPLAY_SRC)/lib/playfair
+          - $(UXPLAY_SRC)/lib/llhttp
+        # Vendored third-party C: do not fail on its warnings.
+        GCC_WARN_INHIBIT_ALL_WARNINGS: YES
+        # -idirafter (not -I): the env include dir carries ncurses headers that shadow system ones.
+        OTHER_CFLAGS: "-O2 -fno-common -idirafter $(AIRTV_DEPS_PREFIX)/include"
+        SKIP_INSTALL: YES
+  AirTVDisplay:
+    type: application
+    platform: macOS
+    sources:
+      - AirTVDisplay
+    dependencies:
+      - target: UxPlayLib
+        link: true
+    info:
+      path: AirTVDisplay/Info.plist
+      properties:
+        CFBundleName: Air TV Display
+        CFBundleDisplayName: Air TV Display
+        CFBundleShortVersionString: "0.1"
+        CFBundleVersion: "1"
+        LSMinimumSystemVersion: "13.0"
+        NSPrincipalClass: NSApplication
+        NSLocalNetworkUsageDescription: Air TV Display advertises itself on the local network so Macs and iPhones can AirPlay to it.
+        NSBonjourServices:
+          - _airplay._tcp
+          - _raop._tcp
+    entitlements:
+      path: AirTVDisplay/AirTVDisplay.entitlements
+      properties:
+        # App Sandbox is OFF for the spike (raw sockets, Bonjour, en0 MAC read, and
+        # loading libs from a user cache dir are simpler unsandboxed). Revisit before shipping.
+        com.apple.security.app-sandbox: false
+        com.apple.security.network.server: true
+        com.apple.security.network.client: true
+    postBuildScripts:
+      - name: Embed libcrypto
+        basedOnDependencyAnalysis: false
+        script: |
+          set -e
+          FW="$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH"
+          mkdir -p "$FW"
+          cp -f "$AIRTV_DEPS_PREFIX/lib/libcrypto.3.dylib" "$FW/libcrypto.3.dylib"
+          chmod u+w "$FW/libcrypto.3.dylib"
+          codesign --force --sign - "$FW/libcrypto.3.dylib"
+          codesign --force --sign - "$TARGET_BUILD_DIR/$WRAPPER_NAME"
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: net.iadev.AirTVDisplay
+        PRODUCT_NAME: AirTVDisplay
+        SWIFT_OBJC_BRIDGING_HEADER: AirTVDisplay/AirTVDisplay-Bridging-Header.h
+        ENABLE_HARDENED_RUNTIME: NO
+        HEADER_SEARCH_PATHS:
+          - $(UXPLAY_SRC)/lib
+          - $(UXPLAY_SRC)/lib/playfair
+          - $(UXPLAY_SRC)/lib/llhttp
+        OTHER_SWIFT_FLAGS: "-Xcc -idirafter -Xcc $(AIRTV_DEPS_PREFIX)/include"
+        LIBRARY_SEARCH_PATHS:
+          - $(AIRTV_DEPS_PREFIX)/lib
+        OTHER_LDFLAGS:
+          - $(AIRTV_DEPS_PREFIX)/lib/libplist-2.0.a
+          - -lcrypto
+        # libplist is linked statically. The env has no static libcrypto, so libcrypto.3.dylib is
+        # copied into Contents/Frameworks and re-signed by the postBuild script below.
+        ENABLE_DEBUG_DYLIB: NO
+        LD_RUNTIME_SEARCH_PATHS:
+          - "@executable_path/../Frameworks"

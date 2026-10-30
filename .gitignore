@@ -6,3 +6,7 @@ DerivedData/
 *.xcuserstate
 thirdparty/UxPlay-spike/
 .claude/worktrees/
+
+# xcodegen is checked in; generated project is too, but local user data is not
+*.xcodeproj/xcuserdata/
+*.xcodeproj/project.xcworkspace/xcuserdata/
