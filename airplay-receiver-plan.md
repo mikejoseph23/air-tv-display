@@ -61,8 +61,8 @@ Goal: the iMac app runs fullscreen, presents itself as an Apple‑TV‑class Air
 | M6T — Testing: audio sync | Sonnet | ⏸ Hands‑on deferred (unit done in M6) | — | Hands‑on A/V lip‑sync. |
 | M7 — Extend‑mode verification | Sonnet | ⏸ Hands‑on deferred (no worker; M0 extended by default, M3 `/info` matches stock) | — | Confirm Extend offered & works; tune TXT only if M0 showed it isn't. |
 | M7T — Testing: mirror vs extend | Sonnet | ⏸ Hands‑on deferred | — | Hands‑on with Studio picker. |
-| M8 — Latency & robustness hardening | Opus | 🔵 In Progress | — | End‑to‑end polish, reconnect, drop handling. |
-| M8T — Testing: end‑to‑end | Opus | ⬜ Not Started | — | Full hands‑on workflow over ethernet. |
+| M8 — Latency & robustness hardening | Opus | ✅ Done (phone latency deferred) | 24 | End‑to‑end polish, reconnect, drop handling. |
+| M8T — Testing: end‑to‑end | Opus | ⏸ Hands‑on deferred (see hands-on-checklist.md) | — | Full hands‑on workflow over ethernet. |
 
 > **Model Assignment Guidelines** — *Haiku*: mechanical/boilerplate. *Sonnet*: most feature work, standard well‑defined tasks. *Opus*: complex architecture, ambiguous/undocumented protocol work, realtime systems, and any user‑facing interface design. Wrapping C protocol code and realtime decode qualify for Opus even though there's little "UI."
 
@@ -313,10 +313,10 @@ Make sure macOS offers **Extend**, not just Mirror, against our app — expected
 
 **Worker task list:**
 - [ ] Measure end‑to‑end latency (phone high‑speed capture of click‑to‑movement) and the receiver's own share (RTP arrival → present, from the HUD). Tune queue depth, decode flags and present path; record baseline vs after. **The sender's share is a fixed floor — don't chase it.**
-- [ ] Reconnect handling: sender sleeps/wakes, drops, re‑selects the device without restarting the app.
-- [ ] Graceful handling of a second sender, wrong‑size frames, and WiFi fallback (graceful degradation, not crash).
-- [ ] Idle/sleep: prevent iMac display sleep while streaming; restore after.
-- [ ] Package a first `.app` (bundle, icon, sign — notarize later via the `macos-dmg-notarize` skill if shipping). Revisit the GPL decision here if the app will leave this machine.
+- [x] Reconnect handling: sender sleeps/wakes, drops, re‑selects the device without restarting the app.
+- [x] Graceful handling of a second sender, wrong‑size frames, and WiFi fallback (graceful degradation, not crash).
+- [x] Idle/sleep: prevent iMac display sleep while streaming; restore after.
+- [x] Package a first `.app` (bundle, icon, sign — notarize later via the `macos-dmg-notarize` skill if shipping). Revisit the GPL decision here if the app will leave this machine.
 
 [Return to Top](#air-tv-display--planning-document)
 
@@ -366,6 +366,10 @@ When a milestone returns incomplete, follow‑up prompts must:
 ## Progress Log / Notes
 
 Reverse‑chronological. Newest first.
+
+**2026-10-30 19:20 — Build phase complete; hands-on pass next.** Every milestone's automated work is merged on `main`: **82/82 tests**, Release app at `dist/AirTVDisplay.app` (`scripts/package-app.sh`). Remaining: the deferred hands-on items Mike asked to batch, collected in `hands-on-checklist.md` (repo root). Open checkboxes in M0, M1, M2T, M3, M4, M4T, M5T, M6, M6T, M7, M7T, M8, M8T are all hands-on.
+
+**2026-10-30 19:15 — M8 done, phone latency deferred (Opus, 24 min, merged as 7be0903).** Per-frame timestamps (arrival → decode-out → on-screen) feed `VideoStats` p50/p95, the HUD and logs. **Receiver share cut from 28–34 ms p50 to ~6–7 ms** by making vsync off the default (`AIRTV_VSYNC=1` restores it; tearing not yet judged live). Decode ~2 ms; the first frame ~190 ms (VT session creation). **Fixed a reconnect bug:** a sender that slept without closing TCP would get 409 from its own stale session. Added a feedback watchdog (`AIRTV_RESET_SECONDS`, default 15, like stock `-reset`), a listener restart on `conn_reset`, and a "Reset Connection" menu item. Second sender → 409 like stock (`AIRTV_NOHOLD=1` lets the newcomer take over). Video buffer fuzz test: no crashes. `NWPathMonitor` handles ethernet/Wi-Fi changes. `DisplaySleepGuard` holds a display-sleep assertion while streaming (verified with `pmset`). **A/V sync:** video presents ASAP and audio is delayed by the measured video lag (`AVSync`), with the offset logged every 10 s. Ad-hoc signed Release `.app` with a generated icon and embedded libcrypto; GPL note added to `thirdparty/LICENSES.md`.
 
 **2026-10-30 18:55 — M5T done, hands-on deferred (Sonnet, 8 min, merged as Tests/VideoPathFormatTests.swift).** Audited M5's 10 video tests: they covered only the first access unit for AVCC and never compared SPS/PPS bytes. Added 8 tests: byte-exact AVCC for every unit of both fixtures, format-description SPS/PPS identity, truncated/garbage parameter sets (mid-stream and before the stream starts), and resolution switching at the right unit. No decoder bugs found. Orchestrator: **62/62 tests**.
 
