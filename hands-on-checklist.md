@@ -8,12 +8,12 @@ Everything automated is done on `main`. Run these from the **Mac Studio's work p
 
 ## B. Our app
 
-Stop stock UxPlay first, because it shares our deviceid and key: `pkill -f uxplay` (on the iMac).
+Stop stock UxPlay first, because it shares our deviceid and key: `pkill -9 -f uxplay` (on the iMac; plain `pkill` does not stop it).
 
 Launch: `AIRTV_HUD=1 /Users/michaeljosephwork/git/air-tv-display/dist/AirTVDisplay.app/Contents/MacOS/AirTVDisplay --autostart`
 
 2. **Launch (M2T):** the fullscreen "waiting for AirPlay…" window and the menu-bar item appear. `Esc` quits (relaunch after).
-3. **Listed (M1/M2T):** Studio Control Center → Screen Mirroring lists "Air TV Display".
+3. **Listed (M1/M2T):** Studio Control Center → Screen Mirroring lists "Air TV Display Dev".
 4. **Connect (M3/M4/M4T):** select it. Expected: no PIN, the menu-bar state goes idle → pairing → streaming, and `logs/rtsp.log` shows `GET /info`, `fp-setup` ×2, `SETUP`, `RECORD`, then SPS/PPS/IDR.
 5. **Extend (M7/M7T):** the Studio extends onto the iMac (as stock did). Drag windows across; nothing squished; Mirror is also offered.
 6. **Video (M5/M5T):** move windows. Motion is smooth enough, the HUD shows ~30 fps and a few ms decode, and there's no visible tearing (vsync is off by default; if it tears, retry with `AIRTV_VSYNC=1`).
