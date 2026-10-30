@@ -51,8 +51,8 @@ Goal: the iMac app runs fullscreen, presents itself as an Apple‑TV‑class Air
 | M0 — Stock UxPlay spike | Sonnet | ✅ Done (latency # pending) | 21 + 6 rebuild | **Gate passed.** Studio streams to stock UxPlay, no PIN; macOS extends by default; 1920×1080 h264 @ ~30 fps over ethernet. |
 | M1 — Discovery in our own process | Sonnet | ✅ Done (hands‑on deferred) | 2 | C CLI `tools/discovery-cli/`; Studio `dns-sd` resolves it. Control Center check deferred to end. |
 | M2 — App scaffold + vendored lib build | Sonnet | ✅ Done | 7 | Xcode Swift app, window, signing, UxPlay `lib/` compiling as a static lib. |
-| M2T — Testing: scaffold | Sonnet | ⬜ Not Started | — | Build/launch/unit. |
-| M3 — RTSP + session via library | Opus | ⬜ Not Started | — | Wire `raop_start`/callbacks; sender reaches "connecting". |
+| M2T — Testing: scaffold | Sonnet | 🔵 In Progress | — | Build/launch/unit. |
+| M3 — RTSP + session via library | Opus | 🔵 In Progress | — | Wire `raop_start`/callbacks; sender reaches "connecting". |
 | M4 — Pairing / FairPlay via library | Opus | ⬜ Not Started | — | pair‑setup/verify + fp‑setup through UxPlay code; encrypted video bytes arrive. |
 | M4T — Testing: session + auth | Opus | ⬜ Not Started | — | Mixed: unit + hands‑on pair. |
 | M5 — Video: H.264 decode + present | Opus | ⬜ Not Started | — | VideoToolbox → Metal fullscreen from library NAL callbacks. |
