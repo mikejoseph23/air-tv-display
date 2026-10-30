@@ -54,7 +54,7 @@ Goal: the iMac app runs fullscreen, presents itself as an Apple‑TV‑class Air
 | M2T — Testing: scaffold | Sonnet | ✅ Done (hands‑on deferred) | 5 | Build/launch/unit. |
 | M3 — RTSP + session via library | Opus | ✅ Done (live Studio session deferred) | 22 | Wire `raop_start`/callbacks; sender reaches "connecting". |
 | M4 — Pairing / FairPlay via library | Opus | ✅ Done (live Studio session deferred) | 10 | pair‑setup/verify + fp‑setup through UxPlay code; encrypted video bytes arrive. |
-| M4T — Testing: session + auth | Opus | 🔵 In Progress | — | Mixed: unit + hands‑on pair. |
+| M4T — Testing: session + auth | Opus | ✅ Done (hands‑on deferred) | 16 | Mixed: unit + hands‑on pair. |
 | M5 — Video: H.264 decode + present | Opus | ✅ Done (live mirror deferred) | 14 | VideoToolbox → Metal fullscreen from library NAL callbacks. |
 | M5T — Testing: video path | Sonnet | 🔵 In Progress | — | Unit for assembly; hands‑on for realtime/latency. |
 | M6 — Audio (AAC‑ELD / ALAC) | Sonnet | ✅ Done (A/V wiring → M8, live deferred) | 14 | Library audio callbacks → CoreAudio, synced. |
@@ -215,8 +215,8 @@ Make the Studio complete the session so it actually streams. The handshake moder
 
 **Model: Opus** (nuanced assertions over a live protocol). · **Mode: unit for glue + hands‑on for the real pair.**
 
-- [ ] Unit: Swift callback thunks survive out‑of‑order and repeated `conn_init`/`conn_destroy` (sender reconnects) without leaks or crashes.
-- [ ] Unit: the NAL dump from M4 parses as valid Annex‑B H.264 (SPS/PPS present, no garbage between start codes).
+- [x] Unit: Swift callback thunks survive out‑of‑order and repeated `conn_init`/`conn_destroy` (sender reconnects) without leaks or crashes.
+- [x] Unit: the NAL dump from M4 parses as valid Annex‑B H.264 (SPS/PPS present, no garbage between start codes).
 - [ ] Hands‑on (Mike + Studio): initiate Screen Mirroring from the Studio, watch the app go `idle → pairing → streaming`; confirm decrypted video bytes arrive (log shows H.264 start codes). If it stalls, capture `logs/rtsp.log` tail and report — **do not fabricate success.**
 
 [Return to Top](#air-tv-display--planning-document)
@@ -366,6 +366,8 @@ When a milestone returns incomplete, follow‑up prompts must:
 ## Progress Log / Notes
 
 Reverse‑chronological. Newest first.
+
+**2026-10-30 18:50 — M4T done, hands-on deferred (Opus, 16 min, merged as c725eea).** 10 session tests drive UxPlay's real httpd with real TCP connections (repeated reconnects, out-of-order closes, churn past the 12-connection limit, stop/dealloc with live connections). State machine goes idle → pairing → idle. Address Sanitizer clean, `leaks` clean. Thread Sanitizer flags only vendored `httpd.c:738` vs `:380` (both mutex-guarded in source, likely a false positive; left as is). The stream-dump test feeds both fixtures through `handleVideo`, giving clean Annex-B; ffprobe decodes 90/90 frames. One app change: `StreamDump` self-starts a session if the mirroring-start event never fired. Orchestrator: xcodegen, BUILD OK, **54/54 tests**.
 
 **2026-10-30 18:35 — M5 + M6 done, merged (Opus 14 min / Sonnet 14 min; 040853c, f4f5536).** **M5:** `VideoFormat` (Annex-B→AVCC, format description), `VideoDecoder` (hardware-required VTDecompressionSession, async, realtime, no temporal reordering), `VideoRenderer` (CAMetalLayer, NV12→RGB, aspect-fit, 2 drawables, vsync; `AIRTV_VSYNC`, `AIRTV_DRAWABLES`), param-set change and disconnect → "waiting", `VideoHUD`. Offline: **~1.5 ms decode/frame** vs a 33 ms budget, a 1080p60 stress file played at 59.45 fps, ~1% present drops from the fixture clock vs vsync. Hardware decoder confirmed (VideoToolbox reports hardware on the Radeon Pro 580; can't tell QuickSync from AMD). **M6:** `AudioDecoder` (AAC-ELD/ALAC via AudioConverter), `AudioRenderer` + `AudioScheduler` placing packets on the NTP-derived host timeline (25 ms jitter absorb, silence pad, resync >400 ms), volume per stock UxPlay's dB mapping, flush/stop on conn_destroy/reset. M6T's unit decode test done. **Gap:** the A/V contract (`AudioClock.hostNanos(forNTPLocal:)` + `audioTimelineShiftNanos`) is exposed but video presents ASAP and doesn't consume it, so lip sync isn't wired. Folded into M8. Orchestrator: union-merged `project.yml`, xcodegen, BUILD OK, **41/41 tests**. Also note: M4's `PairingFairPlayTests.accessUnits` yields slices, not whole frames (fixtures have 8 slices/frame); use `VideoFormat.accessUnits(fromAnnexB:)`.
 
