@@ -55,9 +55,9 @@ Goal: the iMac app runs fullscreen, presents itself as an Apple‑TV‑class Air
 | M3 — RTSP + session via library | Opus | ✅ Done (live Studio session deferred) | 22 | Wire `raop_start`/callbacks; sender reaches "connecting". |
 | M4 — Pairing / FairPlay via library | Opus | ✅ Done (live Studio session deferred) | 10 | pair‑setup/verify + fp‑setup through UxPlay code; encrypted video bytes arrive. |
 | M4T — Testing: session + auth | Opus | 🔵 In Progress | — | Mixed: unit + hands‑on pair. |
-| M5 — Video: H.264 decode + present | Opus | 🔵 In Progress | — | VideoToolbox → Metal fullscreen from library NAL callbacks. |
+| M5 — Video: H.264 decode + present | Opus | ✅ Done (live mirror deferred) | 14 | VideoToolbox → Metal fullscreen from library NAL callbacks. |
 | M5T — Testing: video path | Sonnet | ⬜ Not Started | — | Unit for assembly; hands‑on for realtime/latency. |
-| M6 — Audio (AAC‑ELD / ALAC) | Sonnet | 🔵 In Progress | — | Library audio callbacks → CoreAudio, synced. |
+| M6 — Audio (AAC‑ELD / ALAC) | Sonnet | ✅ Done (A/V wiring → M8, live deferred) | 14 | Library audio callbacks → CoreAudio, synced. |
 | M6T — Testing: audio sync | Sonnet | ⬜ Not Started | — | Hands‑on A/V lip‑sync. |
 | M7 — Extend‑mode verification | Sonnet | ⬜ Not Started | — | Confirm Extend offered & works; tune TXT only if M0 showed it isn't. |
 | M7T — Testing: mirror vs extend | Sonnet | ⬜ Not Started | — | Hands‑on with Studio picker. |
@@ -230,11 +230,11 @@ Make the Studio complete the session so it actually streams. The handshake moder
 Turn the decrypted H.264 from the `video_process` callback into frames on screen.
 
 **Worker task list:**
-- [ ] Convert Annex‑B NALs to AVCC and build `CMFormatDescription` from the SPS/PPS the callback delivers (UxPlay passes parameter sets on stream start and change).
-- [ ] `VTDecompressionSession` (VideoToolbox, hardware via QuickSync), async output, `kVTDecodeFrame_EnableAsynchronousDecompression`, frame reordering off where the stream allows.
-- [ ] Present decoded `CVPixelBuffer`s in a Metal layer filling the fullscreen window (M2). Keep the queue depth at 1–2 frames; drop late frames rather than queue.
-- [ ] Handle resolution/parameter‑set changes mid‑stream and sender disconnect (return to "waiting…" view).
-- [ ] Simple perf HUD (toggleable): fps, decode ms/frame, dropped frames, queue depth.
+- [x] Convert Annex‑B NALs to AVCC and build `CMFormatDescription` from the SPS/PPS the callback delivers (UxPlay passes parameter sets on stream start and change).
+- [x] `VTDecompressionSession` (VideoToolbox, hardware via QuickSync), async output, `kVTDecodeFrame_EnableAsynchronousDecompression`, frame reordering off where the stream allows.
+- [x] Present decoded `CVPixelBuffer`s in a Metal layer filling the fullscreen window (M2). Keep the queue depth at 1–2 frames; drop late frames rather than queue.
+- [x] Handle resolution/parameter‑set changes mid‑stream and sender disconnect (return to "waiting…" view).
+- [x] Simple perf HUD (toggleable): fps, decode ms/frame, dropped frames, queue depth.
 
 > **Worker Completion Requirement:** complete ALL items. Realtime on the i7‑7700K is the bar — a slide‑show frame rate is a finding, not a pass.
 
@@ -261,9 +261,9 @@ Turn the decrypted H.264 from the `video_process` callback into frames on screen
 Mirroring sessions carry audio inside the same session; UxPlay's `audio_process` callback delivers decrypted frames (AAC‑ELD for mirroring, ALAC for audio‑only RAOP). No shairport‑sync needed.
 
 **Worker task list:**
-- [ ] Decode AAC‑ELD / ALAC via `AudioConverter` / AudioToolbox to PCM.
+- [x] Decode AAC‑ELD / ALAC via `AudioConverter` / AudioToolbox to PCM.
 - [ ] Play via CoreAudio (`AudioQueue` or `AVAudioEngine`), time‑aligned to video using the RTP timestamps UxPlay provides.
-- [ ] Respect `audio_set_volume` / mute; handle start/stop/flush cleanly.
+- [x] Respect `audio_set_volume` / mute; handle start/stop/flush cleanly.
 
 [Return to Top](#air-tv-display--planning-document)
 
@@ -273,7 +273,7 @@ Mirroring sessions carry audio inside the same session; UxPlay's `audio_process`
 
 **Model: Sonnet** · **Mode: hands‑on (A/V sync can't be asserted by unit tests reliably).**
 
-- [ ] Unit: AAC‑ELD/ALAC decode of a fixture produces expected PCM length/format.
+- [x] Unit: AAC‑ELD/ALAC decode of a fixture produces expected PCM length/format.
 - [ ] Hands‑on (Mike): play a video with speech on the Studio mirrored to the iMac; lips and audio in sync (no drift over 60s); audio stops when the stream stops. State the expected result for each.
 
 [Return to Top](#air-tv-display--planning-document)
@@ -366,6 +366,8 @@ When a milestone returns incomplete, follow‑up prompts must:
 ## Progress Log / Notes
 
 Reverse‑chronological. Newest first.
+
+**2026-10-30 18:35 — M5 + M6 done, merged (Opus 14 min / Sonnet 14 min; 040853c, f4f5536).** **M5:** `VideoFormat` (Annex-B→AVCC, format description), `VideoDecoder` (hardware-required VTDecompressionSession, async, realtime, no temporal reordering), `VideoRenderer` (CAMetalLayer, NV12→RGB, aspect-fit, 2 drawables, vsync; `AIRTV_VSYNC`, `AIRTV_DRAWABLES`), param-set change and disconnect → "waiting", `VideoHUD`. Offline: **~1.5 ms decode/frame** vs a 33 ms budget, a 1080p60 stress file played at 59.45 fps, ~1% present drops from the fixture clock vs vsync. Hardware decoder confirmed (VideoToolbox reports hardware on the Radeon Pro 580; can't tell QuickSync from AMD). **M6:** `AudioDecoder` (AAC-ELD/ALAC via AudioConverter), `AudioRenderer` + `AudioScheduler` placing packets on the NTP-derived host timeline (25 ms jitter absorb, silence pad, resync >400 ms), volume per stock UxPlay's dB mapping, flush/stop on conn_destroy/reset. M6T's unit decode test done. **Gap:** the A/V contract (`AudioClock.hostNanos(forNTPLocal:)` + `audioTimelineShiftNanos`) is exposed but video presents ASAP and doesn't consume it, so lip sync isn't wired. Folded into M8. Orchestrator: union-merged `project.yml`, xcodegen, BUILD OK, **41/41 tests**. Also note: M4's `PairingFairPlayTests.accessUnits` yields slices, not whole frames (fixtures have 8 slices/frame); use `VideoFormat.accessUnits(fromAnnexB:)`.
 
 **2026-10-30 18:10 — M4 done, live session deferred (Opus, 10 min, commit e249268).** Ed25519 key kept on UxPlay's deterministic scheme (seeded from the en0 deviceid), equal to stock's M0 `pk`, so no key file is needed; tests prove it's stable across start/stop. **Replayed M0's `fp-setup` and FairPlay key decrypt against our process: byte-for-byte match with stock.** `RaopServer.handleVideo` validates Annex-B, flags UxPlay's failed-decrypt marker, logs the first NALs and SPS/PPS/IDR. `AnnexB.swift` parser; `AIRTV_DUMP_SECONDS=N` dumps to `logs/stream.h264` (`scripts/ffprobe-stream.sh`). `ReceiverState.swift` drives idle → pairing → streaming (streaming = first decrypted frame). Synthetic fixtures `Tests/Fixtures/synthetic-1080p.h264` and `synthetic-res-change.h264` for M5. Orchestrator re-ran 14/14 tests. Pair-setup/verify checkbox stays open: fp-setup is verified by replay, but the full live sequence needs the Studio.
 
