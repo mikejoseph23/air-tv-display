@@ -49,8 +49,8 @@ Goal: the iMac app runs fullscreen, presents itself as an Apple‑TV‑class Air
 | Milestone | Model | Status | Duration (min) | Notes |
 |-----------|-------|--------|----------------|-------|
 | M0 — Stock UxPlay spike | Sonnet | ✅ Done (latency # pending) | 21 + 6 rebuild | **Gate passed.** Studio streams to stock UxPlay, no PIN; macOS extends by default; 1920×1080 h264 @ ~30 fps over ethernet. |
-| M1 — Discovery in our own process | Sonnet | ⬜ Not Started | — | Register UxPlay's TXT via `DNSServiceRegister`; Studio lists us. |
-| M2 — App scaffold + vendored lib build | Sonnet | ⬜ Not Started | — | Xcode Swift app, window, signing, UxPlay `lib/` compiling as a static lib. |
+| M1 — Discovery in our own process | Sonnet | ✅ Done (hands‑on deferred) | 2 | C CLI `tools/discovery-cli/`; Studio `dns-sd` resolves it. Control Center check deferred to end. |
+| M2 — App scaffold + vendored lib build | Sonnet | 🔵 In Progress | — | Xcode Swift app, window, signing, UxPlay `lib/` compiling as a static lib. |
 | M2T — Testing: scaffold | Sonnet | ⬜ Not Started | — | Build/launch/unit. |
 | M3 — RTSP + session via library | Opus | ⬜ Not Started | — | Wire `raop_start`/callbacks; sender reaches "connecting". |
 | M4 — Pairing / FairPlay via library | Opus | ⬜ Not Started | — | pair‑setup/verify + fp‑setup through UxPlay code; encrypted video bytes arrive. |
@@ -124,10 +124,10 @@ Run an existing, working AirPlay receiver on the iMac and point the Studio at it
 Reproduce M0's discovery from code we control, before the app exists. A partial `dns-sd -R` spike already ran this session.
 
 **Worker task list:**
-- [ ] Register `_airplay._tcp` and `_raop._tcp` via `DNSServiceRegister` (small C or Swift CLI) with the **TXT record captured from UxPlay in M0**, byte‑for‑byte, substituting our own `deviceid` (derived from en0 MAC, stable across launches) and name. Same port UxPlay used.
-- [ ] On the Studio: `dns-sd -B _airplay._tcp local.` and `dns-sd -L` show the instance with the intended TXT. Capture output.
+- [x] Register `_airplay._tcp` and `_raop._tcp` via `DNSServiceRegister` (small C or Swift CLI) with the **TXT record captured from UxPlay in M0**, byte‑for‑byte, substituting our own `deviceid` (derived from en0 MAC, stable across launches) and name. Same port UxPlay used.
+- [x] On the Studio: `dns-sd -B _airplay._tcp local.` and `dns-sd -L` show the instance with the intended TXT. Capture output.
 - [ ] Control Center → Screen Mirroring lists it (Mike confirms). Selecting it will fail (no RTSP yet) — record how it fails; it's a baseline for M3.
-- [ ] Append the working registration recipe to `docs/discovery-findings.md`.
+- [x] Append the working registration recipe to `docs/discovery-findings.md`.
 
 **Definition of done:** Studio lists our own process in Screen Mirroring with the M0 TXT.
 
@@ -366,6 +366,8 @@ When a milestone returns incomplete, follow‑up prompts must:
 ## Progress Log / Notes
 
 Reverse‑chronological. Newest first.
+
+**2026-10-30 17:20 — M1 done, hands-on deferred (Sonnet, ~2 min, commit 1269ee4).** `tools/discovery-cli/discovery-cli.c` registers `_airplay._tcp` + `_raop._tcp` via `DNSServiceRegister` with UxPlay's TXT, en0-derived deviceid, name/port as args. Studio `dns-sd -B/-L` resolves "Air TV Display M1" (port 7100) alongside stock UxPlay despite the shared deviceid. Generated its own `pk`/`pi` (UxPlay's pk is its Ed25519 public key; **M4 must advertise the real pairing key**). Mike said to skip human gates until the end; the Control Center listing check is on the deferred list. Binary untracked (72edf1d).
 
 **2026-10-30 17:05 — M0 gate PASSED (orchestrator + Mike hands-on).** Rebuilt UxPlay 1.74 in the work profile (Sonnet worker, ~6 min, no commit; recipe needs `zlib` in the micromamba env). iMac now on gigabit ethernet (`en0` 192.168.50.250), Wi-Fi off. From the Studio's work profile: listed in Screen Mirroring, selecting it **streamed instantly with no PIN**, and macOS **extended the desktop by default** (no Displays toggle needed). Log: `GET /info` → `fp-setup` ×2 → `SETUP` → `RECORD` → `/feedback`; no pair-setup/verify for this `pw=false` receiver; stream 1920×1080 h264, maxFPS 30. **M7 stays Sonnet, verification only.** Latency estimate still to come from Mike; the latency checkbox stays open. Next: Group A (M1 + M2 in parallel, Sonnet).
 
