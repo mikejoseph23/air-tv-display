@@ -20,6 +20,7 @@
 		24206702FECF34EB205D0F3C /* pairing.c in Sources */ = {isa = PBXBuildFile; fileRef = C2E2953EC8E7267DAC531CCB /* pairing.c */; };
 		290437EB6FD279CBB97AB323 /* byteutils.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 489CA60284E4C4BA7EE8796E /* byteutils.h */; };
 		2970314F272FA15AB4D1D5CC /* netutils.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = A3AA4CD9785E879B5A5E78D6 /* netutils.h */; };
+		2B2720AD33F8E5D7153DA79D /* RtspLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10EE1B2297EF8A5D7272134B /* RtspLog.swift */; };
 		316D81C697C100F5249FB311 /* llhttp.c in Sources */ = {isa = PBXBuildFile; fileRef = 3A1EF12EE13D7753A2CD3BBD /* llhttp.c */; };
 		35406EC40B1268B87EE702F9 /* raop_ntp.c in Sources */ = {isa = PBXBuildFile; fileRef = B914E50073D7FBD622A0F0E7 /* raop_ntp.c */; };
 		3918F71217D7CCDD1DA7B6F7 /* raop_buffer.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 260EC25BE4A5294F5D9D6879 /* raop_buffer.h */; };
@@ -48,6 +49,7 @@
 		886A8D209F1D539E04D12183 /* omg_hax.c in Sources */ = {isa = PBXBuildFile; fileRef = C2844F5A6FBD6635C794AC52 /* omg_hax.c */; };
 		8989704DBAEC199C3736117C /* ReceiverController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76176648ABBBAE4AE2183C85 /* ReceiverController.swift */; };
 		8BF66C8518D69B4701A22109 /* srp.c in Sources */ = {isa = PBXBuildFile; fileRef = AA44A058A810852119069DE9 /* srp.c */; };
+		8D5714B687BAA07243E64F11 /* RaopServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBCB9F83DCD55ABF3B6F359D /* RaopServer.swift */; };
 		8D67DEA4C8A504273F76E30F /* http_handlers.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 01A7E5D9A3F8A79C627A0CBC /* http_handlers.h */; };
 		8EA2A567ADD90AC4CA6177C4 /* airplay_video.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = C074359F906E9F8498340202 /* airplay_video.h */; };
 		91D27DBC4C4AFBD3CE636CA7 /* crypto.c in Sources */ = {isa = PBXBuildFile; fileRef = F90AA0A3BAE14106D29C3EC6 /* crypto.c */; };
@@ -571,6 +573,8 @@
 				0AA8E88251A1CDAD9735D73D /* BonjourTXTTests.swift in Sources */,
 				817536A9A94C7F9BFD2119DC /* NetworkInfo.swift in Sources */,
 				94F721BF62FC0680816A2ADB /* NetworkInfoTests.swift in Sources */,
+				8D5714B687BAA07243E64F11 /* RaopServer.swift in Sources */,
+				2B2720AD33F8E5D7153DA79D /* RtspLog.swift in Sources */,
 				D607D1C8F29967E8F3D9A2DA /* UxPlayBridge.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

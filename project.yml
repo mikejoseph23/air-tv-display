@@ -112,6 +112,8 @@ targets:
       - AirTVDisplay/NetworkInfo.swift
       - AirTVDisplay/BonjourRegistrar.swift
       - AirTVDisplay/UxPlayBridge.swift
+      - AirTVDisplay/RaopServer.swift
+      - AirTVDisplay/RtspLog.swift
     dependencies:
       - target: UxPlayLib
         link: true
