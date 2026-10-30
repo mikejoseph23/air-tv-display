@@ -48,7 +48,7 @@ Goal: the iMac app runs fullscreen, presents itself as an Apple‑TV‑class Air
 
 | Milestone | Model | Status | Duration (min) | Notes |
 |-----------|-------|--------|----------------|-------|
-| M0 — Stock UxPlay spike | Sonnet | ⬜ Not Started | — | **Go/no‑go gate.** Build/run UxPlay on iMac; mirror + extend from Studio; record findings. |
+| M0 — Stock UxPlay spike | Sonnet | 🟡 Partial — awaiting hands‑on | 21 | **Go/no‑go gate.** UxPlay 1.74 built from source, running, discoverable on iMac. Studio‑side checks (Control Center, pairing, Extend, res/latency) pending Mike. |
 | M1 — Discovery in our own process | Sonnet | ⬜ Not Started | — | Register UxPlay's TXT via `DNSServiceRegister`; Studio lists us. |
 | M2 — App scaffold + vendored lib build | Sonnet | ⬜ Not Started | — | Xcode Swift app, window, signing, UxPlay `lib/` compiling as a static lib. |
 | M2T — Testing: scaffold | Sonnet | ⬜ Not Started | — | Build/launch/unit. |
@@ -100,14 +100,14 @@ Goal: the iMac app runs fullscreen, presents itself as an Apple‑TV‑class Air
 Run an existing, working AirPlay receiver on the iMac and point the Studio at it. Everything downstream depends on what this shows.
 
 **Worker task list:**
-- [ ] Install UxPlay on the iMac: `brew install uxplay` if the formula is current, otherwise clone https://github.com/FDH2/UxPlay and build per its macOS instructions (`brew install openssl libplist gstreamer` + CMake). Record the version/commit.
-- [ ] Run `uxplay -n "Air TV Display" -fs` (fullscreen) with verbose logging (`-d`). Capture the TXT record it registers: `dns-sd -L "Air TV Display" _airplay._tcp local.` — **this is our template**, not the Studio's.
+- [x] Install UxPlay on the iMac: `brew install uxplay` if the formula is current, otherwise clone https://github.com/FDH2/UxPlay and build per its macOS instructions (`brew install openssl libplist gstreamer` + CMake). Record the version/commit.
+- [x] Run `uxplay -n "Air TV Display" -fs` (fullscreen) with verbose logging (`-d`). Capture the TXT record it registers: `dns-sd -L "Air TV Display" _airplay._tcp local.` — **this is our template**, not the Studio's.
 - [ ] On the **Mac Studio** (SSH `michaeljosephwork@Mac-Studio.local`): `dns-sd -B _airplay._tcp local.` shows the instance. Then (Mike) Control Center → Screen Mirroring: is it listed?
 - [ ] Select it. Record exactly what happens: pairing prompt? PIN? instant stream? error text? Capture UxPlay's log of the RTSP exchange to `docs/m0-uxplay-session.log`.
 - [ ] If video flows: in System Settings → Displays, is **"Use As Separate Display"** offered? Select it and confirm the iMac becomes an independent desktop.
 - [ ] Record the **stream resolution and frame rate** UxPlay reports (expect 1920×1080) and a rough **latency** estimate (phone video of a cursor move, or clap test) over gigabit ethernet.
-- [ ] Note any flags UxPlay needed for Sequoia (`-pk`, `-pin`, `-reg`, feature overrides) — these must carry into M1.
-- [ ] Write `docs/discovery-findings.md`: TXT record, handshake sequence observed, Mirror/Extend availability, resolution, latency, flags. **Update the Summary's expectations if reality differs.**
+- [x] Note any flags UxPlay needed for Sequoia (`-pk`, `-pin`, `-reg`, feature overrides) — these must carry into M1.
+- [x] Write `docs/discovery-findings.md`: TXT record, handshake sequence observed, Mirror/Extend availability, resolution, latency, flags. **Update the Summary's expectations if reality differs.**
 
 **Definition of done:** Studio streams video to stock UxPlay on the iMac, and we know whether Extend is offered. **Definition of a finding:** UxPlay is not listed or cannot pair → investigate (Bonjour on the VLAN, firewall, UxPlay version, Sequoia changes) and **stop for a planning check‑in** before M1. If UxPlay itself can't make Sequoia stream, no amount of wrapper code will.
 
@@ -366,6 +366,8 @@ When a milestone returns incomplete, follow‑up prompts must:
 ## Progress Log / Notes
 
 Reverse‑chronological. Newest first.
+
+**2026-10-30 15:55 — M0 partial (worker, Sonnet, 21 min, commit 30662ef).** No Homebrew `uxplay` formula and brew is not writable by this user (no sudo), so **UxPlay 1.74 (commit 534e2cc) was built from source** under `thirdparty/UxPlay-spike/` (uncommitted) using a micromamba toolchain (GStreamer 1.28, OpenSSL) and a hand‑built libplist 2.8.0. It is **running in the background** (`docs/run-uxplay-spike.sh`, log `docs/m0-uxplay-session.log`), advertised as **"Air TV Display@Mikes‑iMac"** (UxPlay appends the hostname) on random port 49333, `model=AppleTV3,2 features=0x527FFEE6,0x0`. Both `_airplay._tcp` and `_raop._tcp` TXT records captured verbatim in `docs/discovery-findings.md`. iMac‑side Bonjour works; firewall off. **Blocked:** SSH to the Studio failed on an unknown host key (worker correctly did not auto‑accept), so Studio‑side `dns-sd` is unchecked. **Pending hands‑on (Mike):** Control Center listing, pairing behaviour, "Use As Separate Display", resolution/fps, latency. Flags: `-fs` is ineffective on macOS; README recommends `-vsync no`; `-pin`/`-reg` only if pairing demands. No Sequoia‑specific caveats found. **Open question for M7:** UxPlay's feature bits are far narrower than the Studio's own, so Extend is not assured. Gate not yet passed. Session paused by request; resuming in an Opus orchestrator.
 
 **2026-10-30 (plan review)** — Plan revised after review. **Added M0: run stock UxPlay first** as the go/no‑go gate so every protocol unknown is answered before code exists. Switched the backbone from RPiPlay (unmaintained) to **UxPlay** and reframed M3–M6 as *wrapping its `lib/`* rather than porting protocol code; dropped shairport‑sync (audio rides inside the mirroring session). Corrected the auth description: modern senders need `pair-setup`/`pair-verify` (Ed25519/Curve25519) then FairPlay `fp-setup`; the earlier "avoid Ed25519" framing was wrong, as was "AES‑127" (it's AES‑128‑CBC). Corrected licensing: UxPlay/RPiPlay are GPLv3, shairport‑sync is largely MIT — verify on vendoring. Demoted the Studio's TXT record to reference‑only (it describes an AirPlay‑2/HomeKit receiver, the path we avoid); our template is UxPlay's Apple‑TV‑style record. Added **expectations** to the Summary: 1080p stream, sender‑bound latency floor, Extend likely a sender‑side choice (M7 demoted to verification). M2 moved Haiku → Sonnet (C/C++ build integration isn't boilerplate). Noted alternative: if the goal is only a second monitor for the Studio, Luna Display / Duet give higher resolution and lower latency off the shelf.
 
