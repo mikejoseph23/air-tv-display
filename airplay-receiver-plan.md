@@ -53,7 +53,7 @@ Goal: the iMac app runs fullscreen, presents itself as an Apple‑TV‑class Air
 | M2 — App scaffold + vendored lib build | Sonnet | ✅ Done | 7 | Xcode Swift app, window, signing, UxPlay `lib/` compiling as a static lib. |
 | M2T — Testing: scaffold | Sonnet | ✅ Done (hands‑on deferred) | 5 | Build/launch/unit. |
 | M3 — RTSP + session via library | Opus | ✅ Done (live Studio session deferred) | 22 | Wire `raop_start`/callbacks; sender reaches "connecting". |
-| M4 — Pairing / FairPlay via library | Opus | 🔵 In Progress | — | pair‑setup/verify + fp‑setup through UxPlay code; encrypted video bytes arrive. |
+| M4 — Pairing / FairPlay via library | Opus | ✅ Done (live Studio session deferred) | 10 | pair‑setup/verify + fp‑setup through UxPlay code; encrypted video bytes arrive. |
 | M4T — Testing: session + auth | Opus | ⬜ Not Started | — | Mixed: unit + hands‑on pair. |
 | M5 — Video: H.264 decode + present | Opus | ⬜ Not Started | — | VideoToolbox → Metal fullscreen from library NAL callbacks. |
 | M5T — Testing: video path | Sonnet | ⬜ Not Started | — | Unit for assembly; hands‑on for realtime/latency. |
@@ -197,10 +197,10 @@ Bring up UxPlay's RTSP server (`raop_start`) inside the app and connect its call
 Make the Studio complete the session so it actually streams. The handshake modern senders require is **`POST /pair-setup` + `POST /pair-verify` (Ed25519 identity, Curve25519 ECDH, ChaCha20‑Poly1305 verify) followed by `POST /fp-setup` (FairPlay SAP, the m1→m4 exchange)**, then `SETUP` delivers the encrypted AES‑128‑CBC session key (`ekey`/`eiv`) FairPlay unwraps. All of this exists in UxPlay's `lib/` (pairing.c, fairplay_playfair.c, crypto/). This milestone makes sure it runs correctly in our process.
 
 **Worker task list:**
-- [ ] Generate and **persist** the receiver's Ed25519 keypair (UxPlay derives it from the hardware address; keep that or store in Application Support) so the Studio doesn't see a "new" device every launch.
+- [x] Generate and **persist** the receiver's Ed25519 keypair (UxPlay derives it from the hardware address; keep that or store in Application Support) so the Studio doesn't see a "new" device every launch.
 - [ ] Verify `pair-setup` / `pair-verify` / `fp-setup` complete in our process (log shows the same sequence as M0). If any step fails that succeeded in M0, diff the environment (OpenSSL version, endianness assumptions, missing `pk` in TXT).
-- [ ] Confirm `video_process` begins receiving **decrypted** H.264 data (UxPlay's raop_rtp_mirror decrypts before the callback). Log the first NAL types and Annex‑B start codes.
-- [ ] Debug hook: optional dump of the first N seconds of NALs to `logs/stream.h264` for M5 fixtures (and a quick `ffprobe` sanity check).
+- [x] Confirm `video_process` begins receiving **decrypted** H.264 data (UxPlay's raop_rtp_mirror decrypts before the callback). Log the first NAL types and Annex‑B start codes.
+- [x] Debug hook: optional dump of the first N seconds of NALs to `logs/stream.h264` for M5 fixtures (and a quick `ffprobe` sanity check).
 - [ ] Success condition: the **Mac Studio** goes from "connecting" to streaming decrypted video bytes into our callback.
 
 > **Contingency:** if M3/M4 fail where M0 succeeded, the bug is ours, not the protocol's — bisect against stock UxPlay. If M0 itself failed, this milestone does not start; see M0's finding path.
@@ -366,6 +366,8 @@ When a milestone returns incomplete, follow‑up prompts must:
 ## Progress Log / Notes
 
 Reverse‑chronological. Newest first.
+
+**2026-10-30 18:10 — M4 done, live session deferred (Opus, 10 min, commit e249268).** Ed25519 key kept on UxPlay's deterministic scheme (seeded from the en0 deviceid), equal to stock's M0 `pk`, so no key file is needed; tests prove it's stable across start/stop. **Replayed M0's `fp-setup` and FairPlay key decrypt against our process: byte-for-byte match with stock.** `RaopServer.handleVideo` validates Annex-B, flags UxPlay's failed-decrypt marker, logs the first NALs and SPS/PPS/IDR. `AnnexB.swift` parser; `AIRTV_DUMP_SECONDS=N` dumps to `logs/stream.h264` (`scripts/ffprobe-stream.sh`). `ReceiverState.swift` drives idle → pairing → streaming (streaming = first decrypted frame). Synthetic fixtures `Tests/Fixtures/synthetic-1080p.h264` and `synthetic-res-change.h264` for M5. Orchestrator re-ran 14/14 tests. Pair-setup/verify checkbox stays open: fp-setup is verified by replay, but the full live sequence needs the Studio.
 
 **2026-10-30 17:55 — M3 done, live session deferred (Opus, 22 min, merged as 8156ab3 + test fix).** New `RaopServer.swift` mirrors stock `uxplay.cpp` startup: UxPlay's own `dnssd_register_*` (the Swift `BonjourRegistrar` is now superseded), stock features `0x527FFEE6` (bit 27 legacy-pairing cleared; that was the M2 mismatch), Ed25519 `pk` derived from the en0 deviceid, fixed RTSP **port 7100**. All `raop_callbacks_t` slots are log-only thunks; logger goes to `logs/rtsp.log` + os_log. Start/stop/restart safe even with open connections and a busy port. `GET /info` from the iMac and from the Studio matches stock except the name. No way found to make the Studio start mirroring without a person, so the RTSP-sequence comparison is deferred. **The app shares deviceid/pk with stock UxPlay: stop stock UxPlay before any live test of the app.** Orchestrator: merged, re-generated project, added RaopServer/RtspLog to the unhosted test target; build OK, 6/6 unit tests, integration-bonjour 6/6.
 
