@@ -43,8 +43,9 @@ Raw full dns-sd output (with timestamps) is in the "Raw captures" section below.
 Key difference for the plan: UxPlay advertises `model=AppleTV3,2`, `features=0x527FFEE6,0x0`, `flags=0x4`, `vv=2`, and `srcvers=220.68`. A real modern macOS receiver advertises far more feature bits (`0x4A7FCFD5,0x38174FDE`), `protovers=1.1`, `fex`, and `at=4`, among others. UxPlay presents itself as a 1080p Apple TV 3 class device (Mirror, no 4K/HEVC unless `-h265`). **Expectation to carry forward:** "Use As Separate Display" (Extend) is a macOS-to-macOS Sidecar-like capability that depends on feature bits and model; do not assume UxPlay's stock advertisement gets it. That is exactly what the pending checks decide.
 
 ## Bonjour reachability
-- iMac -> network: `dns-sd -B _airplay._tcp local.` on the iMac lists the Mac Studio and other devices (Master TV, Office TV, Office, Bedroom, an AirPort Express), plus our own "Air TV Display@Mikes-iMac" on both interface 1 (loopback) and 7 (ethernet). `_raop._tcp` is the same. **iMac sees the Studio: VERIFIED.**
-- Studio -> iMac: **NOT VERIFIED from this side.** The worker's SSH to `michaeljosephwork@Mac-Studio.local` failed with "Host key verification failed" (the Studio's host key is not in `~/.ssh/known_hosts`; I did not auto-accept an unknown host key). The iMac advertises on the ethernet interface (interface 7) alongside all the other devices, and the firewall is off, so a negative result is unlikely. Mike confirms below.
+- iMac -> network: `dns-sd -B _airplay._tcp local.` on the iMac lists the Mac Studio and other devices (Master TV, Office TV, Office, Bedroom, an AirPort Express), plus our own "Air TV Display@Mikes-iMac" on both interface 1 (loopback) and 7 (`en1`, **Wi-Fi**; ethernet `en0` is index 6 and was inactive on 2026-10-30, so the spike ran over Wi-Fi). `_raop._tcp` is the same. **iMac sees the Studio: VERIFIED.**
+- Studio -> iMac: **VERIFIED 2026-10-30 16:03** (orchestrator over SSH after Mike installed the iMac's key). The Studio runs **macOS 26.6.2** (not Sequoia). `dns-sd -B _airplay._tcp local.` on the Studio lists "Air TV Display@Mikes-iMac" on interfaces 23 and 26; `dns-sd -L` resolves it to `Mikes-iMac.local.:49333` with the identical TXT (`model=AppleTV3,2 features=0x527FFEE6,0x0 flags=0x4 pw=false vv=2 srcvers=220.68 pk=f780…3dbb`). Raw capture under "Raw captures".
+- SSH for workers: `ssh michaeljosephwork@Mac-Studio.local` now works non-interactively (host key ED25519 `SHA256:oK1TQBxEktMrOoeg9cPxdHwBF8yfvAq3NjDhbYw3/yI`, verified by Mike on the Studio; iMac `id_ed25519` installed in the Studio's authorized_keys).
 
 ## Handshake sequence (pairing, PIN, errors)
 **PENDING HANDS-ON.** UxPlay is running and logging; no client has connected yet (`docs/m0-uxplay-session.log` has only startup lines). Nothing was observed, so nothing is claimed.
@@ -91,4 +92,9 @@ DATE: ---Fri 30 Oct 2026---
 `dns-sd -B` (iMac, _airplay._tcp, 15:37):
 ```
 Mac Studio / Master TV / Office TV / Office / Michael's AirPort Express / Office (2) / Bedroom / Air TV Display@Mikes-iMac (if 1 and if 7)
+```
+
+`dns-sd -B _airplay._tcp local.` (Studio, macOS 26.6.2, 16:03:34):
+```
+Mac Studio / Master TV / Bedroom / Air TV Display@Mikes-iMac (if 26 and if 23) / Michael's AirPort Express / Office / Office TV / Office (2)
 ```
