@@ -102,3 +102,32 @@ targets:
         ENABLE_DEBUG_DYLIB: NO
         LD_RUNTIME_SEARCH_PATHS:
           - "@executable_path/../Frameworks"
+  # Unhosted logic tests: compiles the testable app sources directly (hosting inside the app
+  # breaks the app target's re-sign postBuild script once XCTest frameworks are injected).
+  AirTVDisplayTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - Tests
+      - AirTVDisplay/NetworkInfo.swift
+      - AirTVDisplay/BonjourRegistrar.swift
+      - AirTVDisplay/UxPlayBridge.swift
+    dependencies:
+      - target: UxPlayLib
+        link: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: net.iadev.AirTVDisplayTests
+        GENERATE_INFOPLIST_FILE: YES
+        SWIFT_OBJC_BRIDGING_HEADER: AirTVDisplay/AirTVDisplay-Bridging-Header.h
+        HEADER_SEARCH_PATHS:
+          - $(UXPLAY_SRC)/lib
+          - $(UXPLAY_SRC)/lib/playfair
+          - $(UXPLAY_SRC)/lib/llhttp
+        OTHER_SWIFT_FLAGS: "-Xcc -idirafter -Xcc $(AIRTV_DEPS_PREFIX)/include"
+        LIBRARY_SEARCH_PATHS:
+          - $(AIRTV_DEPS_PREFIX)/lib
+        OTHER_LDFLAGS:
+          - $(AIRTV_DEPS_PREFIX)/lib/libplist-2.0.a
+          - -lcrypto
+          - -Wl,-rpath,$(AIRTV_DEPS_PREFIX)/lib
