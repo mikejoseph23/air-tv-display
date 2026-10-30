@@ -54,10 +54,10 @@ Goal: the iMac app runs fullscreen, presents itself as an Apple‑TV‑class Air
 | M2T — Testing: scaffold | Sonnet | ✅ Done (hands‑on deferred) | 5 | Build/launch/unit. |
 | M3 — RTSP + session via library | Opus | ✅ Done (live Studio session deferred) | 22 | Wire `raop_start`/callbacks; sender reaches "connecting". |
 | M4 — Pairing / FairPlay via library | Opus | ✅ Done (live Studio session deferred) | 10 | pair‑setup/verify + fp‑setup through UxPlay code; encrypted video bytes arrive. |
-| M4T — Testing: session + auth | Opus | ⬜ Not Started | — | Mixed: unit + hands‑on pair. |
-| M5 — Video: H.264 decode + present | Opus | ⬜ Not Started | — | VideoToolbox → Metal fullscreen from library NAL callbacks. |
+| M4T — Testing: session + auth | Opus | 🔵 In Progress | — | Mixed: unit + hands‑on pair. |
+| M5 — Video: H.264 decode + present | Opus | 🔵 In Progress | — | VideoToolbox → Metal fullscreen from library NAL callbacks. |
 | M5T — Testing: video path | Sonnet | ⬜ Not Started | — | Unit for assembly; hands‑on for realtime/latency. |
-| M6 — Audio (AAC‑ELD / ALAC) | Sonnet | ⬜ Not Started | — | Library audio callbacks → CoreAudio, synced. |
+| M6 — Audio (AAC‑ELD / ALAC) | Sonnet | 🔵 In Progress | — | Library audio callbacks → CoreAudio, synced. |
 | M6T — Testing: audio sync | Sonnet | ⬜ Not Started | — | Hands‑on A/V lip‑sync. |
 | M7 — Extend‑mode verification | Sonnet | ⬜ Not Started | — | Confirm Extend offered & works; tune TXT only if M0 showed it isn't. |
 | M7T — Testing: mirror vs extend | Sonnet | ⬜ Not Started | — | Hands‑on with Studio picker. |
