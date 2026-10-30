@@ -59,6 +59,8 @@ final class RaopServer {
     /// Per mirror session (reset by mirror_video_running(true)); guarded by `lock`.
     fileprivate var session = VideoSession()
     fileprivate var dump: StreamDump?
+    /// Audio decode + CoreAudio playback (M6). Read its timeline properties from the video path.
+    let audio = AudioRenderer { level, msg in RtspLog.shared.log(level, "[audio] " + msg) }
 
     struct VideoSession {
         var packets = 0
@@ -120,6 +122,7 @@ final class RaopServer {
         openConnections = 0; videoPackets = 0; audioPackets = 0; session = VideoSession()
         dump?.close(); dump = nil
         lock.unlock()
+        audio.stop()
     }
 
     // MARK: setup steps (mirror uxplay.cpp)
@@ -288,11 +291,13 @@ final class RaopServer {
         c.conn_destroy = { cls in
             guard let s = me(cls) else { return }
             s.lock.lock(); s.openConnections = max(0, s.openConnections - 1); let n = s.openConnections; s.lock.unlock()
+            if n == 0 { s.audio.stop() }
             s.log(.info, "conn_destroy open=\(n)")
             s.emit(.connectionClosed(open: n))
         }
         c.conn_reset = { cls, reason in
             me(cls)?.log(.info, "conn_reset reason=\(reason)")
+            me(cls)?.audio.stop()
             me(cls)?.emit(.connectionReset(reason: reason))
         }
         c.conn_feedback = { cls in me(cls)?.log(.debug, "conn_feedback") }
@@ -303,6 +308,7 @@ final class RaopServer {
             if n == 1 || n % 500 == 0 {
                 s.log(.debug, "audio_process #\(n) ct=\(d.ct) len=\(d.data_len) seq=\(d.seqnum) sync=\(d.sync_status)")
             }
+            if let p = d.data { s.audio.process(p, count: Int(d.data_len), ntpLocal: d.ntp_time_local) }
         }
         c.video_process = { cls, _, data in
             guard let s = me(cls), let d = data?.pointee, let p = d.data, d.data_len > 0 else { return }
@@ -325,13 +331,20 @@ final class RaopServer {
             me(cls)?.emit(.mirrorRunning(running))
         }
 
-        c.audio_flush = { cls in me(cls)?.log(.debug, "audio_flush") }
+        c.audio_flush = { cls in
+            me(cls)?.log(.debug, "audio_flush")
+            me(cls)?.audio.flush()
+        }
         c.video_flush = { cls in me(cls)?.log(.debug, "video_flush") }
         c.audio_set_client_volume = { cls in
-            me(cls)?.log(.debug, "audio_set_client_volume -> 0.0")
-            return 0.0   // uxplay's default initial volume
+            let v = me(cls)?.audio.currentVolumeDB ?? 0
+            me(cls)?.log(.debug, "audio_set_client_volume -> \(v)")
+            return Double(v)   // uxplay: last volume set (initially 0.0 dB)
         }
-        c.audio_set_volume = { cls, v in me(cls)?.log(.info, "audio_set_volume \(v)") }
+        c.audio_set_volume = { cls, v in
+            me(cls)?.log(.info, "audio_set_volume \(v)")
+            me(cls)?.audio.setVolume(db: v)
+        }
         c.audio_set_metadata = { cls, _, len in me(cls)?.log(.debug, "audio_set_metadata len=\(len)") }
         c.audio_set_coverart = { cls, _, len in me(cls)?.log(.debug, "audio_set_coverart len=\(len)") }
         c.audio_stop_coverart_rendering = { cls in me(cls)?.log(.debug, "audio_stop_coverart_rendering") }
@@ -345,6 +358,7 @@ final class RaopServer {
             me(cls)?.log(.info, "audio_get_format ct=\(ct?.pointee ?? 0) spf=\(spf?.pointee ?? 0) "
                 + "usingScreen=\(usingScreen?.pointee ?? false) isMedia=\(isMedia?.pointee ?? false) "
                 + "format=0x\(String(fmt?.pointee ?? 0, radix: 16))")
+            if let ct = ct?.pointee { me(cls)?.audio.start(ct: ct) }
         }
 
         c.report_client_request = { cls, deviceid, model, name, admit in

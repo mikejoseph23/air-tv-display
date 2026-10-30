@@ -120,6 +120,9 @@ targets:
       - AirTVDisplay/AnnexB.swift
       - AirTVDisplay/StreamDump.swift
       - AirTVDisplay/ReceiverState.swift
+      - AirTVDisplay/AudioDecoder.swift
+      - AirTVDisplay/AudioTiming.swift
+      - AirTVDisplay/AudioRenderer.swift
     dependencies:
       - target: UxPlayLib
         link: true
