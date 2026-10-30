@@ -50,7 +50,7 @@ Goal: the iMac app runs fullscreen, presents itself as an Apple‑TV‑class Air
 |-----------|-------|--------|----------------|-------|
 | M0 — Stock UxPlay spike | Sonnet | ✅ Done (latency # pending) | 21 + 6 rebuild | **Gate passed.** Studio streams to stock UxPlay, no PIN; macOS extends by default; 1920×1080 h264 @ ~30 fps over ethernet. |
 | M1 — Discovery in our own process | Sonnet | ✅ Done (hands‑on deferred) | 2 | C CLI `tools/discovery-cli/`; Studio `dns-sd` resolves it. Control Center check deferred to end. |
-| M2 — App scaffold + vendored lib build | Sonnet | 🔵 In Progress | — | Xcode Swift app, window, signing, UxPlay `lib/` compiling as a static lib. |
+| M2 — App scaffold + vendored lib build | Sonnet | ✅ Done | 7 | Xcode Swift app, window, signing, UxPlay `lib/` compiling as a static lib. |
 | M2T — Testing: scaffold | Sonnet | ⬜ Not Started | — | Build/launch/unit. |
 | M3 — RTSP + session via library | Opus | ⬜ Not Started | — | Wire `raop_start`/callbacks; sender reaches "connecting". |
 | M4 — Pairing / FairPlay via library | Opus | ⬜ Not Started | — | pair‑setup/verify + fp‑setup through UxPlay code; encrypted video bytes arrive. |
@@ -144,14 +144,14 @@ Reproduce M0's discovery from code we control, before the app exists. A partial 
 Stand up the Xcode Swift app the rest of the milestones plug into, with UxPlay's `lib/` compiling inside it.
 
 **Worker task list:**
-- [ ] Create the app target (Swift, macOS, AppKit or SwiftUI for the host window). Working dir: `~/git/air-tv-display`.
-- [ ] Fullscreen borderless `NSWindow` on the main screen; quits on `Esc`; placeholder "waiting for AirPlay…" view. (UI is trivial by design — the deliverable is the render surface wired in M5.)
-- [ ] Menu‑bar extra (status item): start/stop receiver, show current state (idle / pairing / streaming), show port + IP.
-- [ ] Bonjour registration from M1 moved into the app (`DNSServiceRegister`, `_airplay._tcp` + `_raop._tcp`), stable `deviceid` from en0 MAC.
-- [ ] Entitlements & Info.plist: `NSBonjourServices`, `NSLocalNetworkUsageDescription`, network server entitlement; App Sandbox off for the spike (note the choice).
-- [ ] Vendor **UxPlay** under `thirdparty/UxPlay` (submodule, pinned to the commit tested in M0). Build only `lib/` (raop, pairing, fairplay/playfair, dnssd shim, llhttp, plist usage) as a static library target; **do not** build the GStreamer renderer. Dependencies: OpenSSL + libplist via Homebrew or vendored.
-- [ ] Bridging header / module map exposing `raop_init`, `raop_start`, `raop_callbacks_t`, `dnssd_*` to Swift.
-- [ ] `thirdparty/LICENSES.md`: record UxPlay's GPLv3 and the licensing decision deferred to shipping time (see Summary → Risks).
+- [x] Create the app target (Swift, macOS, AppKit or SwiftUI for the host window). Working dir: `~/git/air-tv-display`.
+- [x] Fullscreen borderless `NSWindow` on the main screen; quits on `Esc`; placeholder "waiting for AirPlay…" view. (UI is trivial by design — the deliverable is the render surface wired in M5.)
+- [x] Menu‑bar extra (status item): start/stop receiver, show current state (idle / pairing / streaming), show port + IP.
+- [x] Bonjour registration from M1 moved into the app (`DNSServiceRegister`, `_airplay._tcp` + `_raop._tcp`), stable `deviceid` from en0 MAC.
+- [x] Entitlements & Info.plist: `NSBonjourServices`, `NSLocalNetworkUsageDescription`, network server entitlement; App Sandbox off for the spike (note the choice).
+- [x] Vendor **UxPlay** under `thirdparty/UxPlay` (submodule, pinned to the commit tested in M0). Build only `lib/` (raop, pairing, fairplay/playfair, dnssd shim, llhttp, plist usage) as a static library target; **do not** build the GStreamer renderer. Dependencies: OpenSSL + libplist via Homebrew or vendored.
+- [x] Bridging header / module map exposing `raop_init`, `raop_start`, `raop_callbacks_t`, `dnssd_*` to Swift.
+- [x] `thirdparty/LICENSES.md`: record UxPlay's GPLv3 and the licensing decision deferred to shipping time (see Summary → Risks).
 
 > **Worker Completion Requirement:** complete ALL items; note deferrals in the summary.
 
@@ -366,6 +366,8 @@ When a milestone returns incomplete, follow‑up prompts must:
 ## Progress Log / Notes
 
 Reverse‑chronological. Newest first.
+
+**2026-10-30 17:30 — M2 done (Sonnet, 7 min, worker commit ea38e58, merged to main).** xcodegen `project.yml` + checked-in project; AppKit shell (borderless fullscreen window, Esc quits, status item with state/IP:port); own `BonjourRegistrar` (en0 deviceid); UxPlay submodule at `thirdparty/UxPlay` pinned to 534e2cc, `lib/` as a static target, libplist static; micromamba has no static libcrypto, so `libcrypto.3.dylib` is embedded in `Contents/Frameworks` and re-signed (fixed a launch crash Mike saw at 17:07). Orchestrator re-built in the main tree: BUILD SUCCEEDED, `--selftest` exit 0. **Flags for M3/M4:** the bridge's `dnssd` reports `features=0x5A7FFEE6` vs stock UxPlay's advertised `0x527FFEE6` (bit 27 differs, so check what uxplay.cpp changes before advertising); `raop_destroy` asserts if httpd was never started; M1's note that `pk` must be the real raop pairing key applies here too.
 
 **2026-10-30 17:20 — M1 done, hands-on deferred (Sonnet, ~2 min, commit 1269ee4).** `tools/discovery-cli/discovery-cli.c` registers `_airplay._tcp` + `_raop._tcp` via `DNSServiceRegister` with UxPlay's TXT, en0-derived deviceid, name/port as args. Studio `dns-sd -B/-L` resolves "Air TV Display M1" (port 7100) alongside stock UxPlay despite the shared deviceid. Generated its own `pk`/`pi` (UxPlay's pk is its Ed25519 public key; **M4 must advertise the real pairing key**). Mike said to skip human gates until the end; the Control Center listing check is on the deferred list. Binary untracked (72edf1d).
 
