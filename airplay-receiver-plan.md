@@ -56,7 +56,7 @@ Goal: the iMac app runs fullscreen, presents itself as an Apple‑TV‑class Air
 | M4 — Pairing / FairPlay via library | Opus | ✅ Done (live Studio session deferred) | 10 | pair‑setup/verify + fp‑setup through UxPlay code; encrypted video bytes arrive. |
 | M4T — Testing: session + auth | Opus | ✅ Done (hands‑on deferred) | 16 | Mixed: unit + hands‑on pair. |
 | M5 — Video: H.264 decode + present | Opus | ✅ Done (live mirror deferred) | 14 | VideoToolbox → Metal fullscreen from library NAL callbacks. |
-| M5T — Testing: video path | Sonnet | 🔵 In Progress | — | Unit for assembly; hands‑on for realtime/latency. |
+| M5T — Testing: video path | Sonnet | ✅ Done (hands‑on deferred) | 8 | Unit for assembly; hands‑on for realtime/latency. |
 | M6 — Audio (AAC‑ELD / ALAC) | Sonnet | ✅ Done (A/V wiring → M8, live deferred) | 14 | Library audio callbacks → CoreAudio, synced. |
 | M6T — Testing: audio sync | Sonnet | ⏸ Hands‑on deferred (unit done in M6) | — | Hands‑on A/V lip‑sync. |
 | M7 — Extend‑mode verification | Sonnet | ⏸ Hands‑on deferred (no worker; M0 extended by default, M3 `/info` matches stock) | — | Confirm Extend offered & works; tune TXT only if M0 showed it isn't. |
@@ -246,8 +246,8 @@ Turn the decrypted H.264 from the `video_process` callback into frames on screen
 
 **Model: Sonnet** · **Mode: unit for assembly + hands‑on for realtime/latency.**
 
-- [ ] Unit: Annex‑B → AVCC conversion and format‑description builder against the M4 stream fixture (asserts correct NAL lengths and parameter sets).
-- [ ] Unit: decoder survives a mid‑stream parameter‑set change without crash (synthetic buffer).
+- [x] Unit: Annex‑B → AVCC conversion and format‑description builder against the M4 stream fixture (asserts correct NAL lengths and parameter sets).
+- [x] Unit: decoder survives a mid‑stream parameter‑set change without crash (synthetic buffer).
 - [ ] Hands‑on (Mike, Studio over **gigabit ethernet**): mirror the Studio to the iMac, move windows; judge motion as smooth‑enough for a reference display. Confirm perf HUD reports reasonable fps/decode‑ms. Compare subjective latency with M0's stock UxPlay — we should be no worse. **Skip‑and‑report beats manufacture** if a state can't be reached.
 
 [Return to Top](#air-tv-display--planning-document)
@@ -366,6 +366,8 @@ When a milestone returns incomplete, follow‑up prompts must:
 ## Progress Log / Notes
 
 Reverse‑chronological. Newest first.
+
+**2026-10-30 18:55 — M5T done, hands-on deferred (Sonnet, 8 min, merged as Tests/VideoPathFormatTests.swift).** Audited M5's 10 video tests: they covered only the first access unit for AVCC and never compared SPS/PPS bytes. Added 8 tests: byte-exact AVCC for every unit of both fixtures, format-description SPS/PPS identity, truncated/garbage parameter sets (mid-stream and before the stream starts), and resolution switching at the right unit. No decoder bugs found. Orchestrator: **62/62 tests**.
 
 **2026-10-30 18:50 — M4T done, hands-on deferred (Opus, 16 min, merged as c725eea).** 10 session tests drive UxPlay's real httpd with real TCP connections (repeated reconnects, out-of-order closes, churn past the 12-connection limit, stop/dealloc with live connections). State machine goes idle → pairing → idle. Address Sanitizer clean, `leaks` clean. Thread Sanitizer flags only vendored `httpd.c:738` vs `:380` (both mutex-guarded in source, likely a false positive; left as is). The stream-dump test feeds both fixtures through `handleVideo`, giving clean Annex-B; ffprobe decodes 90/90 frames. One app change: `StreamDump` self-starts a session if the mirroring-start event never fired. Orchestrator: xcodegen, BUILD OK, **54/54 tests**.
 
