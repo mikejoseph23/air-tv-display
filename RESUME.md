@@ -5,7 +5,7 @@ A native macOS app that turns a 2017 Intel iMac (`iMac18,3`, macOS 15.7.4, i7-77
 
 ## Current Status
 **The repo is moving to the work profile. M0 (the go/no-go gate) is still partial: the Studio sees the receiver over Bonjour, but nobody has tried mirroring to it yet.**
-- **Moving.** This personal-profile copy (`/Users/michaeljoseph/git/air-tv-display`) is being retired. The work-profile copy goes to `/Users/michaeljosephwork/git/air-tv-display`, with a private GitHub repo at `git@github.com:mikejoseph23/air-tv-display.git`. The handoff package is in `/Users/Shared/air-tv-display-handoff/` (follow `HANDOFF.md` there).
+- **Moving.** This personal-profile copy (`/Users/michaeljoseph/git/air-tv-display`) is being retired. The work-profile copy goes to `/Users/michaeljosephwork/git/air-tv-display`, cloned from the private GitHub repo `git@github.com:mikejoseph23/air-tv-display.git` (pushed 2026-10-30). The gitignored orchestrator state and the UxPlay source are in `/Users/Shared/air-tv-display-handoff/` (follow `HANDOFF.md` there).
 - **Done in M0.** UxPlay 1.74 (commit 534e2cc) was built from source and advertised correctly. The Studio (**macOS 26.6.2**, not Sequoia) resolved it through `dns-sd -B/-L` at port 49333 with UxPlay's Apple TV-style TXT record.
 - **UxPlay is stopped in the personal profile.** Mike will rebuild it in the work profile.
 - **Not yet tested (Mike, from the Studio's work profile):** Control Center listing, what happens on select (pairing/PIN/error), whether "Use As Separate Display" is offered, resolution/fps, and latency.
@@ -15,10 +15,10 @@ A native macOS app that turns a 2017 Intel iMac (`iMac18,3`, macOS 15.7.4, i7-77
 - Planning document written and reviewed (UxPlay-based approach, M0 added as the go/no-go gate).
 - M0 partial: UxPlay built and running, both TXT records captured verbatim, iMac-side and Studio-side Bonjour verified.
 - SSH from the iMac's personal profile to `michaeljosephwork@Mac-Studio.local` works. The host key was verified: ED25519 `SHA256:oK1TQBxEktMrOoeg9cPxdHwBF8yfvAq3NjDhbYw3/yI`.
-- Repo prepared for the move: `thirdparty/UxPlay-spike/` is gitignored, the launcher script no longer hard-codes a path, and the bundle and tarballs are in `/Users/Shared`.
+- Repo prepared for the move: `thirdparty/UxPlay-spike/` is gitignored, the launcher script no longer hard-codes a path, and pushed to GitHub; the orchestrator state and UxPlay source tarballs are in `/Users/Shared`.
 
 ## What's Next
-1. **In the work profile**, follow `/Users/Shared/air-tv-display-handoff/HANDOFF.md`: clone from the bundle, unpack `orchestrator.tgz`, `gh repo create mikejoseph23/air-tv-display --private --source . --remote origin --push`, then `ssh-copy-id michaeljosephwork@Mac-Studio.local` again.
+1. **In the work profile**, follow `/Users/Shared/air-tv-display-handoff/HANDOFF.md`: `git clone git@github.com:mikejoseph23/air-tv-display.git`, unpack `orchestrator.tgz` into it, then `ssh-copy-id michaeljosephwork@Mac-Studio.local` again.
 2. **Rebuild UxPlay** in the work profile: unpack `UxPlay-spike-src.tgz` into `thirdparty/` and follow "How to reproduce" in `docs/discovery-findings.md`. Brew isn't writable and there's no sudo, so the spike used a micromamba env (GStreamer 1.28, OpenSSL) plus a hand-built libplist 2.8.0. Run it with `docs/run-uxplay-spike.sh`. You may need to adjust the env path in the script for the work profile.
 3. **Resume the orchestrator**: paste `.orchestrator/airplay-receiver-plan/RESUME-PROMPT.md` into Claude Code. First collect Mike's hands-on M0 results, record them in `docs/discovery-findings.md`, and mark M0 Done or Blocked.
 4. **If it streams**, start Group A in parallel, both on Sonnet: **M1** (Bonjour registration in our own process) and **M2** (Xcode app scaffold, with UxPlay vendored as a submodule under `thirdparty/UxPlay` and `lib/` built as a static library). **If it isn't listed or can't pair**, stop for a planning check-in. **If Extend isn't offered**, M7 escalates to Opus.
