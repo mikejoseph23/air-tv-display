@@ -53,7 +53,7 @@ Goal: the iMac app runs fullscreen, presents itself as an Apple‑TV‑class Air
 | M2 — App scaffold + vendored lib build | Sonnet | ✅ Done | 7 | Xcode Swift app, window, signing, UxPlay `lib/` compiling as a static lib. |
 | M2T — Testing: scaffold | Sonnet | ✅ Done (hands‑on deferred) | 5 | Build/launch/unit. |
 | M3 — RTSP + session via library | Opus | ✅ Done (live Studio session deferred) | 22 | Wire `raop_start`/callbacks; sender reaches "connecting". |
-| M4 — Pairing / FairPlay via library | Opus | ⬜ Not Started | — | pair‑setup/verify + fp‑setup through UxPlay code; encrypted video bytes arrive. |
+| M4 — Pairing / FairPlay via library | Opus | 🔵 In Progress | — | pair‑setup/verify + fp‑setup through UxPlay code; encrypted video bytes arrive. |
 | M4T — Testing: session + auth | Opus | ⬜ Not Started | — | Mixed: unit + hands‑on pair. |
 | M5 — Video: H.264 decode + present | Opus | ⬜ Not Started | — | VideoToolbox → Metal fullscreen from library NAL callbacks. |
 | M5T — Testing: video path | Sonnet | ⬜ Not Started | — | Unit for assembly; hands‑on for realtime/latency. |
