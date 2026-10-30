@@ -53,6 +53,7 @@
 		747936CD6D81778FA2724ECD /* llhttp.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = E5003202A2E20E924FEBC792 /* llhttp.h */; };
 		74DCE71204F4F763590EB80C /* dnssd.c in Sources */ = {isa = PBXBuildFile; fileRef = 2B8ACF8CF620B1AF88F2CBE1 /* dnssd.c */; };
 		7755B5CCE7978D8AF0DC36B9 /* http_request.c in Sources */ = {isa = PBXBuildFile; fileRef = 250E56C9C451E516D3CBF6E6 /* http_request.c */; };
+		7792BBBE4B0585471A6BBEFB /* StreamDumpAnnexBTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31BBE4B76CE958070B9C350 /* StreamDumpAnnexBTests.swift */; };
 		817536A9A94C7F9BFD2119DC /* NetworkInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFB10ED5A265994D7918374D /* NetworkInfo.swift */; };
 		81F86DEA98B8448A049F1F62 /* StatusItemController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B103A0C73154FD6243599FAD /* StatusItemController.swift */; };
 		821FD9DF81E1E9F12D15A048 /* StreamDump.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E129CE65C6BDF65CBA3D8F /* StreamDump.swift */; };
@@ -79,6 +80,7 @@
 		9EF3C907BFD100588403304C /* mirror_buffer.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = EAB8F64EB44EA3371E9C8D70 /* mirror_buffer.h */; };
 		A305AF64620DC0BFCA138486 /* raop_rtp.c in Sources */ = {isa = PBXBuildFile; fileRef = A69081D28CBE3E3D5FDD95BD /* raop_rtp.c */; };
 		A7DD42EDD783ED58C074C458 /* httpd.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4254F2FC1D0B41229DD4A25C /* httpd.h */; };
+		A86F2DFD7BA1786910F291D5 /* SessionLifecycleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D895F70F0E052D9DC3C95FA /* SessionLifecycleTests.swift */; };
 		AAC8F87383D5DF37F2C175FC /* VideoFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = E063FE60E1F1CBC7C83DD3F2 /* VideoFormat.swift */; };
 		AFDCE15051E91DD1E03E85DD /* dnssdint.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = BC9314A39227D810F2FB70D6 /* dnssdint.h */; };
 		B0EB97AD7F4D0F243E1C429F /* raop_rtp.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 61D43D412D59EB7B98E538E8 /* raop_rtp.h */; };
@@ -183,6 +185,7 @@
 		174A8527EB6B3FCB82DBF57D /* netutils.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = netutils.c; sourceTree = "<group>"; };
 		1984BB941F9CB5DDC92BE326 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		1CC29A647D80DCDD486015F4 /* compat.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = compat.c; sourceTree = "<group>"; };
+		1D895F70F0E052D9DC3C95FA /* SessionLifecycleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionLifecycleTests.swift; sourceTree = "<group>"; };
 		1F84360A466645CD0D9A23BC /* playfair.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = playfair.h; sourceTree = "<group>"; };
 		235694F76DF53BB86396859A /* omg_hax.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = omg_hax.h; sourceTree = "<group>"; };
 		250E56C9C451E516D3CBF6E6 /* http_request.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = http_request.c; sourceTree = "<group>"; };
@@ -238,6 +241,7 @@
 		AA44A058A810852119069DE9 /* srp.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = srp.c; sourceTree = "<group>"; };
 		AFB10ED5A265994D7918374D /* NetworkInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkInfo.swift; sourceTree = "<group>"; };
 		B103A0C73154FD6243599FAD /* StatusItemController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusItemController.swift; sourceTree = "<group>"; };
+		B31BBE4B76CE958070B9C350 /* StreamDumpAnnexBTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamDumpAnnexBTests.swift; sourceTree = "<group>"; };
 		B3E129CE65C6BDF65CBA3D8F /* StreamDump.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamDump.swift; sourceTree = "<group>"; };
 		B914E50073D7FBD622A0F0E7 /* raop_ntp.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = raop_ntp.c; sourceTree = "<group>"; };
 		BC1CEA3D277B2D3B1BA7C9BC /* AirTVDisplay-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AirTVDisplay-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -431,6 +435,8 @@
 				FCE556C8E940F9E7E39B992F /* BonjourTXTTests.swift */,
 				F7C240D657014B4D184FD1DC /* NetworkInfoTests.swift */,
 				2FC032FBF2056A6432219FDF /* PairingFairPlayTests.swift */,
+				1D895F70F0E052D9DC3C95FA /* SessionLifecycleTests.swift */,
+				B31BBE4B76CE958070B9C350 /* StreamDumpAnnexBTests.swift */,
 				8CCEFEC51319497D829BC805 /* VideoPipelineTests.swift */,
 			);
 			path = Tests;
@@ -642,7 +648,9 @@
 				8D5714B687BAA07243E64F11 /* RaopServer.swift in Sources */,
 				05FAA60A23D066E7479EB685 /* ReceiverState.swift in Sources */,
 				2B2720AD33F8E5D7153DA79D /* RtspLog.swift in Sources */,
+				A86F2DFD7BA1786910F291D5 /* SessionLifecycleTests.swift in Sources */,
 				B740B1268A641A9CD2637E12 /* StreamDump.swift in Sources */,
+				7792BBBE4B0585471A6BBEFB /* StreamDumpAnnexBTests.swift in Sources */,
 				D607D1C8F29967E8F3D9A2DA /* UxPlayBridge.swift in Sources */,
 				CD57F978FB53E559D8EF54FB /* VideoDecoder.swift in Sources */,
 				AAC8F87383D5DF37F2C175FC /* VideoFormat.swift in Sources */,

@@ -14,6 +14,10 @@ final class StreamDump {
     private var startedAt: Date?
     private(set) var bytesWritten = 0
     private(set) var finished = false
+    /// False until the first `beginSession()`. `append` begins one itself if UxPlay never
+    /// signalled `mirror_video_running(true)`, so feeding `RaopServer.handleVideo` directly
+    /// (tests) still dumps.
+    private var sessionBegun = false
 
     init?(seconds: Double, fileURL: URL) {
         guard seconds > 0 else { return nil }
@@ -37,11 +41,13 @@ final class StreamDump {
         startedAt = nil
         bytesWritten = 0
         finished = handle == nil
+        sessionBegun = true
     }
 
     /// Appends one decrypted access unit. Returns true when this call ended the dump.
     @discardableResult
     func append(_ p: UnsafePointer<UInt8>, _ len: Int, now: Date = Date()) -> Bool {
+        if !sessionBegun { beginSession() }
         guard let h = handle, !finished, len > 0 else { return false }
         if startedAt == nil { startedAt = now }
         if let s = startedAt, now.timeIntervalSince(s) >= seconds {
