@@ -123,6 +123,11 @@ targets:
       - AirTVDisplay/AudioDecoder.swift
       - AirTVDisplay/AudioTiming.swift
       - AirTVDisplay/AudioRenderer.swift
+      - AirTVDisplay/VideoFormat.swift
+      - AirTVDisplay/VideoStats.swift
+      - AirTVDisplay/VideoDecoder.swift
+      - AirTVDisplay/VideoRenderer.swift
+      - AirTVDisplay/VideoPipeline.swift
     dependencies:
       - target: UxPlayLib
         link: true

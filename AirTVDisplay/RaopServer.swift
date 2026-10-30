@@ -47,6 +47,8 @@ final class RaopServer {
     private(set) var publicKeyHex = ""
 
     var onEvent: ((RaopEvent) -> Void)?
+    /// M5: decrypted mirror video goes here (decode + present). Called on the mirror thread.
+    weak var videoSink: VideoSink?
 
     private var dnssd: UnsafeMutablePointer<dnssd_t>?
     private var raop: OpaquePointer?
@@ -231,9 +233,11 @@ final class RaopServer {
     /// New mirror session: reset per-session stats and restart the optional dump.
     fileprivate func beginVideoSession() {
         lock.lock(); session = VideoSession(); dump?.beginSession(); lock.unlock()
+        videoSink?.videoSessionBegan()
     }
 
     fileprivate func endVideoSession() {
+        videoSink?.videoSessionEnded()
         lock.lock(); let v = session; lock.unlock()
         guard v.packets > 0 else { return }
         let types = v.seenTypes.sorted().map { AnnexB.typeName($0) }.joined(separator: ",")
@@ -263,6 +267,7 @@ final class RaopServer {
             log(.info, "stream dump done: \(d.bytesWritten) bytes -> \(d.fileURL.path)")
         }
         lock.unlock()
+        if ok { videoSink?.videoAccessUnit(p, len) }
 
         if n <= Self.loggedPacketsPerSession {
             let head = (0..<min(8, len)).map { String(format: "%02x", p[$0]) }.joined(separator: " ")

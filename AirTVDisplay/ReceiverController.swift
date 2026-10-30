@@ -13,6 +13,8 @@ final class ReceiverController {
     var onStateChange: ((ReceiverState) -> Void)?
 
     private var server: RaopServer?
+    /// M5: decode + present target for mirror video.
+    weak var videoSink: VideoSink?
     private(set) var deviceID = ""
     var publicKeyHex: String { server?.publicKeyHex ?? "" }
 
@@ -24,6 +26,7 @@ final class ReceiverController {
         deviceID = NetworkInfo.en0MAC() ?? "02:00:00:00:00:01"
         let s = RaopServer()
         s.onEvent = { [weak self] e in self?.handle(e) }
+        s.videoSink = videoSink
         do {
             try s.start(name: serviceName, port: port, deviceID: deviceID)
             server = s
