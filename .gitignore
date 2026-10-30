@@ -1,0 +1,6 @@
+.orchestrator/
+.DS_Store
+logs/
+build/
+DerivedData/
+*.xcuserstate
