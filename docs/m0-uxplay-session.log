@@ -1,0 +1,34 @@
+*=== Using gst_macos_main wrapper for GStreamer >= 1.22 on macOS ===*
+UxPlay 1.74: An Open-Source AirPlay mirroring and audio-streaming server.
+UxPlay on macOS is using -nc option as workaround for GStreamer problem: use "-nc no" to omit workaround
+Audio format 1: AAC-ELD 44100/2
+GStreamer audio pipeline 1: "appsrc name=audio_source ! queue ! avdec_aac ! audioconvert ! audioresample quality=10 ! volume name=volume ! level ! autoaudiosink sync=true"
+Audio format 2: ALAC 44100/16/2
+GStreamer audio pipeline 2: "appsrc name=audio_source ! queue ! avdec_alac ! audioconvert ! audioresample quality=10 ! volume name=volume ! level ! autoaudiosink sync=false"
+GStreamer video pipeline 1:
+"appsrc name=video_source ! queue ! h264parse ! decodebin ! videoconvert ! videoscale ! autovideosink name=autovideosink_h264 sync=true"
+Initialized GStreamer video renderer 1
+using system MAC address 68:fe:f7:12:96:16
+Initialized server socket(s)
+register_dnssd: advertised AirPlay service with "Features" code = 0x527FFEE6
+GStreamer h264 bus message autovideosink_h264 need-context  
+GStreamer h264 bus message autovideosink_h264 have-context  
+GStreamer h264 bus message sink need-context  
+GStreamer h264 bus message sink state-changed NULL READY
+GStreamer h264 bus message glcolorbalance0 need-context  
+GStreamer h264 bus message glcolorbalance0 state-changed NULL READY
+GStreamer h264 bus message glcolorconvertelement0 need-context  
+GStreamer h264 bus message glcolorconvertelement0 state-changed NULL READY
+GStreamer h264 bus message gluploadelement0 need-context  
+GStreamer h264 bus message gluploadelement0 state-changed NULL READY
+GStreamer h264 bus message autovideosink_h264-actual-sink-glimage state-changed NULL READY
+videosink element (renderer 1: h264)  identified as: autovideosink_h264-actual-sink-glimage
+GStreamer h264 bus message autovideosink_h264 state-changed NULL READY
+GStreamer h264 bus message videoscale0 state-changed NULL READY
+GStreamer h264 bus message videoconvert0 state-changed NULL READY
+GStreamer h264 bus message typefind state-changed NULL READY
+GStreamer h264 bus message decodebin0 state-changed NULL READY
+GStreamer h264 bus message h264parse0 state-changed NULL READY
+GStreamer h264 bus message queue2 state-changed NULL READY
+GStreamer h264 bus message video_source state-changed NULL READY
+GStreamer h264 bus message pipeline2 state-changed NULL READY
