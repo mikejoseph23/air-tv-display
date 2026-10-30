@@ -6,6 +6,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private let receiver = ReceiverController()
     private lazy var video = VideoPipeline(requireHardware: !CommandLine.arguments.contains("--software-decode"))
     private var fixturePlayer: VideoFixturePlayer?
+    /// Fixture runs hold the display awake like a live stream (checked with `pmset -g assertions`).
+    private let fixtureSleepGuard = DisplaySleepGuard(name: "Air TV Display: fixture playback")
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         let args = CommandLine.arguments
@@ -22,6 +24,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         if !selfTest { showWindow() }
         statusController = StatusItemController(receiver: receiver, onShowWindow: { [weak self] in self?.showWindow() })
 
+        receiver.onNetworkChange = { [weak self] in self?.statusController?.refresh() }
         receiver.onStateChange = { [weak self] state in
             print("[state] \(state.rawValue)")
             self?.statusController?.refresh()
@@ -64,8 +67,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             window?.showVideoOnly()
             print("[fixture] \(path): \(player.units.count) access units x \(o.loops) at \(o.fps) fps")
             // Give the window a moment to come up so the first frames have a drawable.
+            fixtureSleepGuard.hold(true)
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 player.play { [weak self] snap, fed in
+                    self?.fixtureSleepGuard.hold(false)
+                    print("[fixture] A/V (synthetic timeline: ntp = feed time) " + player.avSync.report().line)
                     print(VideoFixturePlayer.report(snap, fed: fed, units: player.units.count, options: o,
                                                     gpu: self?.video.renderer?.deviceName ?? "none"))
                     let wantHW = !args.contains("--software-decode")

@@ -14,6 +14,7 @@
 		0AA8E88251A1CDAD9735D73D /* BonjourTXTTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCE556C8E940F9E7E39B992F /* BonjourTXTTests.swift */; };
 		0AAD3365E606C4CBC9B8A91E /* compat.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = D20D7AD95D0FF61B35C0C3B4 /* compat.h */; };
 		10E53BD32E091576DFBA0054 /* http_response.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3A2295901D59826D292269D4 /* http_response.h */; };
+		12197E6C8F2D2125841A608D /* AVSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98B91ED5CB70BD2C01E78687 /* AVSync.swift */; };
 		1641561E51A86F728725D92B /* libUxPlayLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AD6A71498A9A153E24ABB37 /* libUxPlayLib.a */; };
 		192F8E3FE36974FCC457B3E9 /* raop_handlers.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 384E2AD721433BB44657E1C4 /* raop_handlers.h */; };
 		1AF3901AF67EEA807A06058F /* AudioTiming.swift in Sources */ = {isa = PBXBuildFile; fileRef = 749B73C3E420D8DEE0234E87 /* AudioTiming.swift */; };
@@ -26,6 +27,7 @@
 		290437EB6FD279CBB97AB323 /* byteutils.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 489CA60284E4C4BA7EE8796E /* byteutils.h */; };
 		2970314F272FA15AB4D1D5CC /* netutils.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = A3AA4CD9785E879B5A5E78D6 /* netutils.h */; };
 		2B2720AD33F8E5D7153DA79D /* RtspLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10EE1B2297EF8A5D7272134B /* RtspLog.swift */; };
+		315BCA19258FD890A6D81019 /* AVSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98B91ED5CB70BD2C01E78687 /* AVSync.swift */; };
 		316D81C697C100F5249FB311 /* llhttp.c in Sources */ = {isa = PBXBuildFile; fileRef = 3A1EF12EE13D7753A2CD3BBD /* llhttp.c */; };
 		342ED697AE3AD575D2C3712F /* VideoPipelineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CCEFEC51319497D829BC805 /* VideoPipelineTests.swift */; };
 		35406EC40B1268B87EE702F9 /* raop_ntp.c in Sources */ = {isa = PBXBuildFile; fileRef = B914E50073D7FBD622A0F0E7 /* raop_ntp.c */; };
@@ -39,6 +41,7 @@
 		4CAF8ECF20CF50C7EF6EF0CC /* raop_ntp.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 46A99BDF714D6A1864F5CF52 /* raop_ntp.h */; };
 		5157B6EBE2F0CD2F96C24C17 /* BonjourRegistrar.swift in Sources */ = {isa = PBXBuildFile; fileRef = F619758C2E38812E89D4C640 /* BonjourRegistrar.swift */; };
 		52394FC25CD06397032F70A6 /* playfair.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1F84360A466645CD0D9A23BC /* playfair.h */; };
+		553647490155B534D6BB3324 /* LatencyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58B005ECC1CEEDC39DD3748A /* LatencyTests.swift */; };
 		588FBE73CD85B2D019EF0718 /* sap_hash.c in Sources */ = {isa = PBXBuildFile; fileRef = D52B2F734B8269D3A29A4D73 /* sap_hash.c */; };
 		5A7ACECD94E16A68354FF615 /* sockets.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4AC962F82E2D4475551AA5F8 /* sockets.h */; };
 		5B30C8E24C042F37866CE946 /* AnnexB.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6251A026DB7ABEAE00F1B7 /* AnnexB.swift */; };
@@ -61,6 +64,7 @@
 		886A8D209F1D539E04D12183 /* omg_hax.c in Sources */ = {isa = PBXBuildFile; fileRef = C2844F5A6FBD6635C794AC52 /* omg_hax.c */; };
 		8989704DBAEC199C3736117C /* ReceiverController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76176648ABBBAE4AE2183C85 /* ReceiverController.swift */; };
 		8A0E9F194493767B1DDFC4A6 /* PairingFairPlayTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FC032FBF2056A6432219FDF /* PairingFairPlayTests.swift */; };
+		8A5E2D6E40FC038CC8828511 /* DisplaySleepGuard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF1C5A52E4E961075ECCE0B /* DisplaySleepGuard.swift */; };
 		8BF66C8518D69B4701A22109 /* srp.c in Sources */ = {isa = PBXBuildFile; fileRef = AA44A058A810852119069DE9 /* srp.c */; };
 		8D5714B687BAA07243E64F11 /* RaopServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBCB9F83DCD55ABF3B6F359D /* RaopServer.swift */; };
 		8D67DEA4C8A504273F76E30F /* http_handlers.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 01A7E5D9A3F8A79C627A0CBC /* http_handlers.h */; };
@@ -77,6 +81,7 @@
 		97E70B90EC7644B8E12B8C8B /* crypto.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2F80C3DC2BB96ACB94519339 /* crypto.h */; };
 		97EC9324E7E1791AA1A0B029 /* AudioDecoderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1C7D8D594DA4C844FF1566D /* AudioDecoderTests.swift */; };
 		9B03A2B30D43E6DF7AA022B4 /* utils.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = F1A0DF1FFD61D02731D64AC8 /* utils.h */; };
+		9D3D238147BB18F9770C130D /* AVSyncTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2BB67B0B925D87B4CDAAE27 /* AVSyncTests.swift */; };
 		9EF3C907BFD100588403304C /* mirror_buffer.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = EAB8F64EB44EA3371E9C8D70 /* mirror_buffer.h */; };
 		A305AF64620DC0BFCA138486 /* raop_rtp.c in Sources */ = {isa = PBXBuildFile; fileRef = A69081D28CBE3E3D5FDD95BD /* raop_rtp.c */; };
 		A7581AF40D6B4C141E1717AA /* VideoPathFormatTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63471B0536BADC6A69B85D86 /* VideoPathFormatTests.swift */; };
@@ -88,6 +93,7 @@
 		B54AFFDB154322B7186088F9 /* httpd.c in Sources */ = {isa = PBXBuildFile; fileRef = DC913C7663328CE41E4A8FF3 /* httpd.c */; };
 		B740B1268A641A9CD2637E12 /* StreamDump.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E129CE65C6BDF65CBA3D8F /* StreamDump.swift */; };
 		B78DFEF366EDFA5C6B9CDBAE /* AnnexB.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6251A026DB7ABEAE00F1B7 /* AnnexB.swift */; };
+		C1C1450BC74FB38FA96A2ECF /* RobustnessTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00955407A6EA300B21E9EFE6 /* RobustnessTests.swift */; };
 		C23CF891CCB4BF5528AAD487 /* raop_rtp_mirror.c in Sources */ = {isa = PBXBuildFile; fileRef = D18F70756340116793126379 /* raop_rtp_mirror.c */; };
 		C6F291593EAE773A62E23A52 /* VideoPipeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C2AACB8B96B09DD6DAF8E96 /* VideoPipeline.swift */; };
 		C84326580F1A6EB317B32313 /* modified_md5.c in Sources */ = {isa = PBXBuildFile; fileRef = 57DF091C9E641413538D8557 /* modified_md5.c */; };
@@ -111,10 +117,12 @@
 		E8A4CD2FA5ED5323C156D6E5 /* VideoHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C4B4A26B7C993E7D41C9EA4 /* VideoHUD.swift */; };
 		EB177092EDC0B26787F0AD8D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40CDDE4CB8FB00BCF3B43929 /* AppDelegate.swift */; };
 		EBB6F4E35E7396478B84E4EA /* VideoPipeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C2AACB8B96B09DD6DAF8E96 /* VideoPipeline.swift */; };
+		ECEF8EDC60094DEEB02EE2B7 /* AppIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 156F8C8B1E1B0B82887E005B /* AppIcon.icns */; };
 		EE5F699A648E2CA1B89EC506 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475B5D1990FD3CEA51640BE9 /* main.swift */; };
 		F1DB8F17AC9F33B7500C62CB /* airplay_video.c in Sources */ = {isa = PBXBuildFile; fileRef = 14816F88B9ADF2DBC235E242 /* airplay_video.c */; };
 		F3794B2F5A88EA0044264888 /* fairplay_playfair.c in Sources */ = {isa = PBXBuildFile; fileRef = 12AC200E3BC7BC69AB14A594 /* fairplay_playfair.c */; };
 		F735F9FEC9F2BF21FB13F93F /* dnssd.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = FF6D70933F21D901F31E9736 /* dnssd.h */; };
+		F78079A53770CE6ACC51D973 /* DisplaySleepGuard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF1C5A52E4E961075ECCE0B /* DisplaySleepGuard.swift */; };
 		FA82FB3B8E3F402F54B7EA6D /* raop_rtp_mirror.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = D684FD95A19B69B7F9F9AEF9 /* raop_rtp_mirror.h */; };
 /* End PBXBuildFile section */
 
@@ -179,10 +187,12 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		00955407A6EA300B21E9EFE6 /* RobustnessTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RobustnessTests.swift; sourceTree = "<group>"; };
 		01A7E5D9A3F8A79C627A0CBC /* http_handlers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = http_handlers.h; sourceTree = "<group>"; };
 		10EE1B2297EF8A5D7272134B /* RtspLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RtspLog.swift; sourceTree = "<group>"; };
 		12AC200E3BC7BC69AB14A594 /* fairplay_playfair.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = fairplay_playfair.c; sourceTree = "<group>"; };
 		14816F88B9ADF2DBC235E242 /* airplay_video.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = airplay_video.c; sourceTree = "<group>"; };
+		156F8C8B1E1B0B82887E005B /* AppIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = AppIcon.icns; sourceTree = "<group>"; };
 		174A8527EB6B3FCB82DBF57D /* netutils.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = netutils.c; sourceTree = "<group>"; };
 		1984BB941F9CB5DDC92BE326 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		1CC29A647D80DCDD486015F4 /* compat.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = compat.c; sourceTree = "<group>"; };
@@ -213,6 +223,7 @@
 		4D1442780D0702AE67A3177B /* AirTVDisplay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AirTVDisplay.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5555BDB6ED8499135620129C /* http_response.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = http_response.c; sourceTree = "<group>"; };
 		57DF091C9E641413538D8557 /* modified_md5.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = modified_md5.c; sourceTree = "<group>"; };
+		58B005ECC1CEEDC39DD3748A /* LatencyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LatencyTests.swift; sourceTree = "<group>"; };
 		5C2AACB8B96B09DD6DAF8E96 /* VideoPipeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPipeline.swift; sourceTree = "<group>"; };
 		5D329A07EC78134E8A8500BF /* logger.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = logger.h; sourceTree = "<group>"; };
 		6151ED2922B6E643011FAAC3 /* logger.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = logger.c; sourceTree = "<group>"; };
@@ -233,8 +244,10 @@
 		8CCEFEC51319497D829BC805 /* VideoPipelineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPipelineTests.swift; sourceTree = "<group>"; };
 		90BB1BA117442D098B402BA9 /* ReceiverWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiverWindow.swift; sourceTree = "<group>"; };
 		988D3BDD45FC61B77C4F6079 /* raop_buffer.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = raop_buffer.c; sourceTree = "<group>"; };
+		98B91ED5CB70BD2C01E78687 /* AVSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVSync.swift; sourceTree = "<group>"; };
 		9B9DA4B8A408CEDDB6F1C5E3 /* utils.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = utils.c; sourceTree = "<group>"; };
 		A163BCB46B5F9F3AC7600DD2 /* mirror_buffer.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = mirror_buffer.c; sourceTree = "<group>"; };
+		A2BB67B0B925D87B4CDAAE27 /* AVSyncTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVSyncTests.swift; sourceTree = "<group>"; };
 		A3AA4CD9785E879B5A5E78D6 /* netutils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = netutils.h; sourceTree = "<group>"; };
 		A5341F4BA7800EC8DE634C50 /* fairplay.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fairplay.h; sourceTree = "<group>"; };
 		A5E3122902E36E15F09FD334 /* byteutils.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = byteutils.c; sourceTree = "<group>"; };
@@ -256,6 +269,7 @@
 		C95CA176345014187F3A01DD /* AirTVDisplay.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AirTVDisplay.entitlements; sourceTree = "<group>"; };
 		CE6251A026DB7ABEAE00F1B7 /* AnnexB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnexB.swift; sourceTree = "<group>"; };
 		CE77C08CA7E7D58ED22A3EC7 /* VideoDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoDecoder.swift; sourceTree = "<group>"; };
+		CEF1C5A52E4E961075ECCE0B /* DisplaySleepGuard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplaySleepGuard.swift; sourceTree = "<group>"; };
 		D18F70756340116793126379 /* raop_rtp_mirror.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = raop_rtp_mirror.c; sourceTree = "<group>"; };
 		D20D7AD95D0FF61B35C0C3B4 /* compat.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = compat.h; sourceTree = "<group>"; };
 		D52B2F734B8269D3A29A4D73 /* sap_hash.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = sap_hash.c; sourceTree = "<group>"; };
@@ -316,7 +330,9 @@
 				43D51B50CCDBF3425256CA4E /* AudioDecoder.swift */,
 				D77B0D90C1D3B8DC33E25DDC /* AudioRenderer.swift */,
 				749B73C3E420D8DEE0234E87 /* AudioTiming.swift */,
+				98B91ED5CB70BD2C01E78687 /* AVSync.swift */,
 				F619758C2E38812E89D4C640 /* BonjourRegistrar.swift */,
+				CEF1C5A52E4E961075ECCE0B /* DisplaySleepGuard.swift */,
 				1984BB941F9CB5DDC92BE326 /* Info.plist */,
 				475B5D1990FD3CEA51640BE9 /* main.swift */,
 				AFB10ED5A265994D7918374D /* NetworkInfo.swift */,
@@ -334,6 +350,7 @@
 				5C2AACB8B96B09DD6DAF8E96 /* VideoPipeline.swift */,
 				3B5468AF56C3B92710693135 /* VideoRenderer.swift */,
 				6166CCE2EF2E4010A289A275 /* VideoStats.swift */,
+				8C6D2AA6914F17C526F9D190 /* Resources */,
 			);
 			path = AirTVDisplay;
 			sourceTree = "<group>";
@@ -404,6 +421,14 @@
 			path = lib;
 			sourceTree = "<group>";
 		};
+		8C6D2AA6914F17C526F9D190 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				156F8C8B1E1B0B82887E005B /* AppIcon.icns */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		95284AA0BB8E51752C2F1386 /* playfair */ = {
 			isa = PBXGroup;
 			children = (
@@ -434,9 +459,12 @@
 			children = (
 				F1C7D8D594DA4C844FF1566D /* AudioDecoderTests.swift */,
 				6C84E6CEABA71EE58302A605 /* AudioTimingTests.swift */,
+				A2BB67B0B925D87B4CDAAE27 /* AVSyncTests.swift */,
 				FCE556C8E940F9E7E39B992F /* BonjourTXTTests.swift */,
+				58B005ECC1CEEDC39DD3748A /* LatencyTests.swift */,
 				F7C240D657014B4D184FD1DC /* NetworkInfoTests.swift */,
 				2FC032FBF2056A6432219FDF /* PairingFairPlayTests.swift */,
+				00955407A6EA300B21E9EFE6 /* RobustnessTests.swift */,
 				1D895F70F0E052D9DC3C95FA /* SessionLifecycleTests.swift */,
 				B31BBE4B76CE958070B9C350 /* StreamDumpAnnexBTests.swift */,
 				63471B0536BADC6A69B85D86 /* VideoPathFormatTests.swift */,
@@ -499,6 +527,7 @@
 			buildConfigurationList = E19155D8B18F0E7276FEB7B7 /* Build configuration list for PBXNativeTarget "AirTVDisplay" */;
 			buildPhases = (
 				7CD310A6C7A97E633533CF35 /* Sources */,
+				93D0DEFA0D1307A3EDD04F05 /* Resources */,
 				7746A89398339AD3FF8FE064 /* Frameworks */,
 				3FDAF254F2B766BD70AD262E /* Embed libcrypto */,
 			);
@@ -574,6 +603,17 @@
 		};
 /* End PBXProject section */
 
+/* Begin PBXResourcesBuildPhase section */
+		93D0DEFA0D1307A3EDD04F05 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECEF8EDC60094DEEB02EE2B7 /* AppIcon.icns in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
 /* Begin PBXShellScriptBuildPhase section */
 		3FDAF254F2B766BD70AD262E /* Embed libcrypto */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -637,6 +677,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				315BCA19258FD890A6D81019 /* AVSync.swift in Sources */,
+				9D3D238147BB18F9770C130D /* AVSyncTests.swift in Sources */,
 				5B30C8E24C042F37866CE946 /* AnnexB.swift in Sources */,
 				3667DD3162148EE2EA5F6887 /* AudioDecoder.swift in Sources */,
 				97EC9324E7E1791AA1A0B029 /* AudioDecoderTests.swift in Sources */,
@@ -645,11 +687,14 @@
 				D3E59766CE6876C6EFA9A250 /* AudioTimingTests.swift in Sources */,
 				925FD9EC71DA58919CB9636C /* BonjourRegistrar.swift in Sources */,
 				0AA8E88251A1CDAD9735D73D /* BonjourTXTTests.swift in Sources */,
+				F78079A53770CE6ACC51D973 /* DisplaySleepGuard.swift in Sources */,
+				553647490155B534D6BB3324 /* LatencyTests.swift in Sources */,
 				817536A9A94C7F9BFD2119DC /* NetworkInfo.swift in Sources */,
 				94F721BF62FC0680816A2ADB /* NetworkInfoTests.swift in Sources */,
 				8A0E9F194493767B1DDFC4A6 /* PairingFairPlayTests.swift in Sources */,
 				8D5714B687BAA07243E64F11 /* RaopServer.swift in Sources */,
 				05FAA60A23D066E7479EB685 /* ReceiverState.swift in Sources */,
+				C1C1450BC74FB38FA96A2ECF /* RobustnessTests.swift in Sources */,
 				2B2720AD33F8E5D7153DA79D /* RtspLog.swift in Sources */,
 				A86F2DFD7BA1786910F291D5 /* SessionLifecycleTests.swift in Sources */,
 				B740B1268A641A9CD2637E12 /* StreamDump.swift in Sources */,
@@ -669,12 +714,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				12197E6C8F2D2125841A608D /* AVSync.swift in Sources */,
 				B78DFEF366EDFA5C6B9CDBAE /* AnnexB.swift in Sources */,
 				EB177092EDC0B26787F0AD8D /* AppDelegate.swift in Sources */,
 				288A063FE89E201F88133545 /* AudioDecoder.swift in Sources */,
 				23AD473BC9BE874A8C9FC164 /* AudioRenderer.swift in Sources */,
 				68413C075E0C727D47020A33 /* AudioTiming.swift in Sources */,
 				5157B6EBE2F0CD2F96C24C17 /* BonjourRegistrar.swift in Sources */,
+				8A5E2D6E40FC038CC8828511 /* DisplaySleepGuard.swift in Sources */,
 				5DFD0E792C7736D00A05B772 /* NetworkInfo.swift in Sources */,
 				94EB02151EA1C2287D4D0B28 /* RaopServer.swift in Sources */,
 				8989704DBAEC199C3736117C /* ReceiverController.swift in Sources */,

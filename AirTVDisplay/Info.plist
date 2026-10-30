@@ -8,6 +8,8 @@
 	<string>Air TV Display</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIconFile</key>
+	<string>AppIcon</string>
 	<key>CFBundleIdentifier</key>
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
@@ -20,6 +22,8 @@
 	<string>0.1</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.utilities</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>13.0</string>
 	<key>NSBonjourServices</key>
@@ -27,6 +31,8 @@
 		<string>_airplay._tcp</string>
 		<string>_raop._tcp</string>
 	</array>
+	<key>NSHumanReadableCopyright</key>
+	<string>Internal spike build. Contains GPLv3 UxPlay code; see thirdparty/LICENSES.md.</string>
 	<key>NSLocalNetworkUsageDescription</key>
 	<string>Air TV Display advertises itself on the local network so Macs and iPhones can AirPlay to it.</string>
 	<key>NSPrincipalClass</key>

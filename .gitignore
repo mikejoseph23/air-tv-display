@@ -10,3 +10,4 @@ thirdparty/UxPlay-spike/
 # xcodegen is checked in; generated project is too, but local user data is not
 *.xcodeproj/xcuserdata/
 *.xcodeproj/project.xcworkspace/xcuserdata/
+dist/

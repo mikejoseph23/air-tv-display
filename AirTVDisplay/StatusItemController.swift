@@ -18,6 +18,9 @@ final class StatusItemController: NSObject {
         menu.addItem(.separator())
         toggle.target = self
         menu.addItem(toggle)
+        let reset = NSMenuItem(title: "Reset Connection", action: #selector(resetConnection), keyEquivalent: "")
+        reset.target = self
+        menu.addItem(reset)
         let show = NSMenuItem(title: "Show Window", action: #selector(showWindow), keyEquivalent: "")
         show.target = self
         menu.addItem(show)
@@ -39,6 +42,8 @@ final class StatusItemController: NSObject {
         receiver.isRunning ? receiver.stop() : receiver.start()
         refresh()
     }
+
+    @objc private func resetConnection() { receiver.resetConnections(); refresh() }
 
     @objc private func showWindow() { onShowWindow() }
 }

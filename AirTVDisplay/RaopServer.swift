@@ -1,4 +1,5 @@
 import Foundation
+import QuartzCore
 
 enum RaopError: Error, CustomStringConvertible {
     case badDeviceID(String)
@@ -26,6 +27,8 @@ enum RaopEvent {
     case connectionClosed(open: Int)
     case clientRequest(name: String, model: String, deviceID: String)
     case mirrorRunning(Bool)
+    /// UxPlay's conn_reset (1 = network error, 2 = unsupported HLS) or one of ours
+    /// (`RaopServer.resetReasonFeedbackTimeout`); the server restarts its listener after it.
     case connectionReset(reason: Int32)
     /// First decrypted video buffer of a mirror session (summary of its NAL units).
     case videoStarted(nals: String)
@@ -48,7 +51,25 @@ final class RaopServer {
 
     var onEvent: ((RaopEvent) -> Void)?
     /// M5: decrypted mirror video goes here (decode + present). Called on the mirror thread.
-    weak var videoSink: VideoSink?
+    weak var videoSink: VideoSink? { didSet { videoSink?.attach(avSync: avSync) } }
+    /// M8: video-presents-first A/V sync shared by the video sink and `audio`.
+    let avSync = AVSync()
+
+    /// Reason passed with `.connectionReset` when the sender went silent (stock: `-reset n`).
+    static let resetReasonFeedbackTimeout: Int32 = 100
+    /// Reason for an explicit `resetConnections()` (tests, menu).
+    static let resetReasonManual: Int32 = 101
+    /// Seconds without any sign of life (feedback, RTSP, audio/video data) on an open connection
+    /// before the listener is reset, as stock uxplay's `-reset n` (default 15; 0 = never).
+    /// Env `AIRTV_RESET_SECONDS`.
+    var feedbackLimit: TimeInterval = ProcessInfo.processInfo.environment["AIRTV_RESET_SECONDS"].flatMap(Double.init) ?? 15
+    /// Second sender while one is connected: false (stock default) answers 409 Conflict and keeps
+    /// the current one; true (`AIRTV_NOHOLD=1`, stock `-nohold`) drops it for the newcomer.
+    var noHold = ProcessInfo.processInfo.environment["AIRTV_NOHOLD"] == "1"
+    /// Buffers larger than this are not passed to the decoder (a 1080p IDR is ~0.1 to 1 MB).
+    static let maxVideoBufferBytes = 16 << 20
+    /// Listener resets done (feedback timeout, conn_reset, manual). Main thread.
+    private(set) var listenerResets = 0
 
     private var dnssd: UnsafeMutablePointer<dnssd_t>?
     private var raop: OpaquePointer?
@@ -61,6 +82,12 @@ final class RaopServer {
     /// Per mirror session (reset by mirror_video_running(true)); guarded by `lock`.
     fileprivate var session = VideoSession()
     fileprivate var dump: StreamDump?
+    /// Last sign of life from a sender (CACurrentMediaTime); guarded by `lock`.
+    fileprivate var lastActivity: CFTimeInterval = 0
+    private var watchdog: DispatchSourceTimer?
+    /// Listener restart failed; retried on each watchdog tick.
+    private var listenerDown = false
+    fileprivate var resetPending = false
     /// Audio decode + CoreAudio playback (M6). Read its timeline properties from the video path.
     let audio = AudioRenderer { level, msg in RtspLog.shared.log(level, "[audio] " + msg) }
 
@@ -68,11 +95,17 @@ final class RaopServer {
         var packets = 0
         var valid = 0
         var invalid = 0
+        var oversized = 0
         var bytes = 0
         var seenTypes = Set<UInt8>()
     }
     /// How many leading video buffers per session get a full NAL summary in the log.
     static let loggedPacketsPerSession = 5
+
+    init() { audio.avSync = avSync }
+
+    /// The `cls` UxPlay passes to every callback (unretained self).
+    var callbackContext: UnsafeMutableRawPointer { Unmanaged.passUnretained(self).toOpaque() }
 
     deinit { stop() }
 
@@ -88,6 +121,7 @@ final class RaopServer {
             try startDnssd(name: name, hw: hw)
             try startRaop(port: requested, deviceID: deviceID)
             if advertise { try register() }
+            startWatchdog()
             dump = StreamDump.fromEnvironment()
             if let dump { log(.info, "stream dump on: first \(dump.seconds)s of each session -> \(dump.fileURL.path)") }
             isRunning = true
@@ -101,6 +135,8 @@ final class RaopServer {
     }
 
     func stop() {
+        watchdog?.cancel(); watchdog = nil
+        listenerDown = false
         for s in dnssdSources { s.cancel() }
         dnssdSources.removeAll()
         if let d = dnssd {
@@ -121,7 +157,7 @@ final class RaopServer {
         isRunning = false
         port = 0
         lock.lock()
-        openConnections = 0; videoPackets = 0; audioPackets = 0; session = VideoSession()
+        openConnections = 0; videoPackets = 0; audioPackets = 0; session = VideoSession(); resetPending = false
         dump?.close(); dump = nil
         lock.unlock()
         audio.stop()
@@ -165,7 +201,8 @@ final class RaopServer {
         }, nil)
         raop_set_log_level(r, Self.logLevel)
         // nohold=0 (stock default); keyfile "" -> Ed25519 key derived from deviceid, as stock.
-        if raop_init2(r, 0, deviceID, "") != 0 {
+        // nohold: stock default 0 (a second sender gets 409); AIRTV_NOHOLD=1 lets it take over.
+        if raop_init2(r, noHold ? 1 : 0, deviceID, "") != 0 {
             free(UnsafeMutableRawPointer(r))   // what uxplay does; raop_destroy would assert
             throw RaopError.raopInit2
         }
@@ -224,6 +261,89 @@ final class RaopServer {
         return 7
     }
 
+    // MARK: reconnect (M8)
+
+    /// Number of RTSP connections UxPlay reports open.
+    var openConnectionCount: Int { lock.lock(); defer { lock.unlock() }; return openConnections }
+
+    /// Seconds since the last sign of life on an open connection (nil when none is open).
+    func silence(now: CFTimeInterval = CACurrentMediaTime()) -> TimeInterval? {
+        lock.lock(); defer { lock.unlock() }
+        return openConnections > 0 ? now - lastActivity : nil
+    }
+
+    fileprivate func noteActivity() { lastActivity = CACurrentMediaTime() }   // caller holds `lock`
+
+    /// Watchdog decision, pure for tests: reset when a connection is open and silent too long.
+    static func shouldReset(silence: TimeInterval?, limit: TimeInterval) -> Bool {
+        guard limit > 0, let silence else { return false }
+        return silence > limit
+    }
+
+    private func startWatchdog() {
+        let t = DispatchSource.makeTimerSource(queue: .main)
+        t.schedule(deadline: .now() + 1, repeating: 1)
+        t.setEventHandler { [weak self] in self?.watchdogTick() }
+        t.resume()
+        watchdog = t
+    }
+
+    func watchdogTick(now: CFTimeInterval = CACurrentMediaTime()) {
+        guard isRunning else { return }
+        if listenerDown { restartListener(); return }
+        let quiet = silence(now: now)
+        if Self.shouldReset(silence: quiet, limit: feedbackLimit) {
+            log(.warning, "no sign of life from the sender for \(Int(quiet ?? 0))s (limit \(Int(feedbackLimit))s); "
+                + "client may be asleep or offline, resetting connections")
+            resetConnections(reason: Self.resetReasonFeedbackTimeout)
+        }
+    }
+
+    /// Drops every connection and restarts the RTSP listener on the same port, as stock uxplay
+    /// does after conn_reset or a feedback timeout (raop_stop_httpd / raop_start_httpd). The
+    /// sender can then reconnect without the app restarting. Main thread only (it joins
+    /// UxPlay's threads, so it must never run on one of them).
+    func resetConnections(reason: Int32) {
+        dispatchPrecondition(condition: .onQueue(.main))
+        lock.lock(); resetPending = false; lock.unlock()
+        guard isRunning, let r = raop else { return }
+        listenerResets += 1
+        log(.info, "resetting connections (reason \(reason)), open=\(openConnectionCount)")
+        raop_stop_httpd(r)   // closes every connection: conn_destroy, mirror teardown
+        raop_remove_known_connections(r)
+        videoSink?.videoSessionEnded()
+        avSync.reset()
+        audio.stop()
+        lock.lock(); openConnections = 0; session = VideoSession(); lock.unlock()
+        restartListener()
+        emit(.connectionReset(reason: reason))
+    }
+
+    private func restartListener() {
+        guard let r = raop else { return }
+        var p = port
+        let rc = raop_start_httpd(r, &p)
+        if rc > 0 {
+            raop_set_port(r, p)
+            if listenerDown { log(.info, "listener back up on port \(p)") }
+            listenerDown = false
+        } else {
+            if !listenerDown { log(.err, "listener restart on port \(port) failed (\(rc)); retrying every second") }
+            listenerDown = true
+        }
+    }
+
+    /// conn_reset arrives on UxPlay's mirror thread: hop to main, once per burst.
+    fileprivate func scheduleReset(reason: Int32) {
+        lock.lock(); let already = resetPending; resetPending = true; lock.unlock()
+        guard !already else { return }
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            self.lock.lock(); let still = self.resetPending; self.lock.unlock()
+            if still { self.resetConnections(reason: reason) }
+        }
+    }
+
     // MARK: callbacks (log-only for M3; video/audio sinks land in M5/M6)
 
     fileprivate func log(_ level: RtspLog.Level, _ msg: String) { RtspLog.shared.log(level, "[raop-cb] " + msg) }
@@ -232,7 +352,8 @@ final class RaopServer {
 
     /// New mirror session: reset per-session stats and restart the optional dump.
     fileprivate func beginVideoSession() {
-        lock.lock(); session = VideoSession(); dump?.beginSession(); lock.unlock()
+        lock.lock(); session = VideoSession(); dump?.beginSession(); noteActivity(); lock.unlock()
+        avSync.reset()
         videoSink?.videoSessionBegan()
     }
 
@@ -241,18 +362,26 @@ final class RaopServer {
         lock.lock(); let v = session; lock.unlock()
         guard v.packets > 0 else { return }
         let types = v.seenTypes.sorted().map { AnnexB.typeName($0) }.joined(separator: ",")
-        log(.info, "video session end: packets=\(v.packets) decrypted=\(v.valid) failed=\(v.invalid) bytes=\(v.bytes) nalTypes=[\(types)]")
+        log(.info, "video session end: packets=\(v.packets) decrypted=\(v.valid) failed=\(v.invalid) oversized=\(v.oversized) bytes=\(v.bytes) nalTypes=[\(types)]")
+        log(.info, "A/V sync: " + avSync.report().line)
     }
 
     /// Inspects one `video_process` buffer. UxPlay's mirror thread has already AES-CTR
     /// decrypted it and replaced the 4-byte AVCC lengths with Annex-B start codes; it sets
     /// byte 0 to 0x01 when that failed. Internal (not private) so tests can feed fixtures.
-    func handleVideo(_ p: UnsafePointer<UInt8>, _ len: Int, nalCount: Int, h265: Bool) {
-        let ok = !h265 && AnnexB.looksDecrypted(p, len)
+    func handleVideo(_ p: UnsafePointer<UInt8>, _ len: Int, nalCount: Int, h265: Bool, ntpLocal: UInt64 = 0) {
+        guard len > 0 else { return }
+        let tooBig = len > Self.maxVideoBufferBytes
+        let ok = !h265 && !tooBig && AnnexB.looksDecrypted(p, len)
         lock.lock()
+        noteActivity()
         session.packets += 1
         session.bytes += len
         if ok { session.valid += 1 } else { session.invalid += 1 }
+        if tooBig {
+            session.oversized += 1
+            if session.oversized <= 3 { log(.warning, "video: \(len)-byte buffer exceeds \(Self.maxVideoBufferBytes); dropped") }
+        }
         let n = session.packets, firstValid = ok && session.valid == 1, firstInvalid = !ok && session.invalid == 1
         var nals: [AnnexB.NAL] = []
         if ok && (n <= Self.loggedPacketsPerSession || firstValid || !session.seenTypes.isSuperset(of: [5, 7, 8])) {
@@ -267,7 +396,7 @@ final class RaopServer {
             log(.info, "stream dump done: \(d.bytesWritten) bytes -> \(d.fileURL.path)")
         }
         lock.unlock()
-        if ok { videoSink?.videoAccessUnit(p, len) }
+        if ok { videoSink?.videoAccessUnit(p, len, ntpLocal: ntpLocal) }
 
         if n <= Self.loggedPacketsPerSession {
             let head = (0..<min(8, len)).map { String(format: "%02x", p[$0]) }.joined(separator: " ")
@@ -275,7 +404,7 @@ final class RaopServer {
                 + (ok ? "decrypted [\(head)] \(AnnexB.summary(nals))" : "NOT decrypted/invalid [\(head)]"))
         }
         if firstValid { emit(.videoStarted(nals: AnnexB.summary(nals))) }
-        if firstInvalid { emit(.videoDecryptFailed) }
+        if firstInvalid && !tooBig { emit(.videoDecryptFailed) }
     }
 
     fileprivate func emit(_ e: RaopEvent) {
@@ -284,12 +413,13 @@ final class RaopServer {
 
     /// Every slot UxPlay can call is filled: many call sites in lib/ invoke the pointer
     /// without a NULL check (see raop_handlers.h, raop_rtp_mirror.c).
-    private static func makeCallbacks() -> raop_callbacks_t {
+    /// Internal so tests can drive the real thunks (`c.conn_reset!(server.callbackContext, 1)`).
+    static func makeCallbacks() -> raop_callbacks_t {
         var c = raop_callbacks_t()
 
         c.conn_init = { cls in
             guard let s = me(cls) else { return }
-            s.lock.lock(); s.openConnections += 1; let n = s.openConnections; s.lock.unlock()
+            s.lock.lock(); s.openConnections += 1; s.noteActivity(); let n = s.openConnections; s.lock.unlock()
             s.log(.info, "conn_init open=\(n)")
             s.emit(.connectionOpened(open: n))
         }
@@ -301,15 +431,20 @@ final class RaopServer {
             s.emit(.connectionClosed(open: n))
         }
         c.conn_reset = { cls, reason in
-            me(cls)?.log(.info, "conn_reset reason=\(reason)")
-            me(cls)?.audio.stop()
-            me(cls)?.emit(.connectionReset(reason: reason))
+            guard let s = me(cls) else { return }
+            s.log(.info, "conn_reset reason=\(reason) (\(reason == 1 ? "lost connection with client" : "unsupported stream"))")
+            s.audio.stop()
+            s.scheduleReset(reason: reason)   // stock: reset_httpd, so a re-select works
         }
-        c.conn_feedback = { cls in me(cls)?.log(.debug, "conn_feedback") }
+        c.conn_feedback = { cls in
+            guard let s = me(cls) else { return }
+            s.lock.lock(); s.noteActivity(); s.lock.unlock()
+            s.log(.debug, "conn_feedback")
+        }
 
         c.audio_process = { cls, _, data in
             guard let s = me(cls), let d = data?.pointee else { return }
-            s.lock.lock(); s.audioPackets += 1; let n = s.audioPackets; s.lock.unlock()
+            s.lock.lock(); s.audioPackets += 1; s.noteActivity(); let n = s.audioPackets; s.lock.unlock()
             if n == 1 || n % 500 == 0 {
                 s.log(.debug, "audio_process #\(n) ct=\(d.ct) len=\(d.data_len) seq=\(d.seqnum) sync=\(d.sync_status)")
             }
@@ -321,11 +456,21 @@ final class RaopServer {
             if n % 300 == 0 {
                 s.log(.debug, "video_process #\(n) h265=\(d.is_h265) nals=\(d.nal_count) len=\(d.data_len)")
             }
-            s.handleVideo(p, Int(d.data_len), nalCount: Int(d.nal_count), h265: d.is_h265)
+            s.handleVideo(p, Int(d.data_len), nalCount: Int(d.nal_count), h265: d.is_h265, ntpLocal: d.ntp_time_local)
         }
         c.video_pause = { cls in me(cls)?.log(.info, "video_pause") }
         c.video_resume = { cls in me(cls)?.log(.info, "video_resume") }
-        c.video_reset = { cls, type in me(cls)?.log(.info, "video_reset type=\(type.rawValue)") }
+        c.video_reset = { cls, type in
+            guard let s = me(cls) else { return }
+            s.log(.info, "video_reset type=\(type.rawValue)")
+            // nohold takeover: the old sender's connections are being dropped for a new one.
+            if type == RESET_TYPE_NOHOLD {
+                s.log(.info, "second sender took over (nohold); ending the current session")
+                s.endVideoSession()
+                s.audio.stop()
+                s.emit(.mirrorRunning(false))
+            }
+        }
         c.video_set_codec_and_size = { cls, codec, ws, hs, xo, yo, w, h in
             me(cls)?.log(.info, "video_set_codec_and_size codec=\(codec.rawValue) source=\(ws)x\(hs) offset=\(xo),\(yo) size=\(w)x\(h)")
             return 0

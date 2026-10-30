@@ -16,3 +16,7 @@
 - OpenSSL 3 (Apache-2.0): `libcrypto.3.dylib` is embedded in `Contents/Frameworks` for the spike.
 - libplist 2.8.0 (LGPL-2.1): linked statically from the micromamba env.
 - Both come from `AIRTV_DEPS_PREFIX` (see `project.yml`).
+
+## M8 packaging note (2026-10-30)
+
+M8 produces the first `.app` (`scripts/package-app.sh`, ad-hoc signed, `dist/` is gitignored). Nothing changes in the GPL picture above: the bundle statically links GPLv3 UxPlay/playfair code, so it stays an internal build on Mike's own machines. If it is ever given to anyone else (or notarized for distribution), the deferred decision has to be made first: ship the app's source under GPLv3, or replace the GPL components. No decision needed now. `NSHumanReadableCopyright` in the bundle points at this file.

@@ -6,11 +6,11 @@ import Foundation
 /// Threading: every entry point is safe to call from UxPlay's RTP / HTTP threads; the work
 /// runs on one serial queue. `audio_process` buffers are copied before the callback returns.
 ///
-/// A/V contract for the video path (M5): audio frames are placed on the host clock at
-/// `AudioClock.hostNanos(forNTPLocal: ntp_time_local) + timelineShiftNanos`. To stay in sync,
-/// present a video frame at `AudioClock.hostNanos(forNTPLocal: frame.ntp_time_local)
-/// + audioTimelineShiftNanos + audioOutputLatencyNanos`. Both properties are readable from any
-/// thread and are 0 while no audio is playing (video then simply follows its own clock).
+/// A/V sync (M8, see `AVSync`): video presents ASAP and audio follows it. Audio frames are
+/// placed on the host clock at `AudioClock.hostNanos(forNTPLocal: ntp_time_local)
+/// + avSync.audioDelayNanos(...) + userOffset (+ the scheduler's late-start shift)`, i.e. as far
+/// behind the shared timeline as video is measured to be, less the output latency. Without
+/// `avSync` (or before any video frame) the delay is 0 and audio follows its own timeline.
 final class AudioRenderer {
     private let queue = DispatchQueue(label: "net.iadev.airtv.audio", qos: .userInteractive)
     private let log: (RtspLog.Level, String) -> Void
@@ -36,6 +36,12 @@ final class AudioRenderer {
     let timeSync: Bool
     /// Env `AIRTV_AUDIO_OFFSET_MS`: extra delay (+) or advance (-) applied to the audio timeline.
     let userOffsetNanos: Int64
+
+    /// Video-driven audio delay (set by `RaopServer`). Read on the audio queue.
+    var avSync: AVSync?
+    /// Delay applied to the last packet (ns), for the A/V offset report. Queue-confined.
+    private var appliedDelay: Int64 = 0
+    private var lastOffsetLog: UInt64 = 0
 
     init(log: @escaping (RtspLog.Level, String) -> Void) {
         self.log = log
@@ -135,7 +141,10 @@ final class AudioRenderer {
 
         let now = AudioClock.hostNanosNow()
         var target = timeSync ? AudioClock.hostNanos(forNTPLocal: ntpLocal, hostNow: now) : nil
-        if let t = target { target = UInt64(max(1, Int64(t) + userOffsetNanos)) }
+        let timeline = target
+        let outLatency = audioOutputLatencyNanos
+        appliedDelay = target == nil ? 0 : (avSync?.audioDelayNanos(outputLatencyNanos: outLatency) ?? 0)
+        if let t = target { target = UInt64(max(1, Int64(t) + userOffsetNanos + appliedDelay)) }
         let action = scheduler.plan(targetHostNanos: target, frames: frames, now: now)
         guard let buf = Self.floatBuffer(from: pcm, frames: frames, format: format) else { return }
 
@@ -159,6 +168,13 @@ final class AudioRenderer {
         if packets == 1 || packets % 1000 == 0 {
             log(.debug, "audio: packets=\(packets) dropped=\(dropped) invalid=\(invalid)")
         }
+        if let tl = timeline, let placed = scheduler.lastPlacedHostNanos,
+           let off = avSync?.recordAudio(placedHostNanos: placed, timelineHostNanos: Int64(tl), outputLatencyNanos: outLatency),
+           now &- lastOffsetLog > 10_000_000_000 || lastOffsetLog == 0 {
+            lastOffsetLog = now
+            log(.info, "audio: A/V offset \(String(format: "%+.1f", Double(off) / 1e6)) ms (audio delay "
+                + "\(appliedDelay / 1_000_000) ms, shift \(scheduler.shiftNanos / 1_000_000) ms, out \(outLatency / 1_000_000) ms)")
+        }
     }
 
     // MARK: helpers
@@ -174,6 +190,7 @@ final class AudioRenderer {
         if let p = player { engine?.detach(p) }
         player = nil; engine = nil; decoder = nil; codec = nil
         scheduler.reset()
+        appliedDelay = 0; lastOffsetLog = 0
         publish(shift: 0, latency: 0)
         log(.info, "audio: stopped (packets=\(packets) dropped=\(dropped) invalid=\(invalid))")
     }

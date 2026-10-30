@@ -63,10 +63,12 @@ struct AudioScheduler {
     /// Nanoseconds the playout timeline is later than the sender's timeline (>= 0 usually).
     /// Video that wants to stay in sync should be presented this much later as well.
     private(set) var shiftNanos: Int64 = 0
+    /// Host time (ns) at which the packet of the last `plan` call will play (nil: dropped).
+    private(set) var lastPlacedHostNanos: Int64?
 
     var isStarted: Bool { startHost != nil }
 
-    mutating func reset() { startHost = nil; framesQueued = 0; shiftNanos = 0 }
+    mutating func reset() { startHost = nil; framesQueued = 0; shiftNanos = 0; lastPlacedHostNanos = nil }
 
     static func nanos(forFrames f: Int64) -> Int64 { Int64(Double(f) * 1_000_000_000 / sampleRate) }
     static func frames(forNanos n: Int64) -> Int { Int((Double(n) * sampleRate / 1_000_000_000).rounded()) }
@@ -80,17 +82,23 @@ struct AudioScheduler {
             return begin(target: target, frames: frames, now: now)
         }
         if next < now { return begin(target: target, frames: frames, now: now)}   // underrun
-        guard let target else { framesQueued += Int64(frames); return .append }
+        guard let target else { lastPlacedHostNanos = next; framesQueued += Int64(frames); return .append }
 
+        // M8: a late-start shift is only kept as long as it is needed. When targets move later
+        // (e.g. the A/V sync delay grows once video is measured), shrink it so the stream lands
+        // on target instead of carrying the startup lateness forever. Never grows here.
+        if shiftNanos > 0 { shiftNanos = min(shiftNanos, max(0, next - Int64(target))) }
         let wanted = Int64(target) + shiftNanos
         let d = wanted - next
-        if abs(d) <= tolerance { framesQueued += Int64(frames); return .append }
+        if abs(d) <= tolerance { lastPlacedHostNanos = next; framesQueued += Int64(frames); return .append }
         if abs(d) > resyncThreshold { return begin(target: target, frames: frames, now: now) }
         if d > 0 {
             let pad = Self.frames(forNanos: d)
+            lastPlacedHostNanos = next + Self.nanos(forFrames: Int64(pad))
             framesQueued += Int64(pad + frames)
             return .padSilence(frames: pad)
         }
+        lastPlacedHostNanos = nil
         return .drop
     }
 
@@ -102,6 +110,7 @@ struct AudioScheduler {
             if t >= earliest && t - now <= maxLead { at = t } else { shiftNanos = earliest - t }
         }
         startHost = at
+        lastPlacedHostNanos = at
         framesQueued = Int64(frames)
         return .start(atHostNanos: UInt64(at))
     }

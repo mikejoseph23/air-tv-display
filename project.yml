@@ -56,6 +56,9 @@ targets:
         CFBundleDisplayName: Air TV Display
         CFBundleShortVersionString: "0.1"
         CFBundleVersion: "1"
+        CFBundleIconFile: AppIcon
+        LSApplicationCategoryType: public.app-category.utilities
+        NSHumanReadableCopyright: Internal spike build. Contains GPLv3 UxPlay code; see thirdparty/LICENSES.md.
         LSMinimumSystemVersion: "13.0"
         NSPrincipalClass: NSApplication
         NSLocalNetworkUsageDescription: Air TV Display advertises itself on the local network so Macs and iPhones can AirPlay to it.
@@ -128,6 +131,8 @@ targets:
       - AirTVDisplay/VideoDecoder.swift
       - AirTVDisplay/VideoRenderer.swift
       - AirTVDisplay/VideoPipeline.swift
+      - AirTVDisplay/AVSync.swift
+      - AirTVDisplay/DisplaySleepGuard.swift
     dependencies:
       - target: UxPlayLib
         link: true

@@ -46,6 +46,9 @@ final class VideoRenderer {
     let stats: VideoStats
     /// Called on the render queue after each presented frame.
     var onPresent: (() -> Void)?
+    /// Called once the frame is on screen (or its GPU work is done when the compositor gives
+    /// no present time), with the frame's timing and that host time (`CACurrentMediaTime` base).
+    var onPresented: ((FrameTiming, CFTimeInterval) -> Void)?
 
     private let device: MTLDevice
     private let commandQueue: MTLCommandQueue
@@ -55,7 +58,8 @@ final class VideoRenderer {
     private let inFlight = DispatchSemaphore(value: 1)
 
     private let lock = NSLock()
-    private var mailbox = FrameMailbox<CVPixelBuffer>()
+    private struct Pending { let pb: CVPixelBuffer; let timing: FrameTiming? }
+    private var mailbox = FrameMailbox<Pending>()
     private var drainScheduled = false
     private var gpuBusy = 0
 
@@ -84,16 +88,22 @@ final class VideoRenderer {
         layer.backgroundColor = NSColor.black.cgColor
         // 2 drawables = lowest latency; AIRTV_DRAWABLES=3 trades a frame of latency for fewer drops.
         layer.maximumDrawableCount = Int(ProcessInfo.processInfo.environment["AIRTV_DRAWABLES"] ?? "").map { min(3, max(2, $0)) } ?? 2
-        layer.displaySyncEnabled = ProcessInfo.processInfo.environment["AIRTV_VSYNC"] != "0"
+        // M8: vsync OFF by default. Measured arrival->on-glass p50 on the iMac (fixture feeder):
+        // vsync on 23-34 ms at 30 fps and 50 ms at 60 fps (presents queue behind the 2 drawables),
+        // vsync off 7.5 ms / 6.5 ms. AIRTV_VSYNC=1 restores vsync if tearing shows.
+        layer.displaySyncEnabled = Self.vsyncDefault(env: ProcessInfo.processInfo.environment["AIRTV_VSYNC"])
         layer.allowsNextDrawableTimeout = true
     }
 
     var deviceName: String { device.name }
+    var vsync: Bool { layer.displaySyncEnabled }
+
+    static func vsyncDefault(env: String?) -> Bool { env == "1" }
 
     /// Any thread.
-    func enqueue(_ pb: CVPixelBuffer) {
+    func enqueue(_ pb: CVPixelBuffer, timing: FrameTiming? = nil) {
         lock.lock()
-        if mailbox.put(pb) { stats.presentDropped() }
+        if mailbox.put(Pending(pb: pb, timing: timing)) { stats.presentDropped() }
         stats.queueDepth(1 + gpuBusy)
         let schedule = !drainScheduled
         drainScheduled = true
@@ -113,15 +123,15 @@ final class VideoRenderer {
     private func drain() {
         while true {
             lock.lock()
-            guard let pb = mailbox.take() else { drainScheduled = false; lock.unlock(); return }
+            guard let p = mailbox.take() else { drainScheduled = false; lock.unlock(); return }
             lock.unlock()
-            if draw(pb) { stats.presented(); onPresent?() }
+            if draw(p.pb, timing: p.timing) { stats.presented(); onPresent?() }
         }
     }
 
     /// Render queue only. Returns true when a frame was presented.
     @discardableResult
-    private func draw(_ pb: CVPixelBuffer?) -> Bool {
+    private func draw(_ pb: CVPixelBuffer?, timing: FrameTiming? = nil) -> Bool {
         inFlight.wait()
         lock.lock(); gpuBusy = 1; stats.queueDepth((mailbox.pending == nil ? 0 : 1) + 1); lock.unlock()
         var keep: [CVMetalTexture] = []
@@ -151,10 +161,33 @@ final class VideoRenderer {
             enc.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4)
         }
         enc.endEncoding()
+        if let timing, !keep.isEmpty { trackPresent(drawable, cb, timing) }
         cb.present(drawable)
         cb.addCompletedHandler { _ in _ = keep; done() }
         cb.commit()
         return pb != nil && !keep.isEmpty
+    }
+
+    /// Latency of one frame: on-glass time from the drawable's presented handler when the
+    /// compositor reports one, else the command buffer's completion time.
+    private func trackPresent(_ drawable: CAMetalDrawable, _ cb: MTLCommandBuffer, _ timing: FrameTiming) {
+        let once = PresentOnce()
+        drawable.addPresentedHandler { [weak self] d in
+            guard d.presentedTime > 0, once.claim() else { return }
+            self?.recordPresent(timing, at: d.presentedTime, onGlass: true)
+        }
+        cb.addCompletedHandler { [weak self] _ in
+            let t = CACurrentMediaTime()
+            // Give the presented handler a few refreshes to report a real on-glass time.
+            self?.renderQueue.asyncAfter(deadline: .now() + 0.05) {
+                if once.claim() { self?.recordPresent(timing, at: t, onGlass: false) }
+            }
+        }
+    }
+
+    private func recordPresent(_ timing: FrameTiming, at t: CFTimeInterval, onGlass: Bool) {
+        stats.presentLatency(ms: (t - timing.arrival) * 1000, onGlass: onGlass)
+        onPresented?(timing, t)
     }
 
     private func texture(_ pb: CVPixelBuffer, plane: Int, format: MTLPixelFormat) -> CVMetalTexture? {
@@ -190,6 +223,13 @@ final class VideoRenderer {
         return float4(saturate(c.m * (yuv - c.offset)), 1);
     }
     """
+}
+
+/// First caller wins (presented handler vs. GPU-completion fallback).
+private final class PresentOnce {
+    private let lock = NSLock()
+    private var done = false
+    func claim() -> Bool { lock.lock(); defer { lock.unlock() }; if done { return false }; done = true; return true }
 }
 
 /// Layer-hosting view for the renderer's `CAMetalLayer`; keeps the drawable at pixel size.

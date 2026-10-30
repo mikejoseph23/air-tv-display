@@ -17,6 +17,8 @@ import VideoToolbox
 final class VideoDecoder {
     /// Pixel buffer and decode time (submit -> output) in milliseconds.
     var onFrame: ((CVPixelBuffer, Double) -> Void)?
+    /// Same frame with its arrival/decode timestamps (latency + A/V sync). Called after `onFrame`.
+    var onTimedFrame: ((CVPixelBuffer, FrameTiming) -> Void)?
     var onLog: ((String) -> Void)?
     let stats: VideoStats
     /// false: allow a software decoder (comparison runs only).
@@ -32,9 +34,25 @@ final class VideoDecoder {
     /// Session generation: frames from an invalidated session are ignored.
     private var generation = 0
 
-    init(stats: VideoStats, requireHardware: Bool = true) {
+    /// Decode submission mode (`AIRTV_DECODE`), tuned in M8:
+    /// - `async` (default): asynchronous, no 1x-real-time hint (decoder runs flat out).
+    /// - `async1x`: the M5 flags (`_1xRealTimePlayback` lets the decoder pace itself; adds latency).
+    /// - `sync`: decode on the calling thread; the frame is out when `decode` returns.
+    enum Mode: String { case async, async1x, sync }
+    let mode: Mode
+
+    init(stats: VideoStats, requireHardware: Bool = true, mode: Mode? = nil) {
         self.stats = stats
         self.requireHardware = requireHardware
+        self.mode = mode ?? ProcessInfo.processInfo.environment["AIRTV_DECODE"].flatMap(Mode.init) ?? .async
+    }
+
+    var decodeFlags: VTDecodeFrameFlags {
+        switch mode {
+        case .async: return [._EnableAsynchronousDecompression]
+        case .async1x: return [._EnableAsynchronousDecompression, ._1xRealTimePlayback]
+        case .sync: return []
+        }
     }
 
     deinit { reset() }
@@ -45,11 +63,13 @@ final class VideoDecoder {
     }
 
     /// One UxPlay-shaped Annex-B buffer.
-    func decode(_ p: UnsafePointer<UInt8>, _ len: Int) {
-        decode(VideoFormat.accessUnit(UnsafeRawBufferPointer(start: p, count: len)))
+    func decode(_ p: UnsafePointer<UInt8>, _ len: Int, timing: FrameTiming? = nil) {
+        let t = timing ?? FrameTiming(arrival: CACurrentMediaTime())
+        decode(VideoFormat.accessUnit(UnsafeRawBufferPointer(start: p, count: len)), timing: t)
     }
 
-    func decode(_ au: VideoFormat.AccessUnit) {
+    func decode(_ au: VideoFormat.AccessUnit, timing: FrameTiming? = nil) {
+        let timing0 = timing ?? FrameTiming(arrival: CACurrentMediaTime())
         stats.received()
         lock.lock()
         let changed: Bool = {
@@ -76,7 +96,7 @@ final class VideoDecoder {
             return
         }
         let submitted = CACurrentMediaTime()
-        let flags: VTDecodeFrameFlags = [._EnableAsynchronousDecompression, ._1xRealTimePlayback]
+        let flags = decodeFlags
         var info = VTDecodeInfoFlags()
         let st = VTDecompressionSessionDecodeFrame(session, sampleBuffer: sample, flags: flags, infoFlagsOut: &info) {
             [weak self] status, infoFlags, image, _, _ in
@@ -91,7 +111,11 @@ final class VideoDecoder {
             self.lock.lock(); let current = gen == self.generation; self.lock.unlock()
             guard current else { return }
             self.stats.decoded(ms: ms, width: CVPixelBufferGetWidth(image), height: CVPixelBufferGetHeight(image))
+            var timing = timing0
+            timing.decoded = CACurrentMediaTime()
+            self.stats.decodeLatency(ms: (timing.decoded - timing.arrival) * 1000)
             self.onFrame?(image, ms)
+            self.onTimedFrame?(image, timing)
         }
         if st != noErr {
             log("VTDecompressionSessionDecodeFrame \(st)")

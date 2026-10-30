@@ -137,3 +137,21 @@ Air\032TV\032Display\032M1._airplay._tcp.local. can be reached at Mikes-iMac.loc
 - Stock UxPlay (PID 29841) was left running and untouched.
 
 **Pending hands-on (Mike, Studio GUI):** Control Center -> Screen Mirroring lists "Air TV Display M1"; selecting it is expected to fail (no RTSP listener on 7100), record the exact error as the M3 baseline; also note whether the stock "Air TV Display@Mikes-iMac" is still listed alongside it.
+
+## M8: receiver-side latency (fixture feeder, offline)
+
+Measured with `--play-fixture Tests/Fixtures/synthetic-1080p.h264` (1080p H.264, 4 loops at 30 fps, or 6 loops at 60 fps) on the iMac (i7-7700K, Radeon Pro 580, 5K panel at 60 Hz). "Arrival" is the moment a decrypted buffer reaches the video sink; "on screen" is `MTLDrawable.presentedTime` (on-glass, reported by the compositor for 99% of frames). The sender's share (capture, encode, network) is not included and is a fixed floor.
+
+| Config | fps | arrival -> decoded p50 | arrival -> on screen p50 / p95 |
+|---|---|---|---|
+| M5 baseline: `_1xRealTimePlayback`, vsync on, 2 drawables (3 runs) | 30 | 2.0 ms | 28.4 to 33.9 / 30.1 to 35.7 ms |
+| vsync on, 2 drawables | 60 | 2.0 ms | 50.3 / 51.6 ms |
+| async without the 1x hint, vsync on (2 runs) | 30 | 1.9 ms | 22.7 to 31.1 ms (no real change; vsync phase dominates) |
+| sync decode, vsync on | 30 | 1.8 ms | 23.9 ms |
+| vsync on, 3 drawables | 30 | 1.9 ms | 26.1 ms |
+| vsync off (2 runs) | 30 | 2.0 ms | 7.4 to 7.5 / 8.7 to 8.8 ms |
+| vsync off | 60 | 1.9 ms | 6.5 / 7.5 ms |
+| **M8 default, Release build** (async, vsync off, 2 drawables) | 30 | 1.6 ms | **6.8 / 8.1 ms** |
+| **M8 default, Release build** | 60 | 1.6 ms | **5.7 / 7.0 ms** |
+
+Result: decode is ~2 ms in every mode; the present path was the receiver's whole latency. Turning vsync off removes 20 to 45 ms. The first frame of a session takes ~180 to 200 ms (VideoToolbox session creation), once. Tearing with vsync off still needs a visual check on a live stream (`AIRTV_VSYNC=1` restores vsync). End-to-end (click to motion) with a phone camera is still pending, and should be recorded here next to the M0 stock-UxPlay figure.
