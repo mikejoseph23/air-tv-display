@@ -10,6 +10,7 @@ enum UxPlayBridge {
         guard let d = dnssd_init(name, Int32(name.utf8.count), hw, 6, 0, &err) else {
             return "dnssd_init failed err=\(err)"
         }
+        RaopServer.applyStockFeatures(d)
         var len: Int32 = 0
         let nm = dnssd_get_name(d, &len).map { String(cString: $0) } ?? "?"
         let feat = dnssd_get_airplay_features(d)

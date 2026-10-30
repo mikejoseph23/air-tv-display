@@ -1,0 +1,329 @@
+import Foundation
+
+enum RaopError: Error, CustomStringConvertible {
+    case badDeviceID(String)
+    case dnssdInit(Int32)
+    case raopInit
+    case raopInit2
+    case httpdStart(Int32, UInt16)
+    case register(service: String, code: Int32)
+
+    var description: String {
+        switch self {
+        case .badDeviceID(let s): return "bad deviceid \(s)"
+        case .dnssdInit(let e): return "dnssd_init failed (\(e))"
+        case .raopInit: return "raop_init failed"
+        case .raopInit2: return "raop_init2 failed"
+        case .httpdStart(let r, let p): return "raop_start_httpd failed (\(r)) on port \(p)"
+        case .register(let s, let c): return "DNS-SD register \(s) failed (\(c))"
+        }
+    }
+}
+
+/// Events surfaced from UxPlay's threads; delivered on the main queue.
+enum RaopEvent {
+    case connectionOpened(open: Int)
+    case connectionClosed(open: Int)
+    case clientRequest(name: String, model: String, deviceID: String)
+    case mirrorRunning(Bool)
+    case connectionReset(reason: Int32)
+}
+
+/// Owns one UxPlay RAOP/AirPlay server plus its DNS-SD advertisement, set up the same way
+/// stock `uxplay` does it (uxplay.cpp: start_dnssd -> start_raop_server -> register_dnssd),
+/// so the TXT records, the `pk` (Ed25519 key derived from the deviceid) and the advertised
+/// port all come from the live raop instance. Each `start()` builds fresh instances, and
+/// `stop()` tears them down in reverse; both are safe to call repeatedly.
+final class RaopServer {
+    /// Stock uxplay defaults: no HLS, no h265, no legacy pairing, no pin.
+    static let stockFeatures: UInt64 = 0x527F_FEE6
+
+    private(set) var port: UInt16 = 0
+    private(set) var isRunning = false
+    private(set) var publicKeyHex = ""
+
+    var onEvent: ((RaopEvent) -> Void)?
+
+    private var dnssd: UnsafeMutablePointer<dnssd_t>?
+    private var raop: OpaquePointer?
+    private var dnssdSources: [DispatchSourceRead] = []
+
+    fileprivate let lock = NSLock()
+    fileprivate var openConnections = 0
+    fileprivate var videoPackets = 0
+    fileprivate var audioPackets = 0
+
+    deinit { stop() }
+
+    // MARK: lifecycle
+
+    func start(name: String, port requested: UInt16, deviceID: String) throws {
+        guard !isRunning else { return }
+        let hw = deviceID.split(separator: ":").compactMap { UInt8($0, radix: 16) }
+        guard hw.count == 6 else { throw RaopError.badDeviceID(deviceID) }
+        do {
+            try startDnssd(name: name, hw: hw)
+            try startRaop(port: requested, deviceID: deviceID)
+            try register()
+            isRunning = true
+            log(.info, "server up name=\"\(name)\" deviceid=\(deviceID) port=\(port) "
+                + "features=0x\(String(Self.features(of: dnssd!), radix: 16, uppercase: true)) pk=\(publicKeyHex)")
+        } catch {
+            log(.err, "start failed: \(error)")
+            stop()
+            throw error
+        }
+    }
+
+    func stop() {
+        for s in dnssdSources { s.cancel() }
+        dnssdSources.removeAll()
+        if let d = dnssd {
+            dnssd_unregister_raop(d)
+            dnssd_unregister_airplay(d)
+        }
+        if let r = raop {
+            // raop_destroy -> raop_stop_httpd asserts on a NULL httpd, which is only set by
+            // raop_init2; `raop` is only stored once raop_init2 has succeeded.
+            raop_destroy(r)
+            raop = nil
+        }
+        if let d = dnssd {
+            dnssd_destroy(d)
+            dnssd = nil
+        }
+        if isRunning { log(.info, "server stopped") }
+        isRunning = false
+        port = 0
+        lock.lock(); openConnections = 0; videoPackets = 0; audioPackets = 0; lock.unlock()
+    }
+
+    // MARK: setup steps (mirror uxplay.cpp)
+
+    private func startDnssd(name: String, hw: [UInt8]) throws {
+        var err: Int32 = 0
+        let hwC = hw.map { CChar(bitPattern: $0) }
+        guard let d = dnssd_init(name, Int32(name.utf8.count), hwC, Int32(hwC.count), 0, &err), err == 0 else {
+            throw RaopError.dnssdInit(err)
+        }
+        dnssd = d
+        Self.applyStockFeatures(d)
+    }
+
+    /// The exact dnssd_set_airplay_features sequence from uxplay.cpp start_dnssd() with
+    /// default options. The bare dnssdint.h default is 0x5A7FFEE6; stock clears bit 27
+    /// (legacy pairing, off unless -pin/-reg/-pw) and so advertises 0x527FFEE6.
+    static func applyStockFeatures(_ d: UnsafeMutablePointer<dnssd_t>,
+                                   hls: Bool = false, h265: Bool = false, legacyPairing: Bool = false) {
+        let bits: [Int32] = [0, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1,
+                             1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0]
+        for (bit, val) in bits.enumerated() { dnssd_set_airplay_features(d, Int32(bit), val) }
+        dnssd_set_airplay_features(d, 0, hls ? 1 : 0)
+        dnssd_set_airplay_features(d, 4, hls ? 1 : 0)
+        dnssd_set_airplay_features(d, 42, h265 ? 1 : 0)
+        dnssd_set_airplay_features(d, 27, legacyPairing ? 1 : 0)
+    }
+
+    static func features(of d: UnsafeMutablePointer<dnssd_t>) -> UInt64 { dnssd_get_airplay_features(d) }
+
+    private func startRaop(port requested: UInt16, deviceID: String) throws {
+        var cbs = Self.makeCallbacks()
+        cbs.cls = Unmanaged.passUnretained(self).toOpaque()
+        guard let r = raop_init(&cbs) else { throw RaopError.raopInit }
+        raop_set_log_callback(r, { _, level, msg in
+            guard let msg else { return }
+            RtspLog.shared.log(rawLevel: level, String(cString: msg))
+        }, nil)
+        raop_set_log_level(r, Self.logLevel)
+        // nohold=0 (stock default); keyfile "" -> Ed25519 key derived from deviceid, as stock.
+        if raop_init2(r, 0, deviceID, "") != 0 {
+            free(UnsafeMutableRawPointer(r))   // what uxplay does; raop_destroy would assert
+            throw RaopError.raopInit2
+        }
+        raop = r
+
+        // uxplay sets these explicitly (1920x1080 default for h264).
+        raop_set_plist(r, "width", 1920)
+        raop_set_plist(r, "height", 1080)
+
+        // tcp[0] = mirror data port (dynamic), tcp[1] = RTSP port (fixed); udp all dynamic.
+        var tcp: [UInt16] = [0, requested, 0]
+        var udp: [UInt16] = [0, 0, 0]
+        raop_set_tcp_ports(r, &tcp)
+        raop_set_udp_ports(r, &udp)
+
+        var p = raop_get_port(r)
+        let rc = raop_start_httpd(r, &p)
+        guard rc > 0 else { throw RaopError.httpdStart(rc, requested) }
+        raop_set_port(r, p)
+        port = p
+
+        guard let d = dnssd else { throw RaopError.raopInit }
+        raop_set_dnssd(r, d)   // copies raop's pk_str into dnssd->pk, used by both TXTs
+        publicKeyHex = d.pointee.pk.map { String(cString: $0) } ?? ""
+    }
+
+    private func register() throws {
+        guard let d = dnssd else { return }
+        // uxplay: airplay_port = raop_port, so both services advertise the RTSP port.
+        var e = dnssd_register_raop(d, port)
+        if e != 0 { throw RaopError.register(service: "_raop._tcp", code: e) }
+        e = dnssd_register_airplay(d, port)
+        if e != 0 { throw RaopError.register(service: "_airplay._tcp", code: e) }
+
+        // The Bonjour client socket must be serviced (DNSServiceProcessResult), as uxplay
+        // does with a GLib watch.
+        for service in [Int32(DNSSD_SERVICE_RAOP), Int32(DNSSD_SERVICE_AIRPLAY)] {
+            let fd = dnssd_get_service_fd(d, service)
+            guard fd >= 0 else { continue }
+            let src = DispatchSource.makeReadSource(fileDescriptor: fd, queue: .main)
+            src.setEventHandler { [weak self] in
+                guard let self, let d = self.dnssd else { return }
+                if dnssd_process_service(d, service) != 0 {
+                    self.log(.warning, "dnssd_process_service(\(service)) failed")
+                    src.cancel()
+                }
+            }
+            src.resume()
+            dnssdSources.append(src)
+        }
+    }
+
+    /// RAOP log level: `AIRTV_RAOP_LOGLEVEL` (3..8), default 7 (LOGGER_DEBUG, like `uxplay -d`).
+    static var logLevel: Int32 {
+        if let s = ProcessInfo.processInfo.environment["AIRTV_RAOP_LOGLEVEL"], let v = Int32(s) { return v }
+        return 7
+    }
+
+    // MARK: callbacks (log-only for M3; video/audio sinks land in M5/M6)
+
+    fileprivate func log(_ level: RtspLog.Level, _ msg: String) { RtspLog.shared.log(level, "[raop-cb] " + msg) }
+
+    fileprivate func emit(_ e: RaopEvent) {
+        DispatchQueue.main.async { [weak self] in self?.onEvent?(e) }
+    }
+
+    /// Every slot UxPlay can call is filled: many call sites in lib/ invoke the pointer
+    /// without a NULL check (see raop_handlers.h, raop_rtp_mirror.c).
+    private static func makeCallbacks() -> raop_callbacks_t {
+        var c = raop_callbacks_t()
+
+        c.conn_init = { cls in
+            guard let s = me(cls) else { return }
+            s.lock.lock(); s.openConnections += 1; let n = s.openConnections; s.lock.unlock()
+            s.log(.info, "conn_init open=\(n)")
+            s.emit(.connectionOpened(open: n))
+        }
+        c.conn_destroy = { cls in
+            guard let s = me(cls) else { return }
+            s.lock.lock(); s.openConnections = max(0, s.openConnections - 1); let n = s.openConnections; s.lock.unlock()
+            s.log(.info, "conn_destroy open=\(n)")
+            s.emit(.connectionClosed(open: n))
+        }
+        c.conn_reset = { cls, reason in
+            me(cls)?.log(.info, "conn_reset reason=\(reason)")
+            me(cls)?.emit(.connectionReset(reason: reason))
+        }
+        c.conn_feedback = { cls in me(cls)?.log(.debug, "conn_feedback") }
+
+        c.audio_process = { cls, _, data in
+            guard let s = me(cls), let d = data?.pointee else { return }
+            s.lock.lock(); s.audioPackets += 1; let n = s.audioPackets; s.lock.unlock()
+            if n == 1 || n % 500 == 0 {
+                s.log(.debug, "audio_process #\(n) ct=\(d.ct) len=\(d.data_len) seq=\(d.seqnum) sync=\(d.sync_status)")
+            }
+        }
+        c.video_process = { cls, _, data in
+            guard let s = me(cls), let d = data?.pointee else { return }
+            s.lock.lock(); s.videoPackets += 1; let n = s.videoPackets; s.lock.unlock()
+            if n == 1 || n % 300 == 0 {
+                s.log(.debug, "video_process #\(n) h265=\(d.is_h265) nals=\(d.nal_count) len=\(d.data_len)")
+            }
+        }
+        c.video_pause = { cls in me(cls)?.log(.info, "video_pause") }
+        c.video_resume = { cls in me(cls)?.log(.info, "video_resume") }
+        c.video_reset = { cls, type in me(cls)?.log(.info, "video_reset type=\(type.rawValue)") }
+        c.video_set_codec_and_size = { cls, codec, ws, hs, xo, yo, w, h in
+            me(cls)?.log(.info, "video_set_codec_and_size codec=\(codec.rawValue) source=\(ws)x\(hs) offset=\(xo),\(yo) size=\(w)x\(h)")
+            return 0
+        }
+        c.mirror_video_running = { cls, running in
+            me(cls)?.log(.info, "mirror_video_running \(running)")
+            me(cls)?.emit(.mirrorRunning(running))
+        }
+
+        c.audio_flush = { cls in me(cls)?.log(.debug, "audio_flush") }
+        c.video_flush = { cls in me(cls)?.log(.debug, "video_flush") }
+        c.audio_set_client_volume = { cls in
+            me(cls)?.log(.debug, "audio_set_client_volume -> 0.0")
+            return 0.0   // uxplay's default initial volume
+        }
+        c.audio_set_volume = { cls, v in me(cls)?.log(.info, "audio_set_volume \(v)") }
+        c.audio_set_metadata = { cls, _, len in me(cls)?.log(.debug, "audio_set_metadata len=\(len)") }
+        c.audio_set_coverart = { cls, _, len in me(cls)?.log(.debug, "audio_set_coverart len=\(len)") }
+        c.audio_stop_coverart_rendering = { cls in me(cls)?.log(.debug, "audio_stop_coverart_rendering") }
+        c.audio_remote_control_id = { cls, dacp, ar in
+            me(cls)?.log(.debug, "audio_remote_control_id dacp=\(str(dacp)) active_remote=\(str(ar))")
+        }
+        c.audio_set_progress = { cls, start, curr, end in
+            me(cls)?.log(.debug, "audio_set_progress \(start?.pointee ?? 0)/\(curr?.pointee ?? 0)/\(end?.pointee ?? 0)")
+        }
+        c.audio_get_format = { cls, ct, spf, usingScreen, isMedia, fmt in
+            me(cls)?.log(.info, "audio_get_format ct=\(ct?.pointee ?? 0) spf=\(spf?.pointee ?? 0) "
+                + "usingScreen=\(usingScreen?.pointee ?? false) isMedia=\(isMedia?.pointee ?? false) "
+                + "format=0x\(String(fmt?.pointee ?? 0, radix: 16))")
+        }
+
+        c.report_client_request = { cls, deviceid, model, name, admit in
+            let n = str(name), m = str(model), d = str(deviceid)
+            me(cls)?.log(.info, "connection request from \(n) (\(m)) deviceID=\(d) -> admit")
+            admit?.pointee = true   // no allow/deny list (stock default)
+            me(cls)?.emit(.clientRequest(name: n, model: m, deviceID: d))
+        }
+        c.display_pin = { cls, pin in me(cls)?.log(.info, "display_pin \(str(pin))") }
+        c.register_client = { cls, dev, _, name in
+            me(cls)?.log(.info, "register_client \(str(name)) deviceID=\(str(dev))")
+        }
+        c.check_register = { cls, _ in
+            me(cls)?.log(.debug, "check_register -> true")
+            return true   // stock: no registration list kept
+        }
+        c.passwd = { cls, len in
+            me(cls)?.log(.info, "passwd requested (none set)")
+            len?.pointee = 0
+            return nil
+        }
+        c.export_dacp = { cls, ar, dacp in
+            me(cls)?.log(.debug, "export_dacp active_remote=\(str(ar)) dacp=\(str(dacp))")
+        }
+
+        // HLS player hooks: HLS is not advertised (features bits 0/4 off); log only.
+        c.on_video_play = { cls, loc, pos in me(cls)?.log(.info, "on_video_play \(str(loc)) at \(pos)") }
+        c.on_video_scrub = { cls, pos in me(cls)?.log(.info, "on_video_scrub \(pos)") }
+        c.on_video_rate = { cls, rate in me(cls)?.log(.info, "on_video_rate \(rate)") }
+        c.on_video_stop = { cls in me(cls)?.log(.info, "on_video_stop") }
+        c.on_video_acquire_playback_info = { cls, info in
+            me(cls)?.log(.debug, "on_video_acquire_playback_info")
+            if let info {
+                info.pointee.duration = -1.0
+                info.pointee.position = -1.0
+            }
+        }
+        c.on_video_playlist_remove = { cls in
+            me(cls)?.log(.info, "on_video_playlist_remove")
+            return 0
+        }
+        c.get_custom_profile = { cls, profile in
+            me(cls)?.log(.debug, "get_custom_profile")
+            profile?.pointee = nil
+        }
+        return c
+    }
+}
+
+// Free functions so the @convention(c) closures above capture no context.
+private func me(_ cls: UnsafeMutableRawPointer?) -> RaopServer? {
+    cls.map { Unmanaged<RaopServer>.fromOpaque($0).takeUnretainedValue() }
+}
+private func str(_ p: UnsafePointer<CChar>?) -> String { p.map { String(cString: $0) } ?? "nil" }
+private func str(_ p: UnsafeMutablePointer<CChar>?) -> String { p.map { String(cString: $0) } ?? "nil" }

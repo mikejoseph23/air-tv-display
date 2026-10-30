@@ -19,11 +19,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             self?.statusController?.refresh()
             self?.window?.setState(state)
         }
-        if args.contains("--autostart") || selfTest { receiver.start() }
+        if args.contains("--autostart") { receiver.start() }
 
         if selfTest {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 6) {
-                print("[selftest] state=\(self.receiver.state) name=\(self.receiver.serviceName) port=\(self.receiver.port) ip=\(self.receiver.ipAddress)")
+            // Exercise start -> stop -> start (restart safety), then hold the server up for
+            // `--selftest-seconds N` (default 6) so it can be probed from the shell.
+            let hold = args.firstIndex(of: "--selftest-seconds").flatMap { i in
+                i + 1 < args.count ? Double(args[i + 1]) : nil } ?? 6
+            receiver.start()
+            receiver.stop()
+            receiver.start()
+            DispatchQueue.main.asyncAfter(deadline: .now() + hold) {
+                print("[selftest] state=\(self.receiver.state) name=\(self.receiver.serviceName) port=\(self.receiver.port) ip=\(self.receiver.ipAddress) pk=\(self.receiver.publicKeyHex)")
                 self.receiver.stop()
                 NSApp.terminate(nil)
             }

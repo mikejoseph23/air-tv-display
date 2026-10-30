@@ -3,6 +3,9 @@ import dnssd
 
 enum BonjourError: Error { case register(service: String, code: Int32) }
 
+/// SUPERSEDED in M3: the app now advertises through UxPlay's own dnssd_register_* (RaopServer),
+/// so the TXT and pk come from the live raop instance. Kept only for reference/tests.
+///
 /// Registers `_airplay._tcp` and `_raop._tcp` with the TXT records captured from stock
 /// UxPlay in M0 (docs/discovery-findings.md), via the system mDNSResponder (DNSServiceRegister).
 final class BonjourRegistrar {

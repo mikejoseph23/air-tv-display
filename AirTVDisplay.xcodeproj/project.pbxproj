@@ -54,6 +54,7 @@
 		92576DC5CD7E56C7BB1D70F3 /* logger.c in Sources */ = {isa = PBXBuildFile; fileRef = 6151ED2922B6E643011FAAC3 /* logger.c */; };
 		925FD9EC71DA58919CB9636C /* BonjourRegistrar.swift in Sources */ = {isa = PBXBuildFile; fileRef = F619758C2E38812E89D4C640 /* BonjourRegistrar.swift */; };
 		94262C8539F539D8E3F6BCE5 /* api.c in Sources */ = {isa = PBXBuildFile; fileRef = 765DFE5B08F4EF15A6F71155 /* api.c */; };
+		94EB02151EA1C2287D4D0B28 /* RaopServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBCB9F83DCD55ABF3B6F359D /* RaopServer.swift */; };
 		94F721BF62FC0680816A2ADB /* NetworkInfoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7C240D657014B4D184FD1DC /* NetworkInfoTests.swift */; };
 		96F3B111C6E41CDAB28AA4DC /* raop.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = E262320227A8BDDFF8DB6280 /* raop.h */; };
 		97040FD032E88335EC715226 /* ReceiverWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90BB1BA117442D098B402BA9 /* ReceiverWindow.swift */; };
@@ -72,6 +73,7 @@
 		D3579BCF6C36618757E73EC3 /* http_response.c in Sources */ = {isa = PBXBuildFile; fileRef = 5555BDB6ED8499135620129C /* http_response.c */; };
 		D607D1C8F29967E8F3D9A2DA /* UxPlayBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF17C0DD7A13B35C0E7F5CAF /* UxPlayBridge.swift */; };
 		D665A420BBDAB7CFD0A13930 /* fairplay.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = A5341F4BA7800EC8DE634C50 /* fairplay.h */; };
+		D833868D4308F71B466F8095 /* RtspLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10EE1B2297EF8A5D7272134B /* RtspLog.swift */; };
 		E0133AFA01DA6E2BC70316A4 /* http.c in Sources */ = {isa = PBXBuildFile; fileRef = A931B79BFC2D8676F9A85A6C /* http.c */; };
 		E142F0B41163E4633BB3EF06 /* http_request.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = F0B9E7126F0D0BD3340B1D05 /* http_request.h */; };
 		E6E25F4E18EF83C7FA457023 /* omg_hax.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 235694F76DF53BB86396859A /* omg_hax.h */; };
@@ -146,6 +148,7 @@
 
 /* Begin PBXFileReference section */
 		01A7E5D9A3F8A79C627A0CBC /* http_handlers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = http_handlers.h; sourceTree = "<group>"; };
+		10EE1B2297EF8A5D7272134B /* RtspLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RtspLog.swift; sourceTree = "<group>"; };
 		12AC200E3BC7BC69AB14A594 /* fairplay_playfair.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = fairplay_playfair.c; sourceTree = "<group>"; };
 		14816F88B9ADF2DBC235E242 /* airplay_video.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = airplay_video.c; sourceTree = "<group>"; };
 		174A8527EB6B3FCB82DBF57D /* netutils.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = netutils.c; sourceTree = "<group>"; };
@@ -219,6 +222,7 @@
 		F619758C2E38812E89D4C640 /* BonjourRegistrar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BonjourRegistrar.swift; sourceTree = "<group>"; };
 		F7C240D657014B4D184FD1DC /* NetworkInfoTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkInfoTests.swift; sourceTree = "<group>"; };
 		F90AA0A3BAE14106D29C3EC6 /* crypto.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = crypto.c; sourceTree = "<group>"; };
+		FBCB9F83DCD55ABF3B6F359D /* RaopServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RaopServer.swift; sourceTree = "<group>"; };
 		FCE556C8E940F9E7E39B992F /* BonjourTXTTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BonjourTXTTests.swift; sourceTree = "<group>"; };
 		FF6D70933F21D901F31E9736 /* dnssd.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = dnssd.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -261,8 +265,10 @@
 				1984BB941F9CB5DDC92BE326 /* Info.plist */,
 				475B5D1990FD3CEA51640BE9 /* main.swift */,
 				AFB10ED5A265994D7918374D /* NetworkInfo.swift */,
+				FBCB9F83DCD55ABF3B6F359D /* RaopServer.swift */,
 				76176648ABBBAE4AE2183C85 /* ReceiverController.swift */,
 				90BB1BA117442D098B402BA9 /* ReceiverWindow.swift */,
+				10EE1B2297EF8A5D7272134B /* RtspLog.swift */,
 				B103A0C73154FD6243599FAD /* StatusItemController.swift */,
 				BF17C0DD7A13B35C0E7F5CAF /* UxPlayBridge.swift */,
 			);
@@ -576,8 +582,10 @@
 				EB177092EDC0B26787F0AD8D /* AppDelegate.swift in Sources */,
 				5157B6EBE2F0CD2F96C24C17 /* BonjourRegistrar.swift in Sources */,
 				5DFD0E792C7736D00A05B772 /* NetworkInfo.swift in Sources */,
+				94EB02151EA1C2287D4D0B28 /* RaopServer.swift in Sources */,
 				8989704DBAEC199C3736117C /* ReceiverController.swift in Sources */,
 				97040FD032E88335EC715226 /* ReceiverWindow.swift in Sources */,
+				D833868D4308F71B466F8095 /* RtspLog.swift in Sources */,
 				81F86DEA98B8448A049F1F62 /* StatusItemController.swift in Sources */,
 				5D0BC2F8D4224F61E7B673AE /* UxPlayBridge.swift in Sources */,
 				EE5F699A648E2CA1B89EC506 /* main.swift in Sources */,
