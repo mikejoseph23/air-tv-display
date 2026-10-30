@@ -51,7 +51,7 @@ Goal: the iMac app runs fullscreen, presents itself as an Apple‑TV‑class Air
 | M0 — Stock UxPlay spike | Sonnet | ✅ Done (latency # pending) | 21 + 6 rebuild | **Gate passed.** Studio streams to stock UxPlay, no PIN; macOS extends by default; 1920×1080 h264 @ ~30 fps over ethernet. |
 | M1 — Discovery in our own process | Sonnet | ✅ Done (hands‑on deferred) | 2 | C CLI `tools/discovery-cli/`; Studio `dns-sd` resolves it. Control Center check deferred to end. |
 | M2 — App scaffold + vendored lib build | Sonnet | ✅ Done | 7 | Xcode Swift app, window, signing, UxPlay `lib/` compiling as a static lib. |
-| M2T — Testing: scaffold | Sonnet | 🔵 In Progress | — | Build/launch/unit. |
+| M2T — Testing: scaffold | Sonnet | ✅ Done (hands‑on deferred) | 5 | Build/launch/unit. |
 | M3 — RTSP + session via library | Opus | 🔵 In Progress | — | Wire `raop_start`/callbacks; sender reaches "connecting". |
 | M4 — Pairing / FairPlay via library | Opus | ⬜ Not Started | — | pair‑setup/verify + fp‑setup through UxPlay code; encrypted video bytes arrive. |
 | M4T — Testing: session + auth | Opus | ⬜ Not Started | — | Mixed: unit + hands‑on pair. |
@@ -163,10 +163,10 @@ Stand up the Xcode Swift app the rest of the milestones plug into, with UxPlay's
 
 **Model: Sonnet** · **Mode: unit/integration + hands‑on launch.**
 
-- [ ] Unit: `deviceid` derivation is stable across restarts and matches en0's MAC.
-- [ ] Integration: launch app → `dns-sd -B _airplay._tcp local.` (on iMac *and* on Studio over SSH) shows the registered service with the M0 TXT. Assert TXT round‑trips.
+- [x] Unit: `deviceid` derivation is stable across restarts and matches en0's MAC.
+- [x] Integration: launch app → `dns-sd -B _airplay._tcp local.` (on iMac *and* on Studio over SSH) shows the registered service with the M0 TXT. Assert TXT round‑trips.
 - [ ] Hands‑on (Mike, brief): launch the app, confirm the fullscreen window + menu‑bar item appear, `Esc` quits, and the Studio lists the device.
-- [ ] Build runs clean on this Intel toolchain (Xcode 26.3 / Swift / clang 17); the vendored `lib/` static library links and a trivial call into it succeeds.
+- [x] Build runs clean on this Intel toolchain (Xcode 26.3 / Swift / clang 17); the vendored `lib/` static library links and a trivial call into it succeeds.
 
 [Return to Top](#air-tv-display--planning-document)
 
@@ -366,6 +366,8 @@ When a milestone returns incomplete, follow‑up prompts must:
 ## Progress Log / Notes
 
 Reverse‑chronological. Newest first.
+
+**2026-10-30 17:45 — M2T done, hands-on deferred (Sonnet, ~5 min, merged as 8c7c392).** Unhosted XCTest target `AirTVDisplayTests` (6 tests: deviceid = en0 MAC and stable, TXT keys match the M0 capture, call into vendored `lib/`). Run with `xcodebuild test -project AirTVDisplay.xcodeproj -scheme AirTVDisplayTests -derivedDataPath build` (orchestrator re-ran in main: 6/6 pass). `scripts/integration-bonjour.sh` checks TXT round-trip on the iMac and the Studio (6/6). The test target is unhosted because hosting broke the libcrypto embed/codesign step; it compiles `NetworkInfo`/`BonjourRegistrar`/`UxPlayBridge` directly, so update its `sources:` if M3 moves them. Window/menu-bar/Esc check deferred to end.
 
 **2026-10-30 17:30 — M2 done (Sonnet, 7 min, worker commit ea38e58, merged to main).** xcodegen `project.yml` + checked-in project; AppKit shell (borderless fullscreen window, Esc quits, status item with state/IP:port); own `BonjourRegistrar` (en0 deviceid); UxPlay submodule at `thirdparty/UxPlay` pinned to 534e2cc, `lib/` as a static target, libplist static; micromamba has no static libcrypto, so `libcrypto.3.dylib` is embedded in `Contents/Frameworks` and re-signed (fixed a launch crash Mike saw at 17:07). Orchestrator re-built in the main tree: BUILD SUCCEEDED, `--selftest` exit 0. **Flags for M3/M4:** the bridge's `dnssd` reports `features=0x5A7FFEE6` vs stock UxPlay's advertised `0x527FFEE6` (bit 27 differs, so check what uxplay.cpp changes before advertising); `raop_destroy` asserts if httpd was never started; M1's note that `pk` must be the real raop pairing key applies here too.
 
