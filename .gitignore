@@ -4,3 +4,4 @@ logs/
 build/
 DerivedData/
 *.xcuserstate
+thirdparty/UxPlay-spike/
