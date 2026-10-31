@@ -5,14 +5,17 @@ final class StatusItemController: NSObject {
     private let receiver: ReceiverController
     private let onShowWindow: () -> Void
     private let onToggleHUD: () -> Void
+    private let onShowSettings: () -> Void
     private let stateLine = NSMenuItem(title: "", action: nil, keyEquivalent: "")
     private let addrLine = NSMenuItem(title: "", action: nil, keyEquivalent: "")
     private let toggle = NSMenuItem(title: "", action: #selector(toggleReceiver), keyEquivalent: "")
 
-    init(receiver: ReceiverController, onShowWindow: @escaping () -> Void, onToggleHUD: @escaping () -> Void) {
+    init(receiver: ReceiverController, onShowWindow: @escaping () -> Void, onToggleHUD: @escaping () -> Void,
+         onShowSettings: @escaping () -> Void) {
         self.receiver = receiver
         self.onShowWindow = onShowWindow
         self.onToggleHUD = onToggleHUD
+        self.onShowSettings = onShowSettings
         super.init()
         let menu = NSMenu()
         menu.addItem(stateLine)
@@ -30,6 +33,9 @@ final class StatusItemController: NSObject {
         let hud = NSMenuItem(title: "Toggle Diagnostics (H)", action: #selector(toggleHUD), keyEquivalent: "")
         hud.target = self
         menu.addItem(hud)
+        let settings = NSMenuItem(title: "Settings\u{2026}", action: #selector(showSettings), keyEquivalent: ",")
+        settings.target = self
+        menu.addItem(settings)
         menu.addItem(.separator())
         menu.addItem(NSMenuItem(title: "Quit", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
         item.menu = menu
@@ -54,4 +60,6 @@ final class StatusItemController: NSObject {
     @objc private func showWindow() { onShowWindow() }
 
     @objc private func toggleHUD() { onToggleHUD() }
+
+    @objc private func showSettings() { onShowSettings() }
 }

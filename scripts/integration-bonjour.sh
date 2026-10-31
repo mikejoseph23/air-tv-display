@@ -2,12 +2,12 @@
 # Integration: launch the app executable, resolve its _airplay._tcp / _raop._tcp registrations
 # with dns-sd -L locally and on the Mac Studio (SSH), and diff the TXT keys against the M0 set.
 # Usage: scripts/integration-bonjour.sh [path/to/AirTVDisplay] [--no-studio]
-# Env: SERVICE_NAME (default "Air TV Display Dev"), STUDIO_HOST (default Mac-Studio.local)
+# Env: SERVICE_NAME (default "Air TV Display"), STUDIO_HOST (default Mac-Studio.local)
 set -u
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 APP="${1:-$ROOT/build/Build/Products/Debug/AirTVDisplay.app/Contents/MacOS/AirTVDisplay}"
 STUDIO=1; [ "${2:-}" = "--no-studio" ] && STUDIO=0
-NAME="${SERVICE_NAME:-Air TV Display Dev}"
+NAME="${SERVICE_NAME:-Air TV Display}"
 STUDIO_HOST="${STUDIO_HOST:-Mac-Studio.local}"
 SSH=(ssh -o BatchMode=yes -o ConnectTimeout=8 "michaeljosephwork@$STUDIO_HOST")
 

@@ -133,6 +133,7 @@ targets:
       - AirTVDisplay/VideoPipeline.swift
       - AirTVDisplay/AVSync.swift
       - AirTVDisplay/DisplaySleepGuard.swift
+      - AirTVDisplay/AppSettings.swift
     dependencies:
       - target: UxPlayLib
         link: true

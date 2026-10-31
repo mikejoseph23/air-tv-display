@@ -5,6 +5,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusController: StatusItemController?
     private let receiver = ReceiverController()
     private lazy var video = VideoPipeline(requireHardware: !CommandLine.arguments.contains("--software-decode"))
+    private lazy var settingsWindow = SettingsWindowController(
+        settings: .shared,
+        onNameChange: { [weak self] in self?.receiver.renameFromSettings(); self?.statusController?.refresh() },
+        onAudioChange: { [weak self] _ in self?.receiver.applyAudioSetting() })
     private var fixturePlayer: VideoFixturePlayer?
     /// Fixture runs hold the display awake like a live stream (checked with `pmset -g assertions`).
     private let fixtureSleepGuard = DisplaySleepGuard(name: "Air TV Display: fixture playback")
@@ -23,7 +27,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         receiver.videoSink = video
         if !selfTest { showWindow() }
         statusController = StatusItemController(receiver: receiver, onShowWindow: { [weak self] in self?.showWindow() },
-                                                onToggleHUD: { [weak self] in self?.window?.toggleHUD() })
+                                                onToggleHUD: { [weak self] in self?.window?.toggleHUD() },
+                                                onShowSettings: { [weak self] in self?.settingsWindow.show() })
 
         receiver.onNetworkChange = { [weak self] in self?.statusController?.refresh() }
         receiver.onStateChange = { [weak self] state in
@@ -92,8 +97,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private func showWindow() {
         if window == nil {
-            window = ReceiverWindow(video: video, showHUD: CommandLine.arguments.contains("--hud")
-                                    || ProcessInfo.processInfo.environment["AIRTV_HUD"] == "1")
+            window = ReceiverWindow(video: video, showHUD: AppSettings.shared.showHUDAtLaunch)
         }
         window?.present()
     }

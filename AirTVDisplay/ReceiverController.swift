@@ -5,8 +5,8 @@ import Network
 /// advertises it with UxPlay's own DNS-SD registration (stock TXT, real pk); "stop" tears
 /// both down. Start/stop/restart are safe in any order.
 final class ReceiverController {
-    /// Dev name, distinct from stock UxPlay's "Air TV Display@Mikes-iMac".
-    var serviceName = "Air TV Display Dev"
+    /// Advertised name (Settings; AIRTV_NAME overrides).
+    var serviceName = AppSettings.shared.deviceName
     /// Fixed RTSP port, advertised in both TXT services. Override with AIRTV_PORT.
     var port: UInt16 = UInt16(ProcessInfo.processInfo.environment["AIRTV_PORT"] ?? "") ?? 7100
 
@@ -40,6 +40,7 @@ final class ReceiverController {
         let s = RaopServer()
         s.onEvent = { [weak self] e in self?.handle(e) }
         s.videoSink = videoSink
+        s.audio.isMuted = !AppSettings.shared.playAudio
         do {
             try s.start(name: serviceName, port: port, deviceID: deviceID)
             server = s
@@ -51,6 +52,17 @@ final class ReceiverController {
             state = .stopped
         }
     }
+
+    /// Applies a changed name: restarts only if running so the new name is advertised.
+    func renameFromSettings() {
+        serviceName = AppSettings.shared.deviceName
+        guard isRunning else { return }
+        stop()
+        start()
+    }
+
+    /// Applies the audio setting to the live server (and to servers started later).
+    func applyAudioSetting() { server?.audio.isMuted = !AppSettings.shared.playAudio }
 
     func stop() {
         pathMonitor?.cancel(); pathMonitor = nil

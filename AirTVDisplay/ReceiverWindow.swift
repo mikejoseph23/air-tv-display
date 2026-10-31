@@ -1,6 +1,6 @@
 import AppKit
 
-/// Fullscreen borderless window on the main screen. Esc quits, "h" toggles the perf HUD.
+/// Fullscreen borderless window on the main screen. Esc quits (only if enabled in Settings), "h" toggles the perf HUD.
 /// Content: the Metal video surface, with the "waiting" label on top whenever no stream is
 /// running.
 final class ReceiverWindow: NSWindow {
@@ -49,7 +49,7 @@ final class ReceiverWindow: NSWindow {
     override var canBecomeMain: Bool { true }
 
     override func keyDown(with event: NSEvent) {
-        if event.keyCode == 53 { NSApp.terminate(nil) }
+        if event.keyCode == 53 { if AppSettings.shared.escQuits { NSApp.terminate(nil) } }
         else if event.charactersIgnoringModifiers == "h" { toggleHUD() }
         else { super.keyDown(with: event) }
     }

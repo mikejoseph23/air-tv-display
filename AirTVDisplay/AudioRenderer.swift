@@ -31,6 +31,7 @@ final class AudioRenderer {
     private var _outputLatency: Int64 = 0
     private var _dB: Float = 0
     private var _gain: Float = 1
+    private var _muted = false
 
     /// Env `AIRTV_AUDIO_SYNC=0` plays every packet as soon as it arrives (stock uxplay default).
     let timeSync: Bool
@@ -63,6 +64,7 @@ final class AudioRenderer {
     /// New audio stream (`ct` is the AirPlay compression type). Safe to call again to switch codec.
     func start(ct: UInt8) {
         queue.async { [self] in
+            if isMuted { return }   // settings: audio off, no engine / CoreAudio output
             guard let c = AudioCodec(rawValue: ct) else {
                 log(.err, "audio: unknown compression type ct=\(ct)"); return
             }
@@ -116,8 +118,18 @@ final class AudioRenderer {
 
     // MARK: audio_process
 
+    /// Settings "play audio" off: no decode, no CoreAudio. Turning it on takes effect with the
+    /// next audio stream (`start`). Video and AVSync do not depend on audio being present.
+    var isMuted: Bool {
+        get { shared.lock(); defer { shared.unlock() }; return _muted }
+        set {
+            shared.lock(); _muted = newValue; shared.unlock()
+            if newValue { stop() }
+        }
+    }
+
     func process(_ data: UnsafePointer<UInt8>, count: Int, ntpLocal: UInt64) {
-        guard count > 0 else { return }
+        guard count > 0, !isMuted else { return }
         let copy = Data(bytes: data, count: count)
         queue.async { [self] in handle(copy, ntpLocal: ntpLocal) }
     }

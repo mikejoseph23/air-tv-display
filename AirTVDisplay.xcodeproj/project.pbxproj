@@ -17,8 +17,10 @@
 		12197E6C8F2D2125841A608D /* AVSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98B91ED5CB70BD2C01E78687 /* AVSync.swift */; };
 		1641561E51A86F728725D92B /* libUxPlayLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AD6A71498A9A153E24ABB37 /* libUxPlayLib.a */; };
 		192F8E3FE36974FCC457B3E9 /* raop_handlers.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 384E2AD721433BB44657E1C4 /* raop_handlers.h */; };
+		19E770840CAA075E0D6E8916 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E01CE8F07CAA7B1C0F804DA /* AppSettings.swift */; };
 		1AF3901AF67EEA807A06058F /* AudioTiming.swift in Sources */ = {isa = PBXBuildFile; fileRef = 749B73C3E420D8DEE0234E87 /* AudioTiming.swift */; };
 		1AF967D3692ACEC608994E1B /* srp.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 878A27B2049451EA5B354842 /* srp.h */; };
+		1EFB576CA15D34AEAA9C70F2 /* SettingsWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C29D1417945184BB715BF21 /* SettingsWindow.swift */; };
 		214218C47CF2445106A9659B /* fcup_request.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = F549488F6065DBCF458E0E68 /* fcup_request.h */; };
 		23AD473BC9BE874A8C9FC164 /* AudioRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D77B0D90C1D3B8DC33E25DDC /* AudioRenderer.swift */; };
 		24206702FECF34EB205D0F3C /* pairing.c in Sources */ = {isa = PBXBuildFile; fileRef = C2E2953EC8E7267DAC531CCB /* pairing.c */; };
@@ -36,6 +38,7 @@
 		3C8100FA75D877DA23B33332 /* stream.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 815D5FB623695E3F7998AA27 /* stream.h */; };
 		3C97FE8FEA430FA6808CEA6E /* threads.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 74CA2E4F5C369710525BD8CA /* threads.h */; };
 		3F52BC0E5A5F67AE4633412C /* VideoRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5468AF56C3B92710693135 /* VideoRenderer.swift */; };
+		41002A13DBF405736C5AC6D9 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E01CE8F07CAA7B1C0F804DA /* AppSettings.swift */; };
 		47784BF9E35EDFD28508B5B9 /* global.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 72A4968993A3DF2E42764994 /* global.h */; };
 		48C949BD046DE3300FC1D61C /* pairing.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 85B80CC5B5B0E1644145BC62 /* pairing.h */; };
 		4CAF8ECF20CF50C7EF6EF0CC /* raop_ntp.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 46A99BDF714D6A1864F5CF52 /* raop_ntp.h */; };
@@ -55,6 +58,7 @@
 		6E24C1B6D0D393E533247DCD /* byteutils.c in Sources */ = {isa = PBXBuildFile; fileRef = A5E3122902E36E15F09FD334 /* byteutils.c */; };
 		747936CD6D81778FA2724ECD /* llhttp.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = E5003202A2E20E924FEBC792 /* llhttp.h */; };
 		74DCE71204F4F763590EB80C /* dnssd.c in Sources */ = {isa = PBXBuildFile; fileRef = 2B8ACF8CF620B1AF88F2CBE1 /* dnssd.c */; };
+		75FD4CE71590A9B5F8ED7998 /* AppSettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFA29CBD7A760040E6B369FD /* AppSettingsTests.swift */; };
 		7755B5CCE7978D8AF0DC36B9 /* http_request.c in Sources */ = {isa = PBXBuildFile; fileRef = 250E56C9C451E516D3CBF6E6 /* http_request.c */; };
 		7792BBBE4B0585471A6BBEFB /* StreamDumpAnnexBTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31BBE4B76CE958070B9C350 /* StreamDumpAnnexBTests.swift */; };
 		817536A9A94C7F9BFD2119DC /* NetworkInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFB10ED5A265994D7918374D /* NetworkInfo.swift */; };
@@ -211,6 +215,8 @@
 		3A1EF12EE13D7753A2CD3BBD /* llhttp.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = llhttp.c; sourceTree = "<group>"; };
 		3A2295901D59826D292269D4 /* http_response.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = http_response.h; sourceTree = "<group>"; };
 		3B5468AF56C3B92710693135 /* VideoRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoRenderer.swift; sourceTree = "<group>"; };
+		3C29D1417945184BB715BF21 /* SettingsWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsWindow.swift; sourceTree = "<group>"; };
+		3E01CE8F07CAA7B1C0F804DA /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
 		40CDDE4CB8FB00BCF3B43929 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4254F2FC1D0B41229DD4A25C /* httpd.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = httpd.h; sourceTree = "<group>"; };
 		43D51B50CCDBF3425256CA4E /* AudioDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioDecoder.swift; sourceTree = "<group>"; };
@@ -280,6 +286,7 @@
 		E262320227A8BDDFF8DB6280 /* raop.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = raop.h; sourceTree = "<group>"; };
 		E5003202A2E20E924FEBC792 /* llhttp.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = llhttp.h; sourceTree = "<group>"; };
 		EAB8F64EB44EA3371E9C8D70 /* mirror_buffer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mirror_buffer.h; sourceTree = "<group>"; };
+		EFA29CBD7A760040E6B369FD /* AppSettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettingsTests.swift; sourceTree = "<group>"; };
 		F0B9E7126F0D0BD3340B1D05 /* http_request.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = http_request.h; sourceTree = "<group>"; };
 		F1A0DF1FFD61D02731D64AC8 /* utils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = utils.h; sourceTree = "<group>"; };
 		F1C7D8D594DA4C844FF1566D /* AudioDecoderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioDecoderTests.swift; sourceTree = "<group>"; };
@@ -327,6 +334,7 @@
 				C95CA176345014187F3A01DD /* AirTVDisplay.entitlements */,
 				CE6251A026DB7ABEAE00F1B7 /* AnnexB.swift */,
 				40CDDE4CB8FB00BCF3B43929 /* AppDelegate.swift */,
+				3E01CE8F07CAA7B1C0F804DA /* AppSettings.swift */,
 				43D51B50CCDBF3425256CA4E /* AudioDecoder.swift */,
 				D77B0D90C1D3B8DC33E25DDC /* AudioRenderer.swift */,
 				749B73C3E420D8DEE0234E87 /* AudioTiming.swift */,
@@ -341,6 +349,7 @@
 				2F667FD30792AAB3F75DEF36 /* ReceiverState.swift */,
 				90BB1BA117442D098B402BA9 /* ReceiverWindow.swift */,
 				10EE1B2297EF8A5D7272134B /* RtspLog.swift */,
+				3C29D1417945184BB715BF21 /* SettingsWindow.swift */,
 				B103A0C73154FD6243599FAD /* StatusItemController.swift */,
 				B3E129CE65C6BDF65CBA3D8F /* StreamDump.swift */,
 				BF17C0DD7A13B35C0E7F5CAF /* UxPlayBridge.swift */,
@@ -457,6 +466,7 @@
 		D9B75794FE06620280E4A7E7 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				EFA29CBD7A760040E6B369FD /* AppSettingsTests.swift */,
 				F1C7D8D594DA4C844FF1566D /* AudioDecoderTests.swift */,
 				6C84E6CEABA71EE58302A605 /* AudioTimingTests.swift */,
 				A2BB67B0B925D87B4CDAAE27 /* AVSyncTests.swift */,
@@ -680,6 +690,8 @@
 				315BCA19258FD890A6D81019 /* AVSync.swift in Sources */,
 				9D3D238147BB18F9770C130D /* AVSyncTests.swift in Sources */,
 				5B30C8E24C042F37866CE946 /* AnnexB.swift in Sources */,
+				19E770840CAA075E0D6E8916 /* AppSettings.swift in Sources */,
+				75FD4CE71590A9B5F8ED7998 /* AppSettingsTests.swift in Sources */,
 				3667DD3162148EE2EA5F6887 /* AudioDecoder.swift in Sources */,
 				97EC9324E7E1791AA1A0B029 /* AudioDecoderTests.swift in Sources */,
 				248536A9B2B3DA2C77639701 /* AudioRenderer.swift in Sources */,
@@ -717,6 +729,7 @@
 				12197E6C8F2D2125841A608D /* AVSync.swift in Sources */,
 				B78DFEF366EDFA5C6B9CDBAE /* AnnexB.swift in Sources */,
 				EB177092EDC0B26787F0AD8D /* AppDelegate.swift in Sources */,
+				41002A13DBF405736C5AC6D9 /* AppSettings.swift in Sources */,
 				288A063FE89E201F88133545 /* AudioDecoder.swift in Sources */,
 				23AD473BC9BE874A8C9FC164 /* AudioRenderer.swift in Sources */,
 				68413C075E0C727D47020A33 /* AudioTiming.swift in Sources */,
@@ -728,6 +741,7 @@
 				D33E7FAE1E78896A4F6B83CF /* ReceiverState.swift in Sources */,
 				97040FD032E88335EC715226 /* ReceiverWindow.swift in Sources */,
 				D833868D4308F71B466F8095 /* RtspLog.swift in Sources */,
+				1EFB576CA15D34AEAA9C70F2 /* SettingsWindow.swift in Sources */,
 				81F86DEA98B8448A049F1F62 /* StatusItemController.swift in Sources */,
 				821FD9DF81E1E9F12D15A048 /* StreamDump.swift in Sources */,
 				5D0BC2F8D4224F61E7B673AE /* UxPlayBridge.swift in Sources */,
