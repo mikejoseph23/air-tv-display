@@ -1,53 +1,67 @@
 # Air TV Display — Resume Prompt
 
 ## Project Overview
-A native macOS app that turns a 2017 Intel iMac (`iMac18,3`, macOS 15.7.4, i7-7700K) into an **AirPlay mirroring receiver** that the Mac Studio can mirror or extend to, with nothing installed on the Studio. Approach: wrap **UxPlay**'s C library (`lib/`: RAOP/RTSP, pair-setup/verify, FairPlay, mDNS) in a Swift app, and replace its GStreamer renderer with VideoToolbox + Metal (video) and CoreAudio (audio). UxPlay is GPLv3, so the licensing decision is deferred until shipping. Expect a 1080p stream, latency limited by the sender, and Extend that the sender may or may not offer.
+
+Air TV Display is a native macOS AppKit/Swift AirPlay mirroring receiver that turns a spare Mac into a wireless second display. It wraps UxPlay's protocol library (`thirdparty/UxPlay/lib`, a git submodule) and renders with VideoToolbox + Metal for video and CoreAudio for audio. It ships like `~/git/mac-resource-monitor`: a notarized universal DMG, a Sparkle 2 appcast, and a landing page, published through LymeDeploy to `https://iadev.net/air-tv-display/`. The app is GPLv3 because it links UxPlay; our own files carry MIT SPDX headers.
 
 ## Current Status
-**The repo is moving to the work profile. M0 (the go/no-go gate) is still partial: the Studio sees the receiver over Bonjour, but nobody has tried mirroring to it yet.**
-- **Moving.** This personal-profile copy (`/Users/michaeljoseph/git/air-tv-display`) is being retired. The work-profile copy goes to `/Users/michaeljosephwork/git/air-tv-display`, cloned from the private GitHub repo `git@github.com:mikejoseph23/air-tv-display.git` (pushed 2026-10-30). The gitignored orchestrator state and the UxPlay source are in `/Users/Shared/air-tv-display-handoff/` (follow `HANDOFF.md` there).
-- **Done in M0.** UxPlay 1.74 (commit 534e2cc) was built from source and advertised correctly. The Studio (**macOS 26.6.2**, not Sequoia) resolved it through `dns-sd -B/-L` at port 49333 with UxPlay's Apple TV-style TXT record.
-- **UxPlay is stopped in the personal profile.** Mike will rebuild it in the work profile.
-- **Not yet tested (Mike, from the Studio's work profile):** Control Center listing, what happens on select (pairing/PIN/error), whether "Use As Separate Display" is offered, resolution/fps, and latency.
-- **The iMac's ethernet (`en0`) was inactive** and the spike ran over Wi-Fi. Plug in ethernet before measuring latency.
 
-## What's Done
-- Planning document written and reviewed (UxPlay-based approach, M0 added as the go/no-go gate).
-- M0 partial: UxPlay built and running, both TXT records captured verbatim, iMac-side and Studio-side Bonjour verified.
-- SSH from the iMac's personal profile to `michaeljosephwork@Mac-Studio.local` works. The host key was verified: ED25519 `SHA256:oK1TQBxEktMrOoeg9cPxdHwBF8yfvAq3NjDhbYw3/yI`.
-- Repo prepared for the move: `thirdparty/UxPlay-spike/` is gitignored, the launcher script no longer hard-codes a path, and pushed to GitHub; the orchestrator state and UxPlay source tarballs are in `/Users/Shared`.
+**Everything is built, tested and pushed. Only the signed 1.0.0 release is left, and it has to run on the Mac Studio.**
+
+- M0 through M9 and the landing page are done. 88/88 tests pass, and an ad-hoc universal DMG ran on both Macs.
+- The LymeDeploy project `air-tv-display-downloads` (id 27) exists, the IIS folder `/air-tv-display` exists on iadev-2025, and the CloudflareToken variable is set.
+- Unverified: the notary keychain profile name `mrm-notary` (borrowed from mac-resource-monitor).
 
 ## What's Next
-1. **In the work profile**, follow `/Users/Shared/air-tv-display-handoff/HANDOFF.md`: `git clone git@github.com:mikejoseph23/air-tv-display.git`, unpack `orchestrator.tgz` into it, then `ssh-copy-id michaeljosephwork@Mac-Studio.local` again.
-2. **Rebuild UxPlay** in the work profile: unpack `UxPlay-spike-src.tgz` into `thirdparty/` and follow "How to reproduce" in `docs/discovery-findings.md`. Brew isn't writable and there's no sudo, so the spike used a micromamba env (GStreamer 1.28, OpenSSL) plus a hand-built libplist 2.8.0. Run it with `docs/run-uxplay-spike.sh`. You may need to adjust the env path in the script for the work profile.
-3. **Resume the orchestrator**: paste `.orchestrator/airplay-receiver-plan/RESUME-PROMPT.md` into Claude Code. First collect Mike's hands-on M0 results, record them in `docs/discovery-findings.md`, and mark M0 Done or Blocked.
-4. **If it streams**, start Group A in parallel, both on Sonnet: **M1** (Bonjour registration in our own process) and **M2** (Xcode app scaffold, with UxPlay vendored as a submodule under `thirdparty/UxPlay` and `lib/` built as a static library). **If it isn't listed or can't pair**, stop for a planning check-in. **If Extend isn't offered**, M7 escalates to Opus.
-5. **Clean up** once the work-profile copy is pushed: delete `/Users/Shared/air-tv-display-handoff/` and this personal-profile copy.
+
+Run these in a **logged-in Terminal on the Studio, not over SSH**. The login keychain is locked in SSH sessions. Click "Always Allow" on keychain prompts.
+
+1. `cd ~/git/air-tv-display && git pull && git submodule update --init && scripts/setup-deps.sh && xcodegen`
+2. Put the release notes (e.g. "First release.") in the `<description>` in `deploy/updates/appcast.xml`. The version is already 1.0.0, build 1, in `AirTVDisplay/Info.plist`.
+3. `SIGN_ID="Developer ID Application: INTERAPP DEVELOPMENT, INC. (UU626VCLYW)" NOTARIZE_PROFILE="mrm-notary" scripts/make-dmg.sh`. If the profile name is wrong, create one with `xcrun notarytool store-credentials`.
+4. Run `scripts/stage-release.sh` to stage `dist/upload/`.
+5. Check `which lymedeploy` on the Studio, then run `deploy/pack-for-lymedeploy.sh`.
+6. Create and deploy a release of `air-tv-display-downloads` to Production (`lymedeploy create-release --help`, `lymedeploy deploy --help`). Check that `https://iadev.net/air-tv-display/` and `/appcast.xml` load.
+7. Commit the rewritten appcast as "Release 1.0.0". Push once Mike approves.
+8. Then mark the release done in `airplay-receiver-plan.md` (M9 notes and the progress log).
 
 ## Planning Docs
-- `airplay-receiver-plan.md`: milestones M0–M8T with a status tracker and progress log. M0 is 🟡 Partial; everything else is ⬜ Not Started.
+
+- `airplay-receiver-plan.md`: milestone tracker and progress log. All milestones through M9 are ✅; M9 notes "first release pending".
+- `hands-on-checklist.md`: still untested: audio/lip sync, 10-cycle reconnect, latency vs stock UxPlay.
+- `BACKLOG.md`: landing page screenshot; Windows sender option A (test AirParrot) and option B (own-protocol sender with an IddCx driver, signed with the Azure Trusted Signing cert).
 
 ## Key File Paths
+
 ```
-airplay-receiver-plan.md          # Source of truth; only the orchestrator edits it
-docs/discovery-findings.md        # M0 findings: TXT records, Bonjour, rebuild recipe, pending hands-on checklist
-docs/run-uxplay-spike.sh          # Starts stock UxPlay with -d, logs to docs/m0-uxplay-session.log
-docs/m0-uxplay-session.log        # UxPlay log (no connection attempts recorded yet)
-thirdparty/UxPlay-spike/          # gitignored spike build (source in the /Users/Shared tarball)
-.orchestrator/airplay-receiver-plan/  # gitignored orchestrator state + RESUME-PROMPT.md (in orchestrator.tgz)
+CLAUDE.md                     # Build + release runbook, rules
+AirTVDisplay/Info.plist       # Version + Sparkle SU* keys (hand-edited, single source of truth)
+scripts/setup-deps.sh         # Universal OpenSSL + libplist into ~/.cache/airtv-deps/universal
+scripts/make-dmg.sh           # Build, sign, notarize, staple
+scripts/stage-release.sh      # EdDSA-sign, rewrite appcast, stage dist/upload/
+deploy/pack-for-lymedeploy.sh # Pack + push AirTVDisplay.Downloads <version>
+deploy/deploy.yaml            # LymeDeploy project (dry-run first, NEVER --prune)
+deploy/updates/appcast.xml    # Sparkle feed (release notes go in <description>)
+website/index.html            # Landing page
+thirdparty/LICENSES.md        # GPLv3 licensing decision
 ```
 
 ## Recent Git Log
+
 ```
-55e43ea Prep move to work profile: ignore UxPlay spike build, portable launcher
-fe27263 M0: verify Studio-side Bonjour, note Wi-Fi-only iMac link
-867e0ac Orchestrator: record M0 partial result
-30662ef M0: UxPlay spike findings, launcher script, session log
-93d9cf3 Initial commit: planning document
+4dfdcfa Backlog: Windows sender options (AirParrot test, own-protocol sender)
+7c19491 deploy.yaml: record where the Cloudflare token lives
+c0124ae deploy.yaml: explain the shared Production machine mappings
+3b8e104 Backlog: landing page screenshot
+6f7f980 Landing page: drop the screenshot slot
+8711979 Add the iadev.net download landing page and stage it with each release
+64123fe Plan: M9 done, release steps pending
 ```
 
 ## Any Other Notes
-- Both Macs have two profiles: `michaeljoseph` (personal) and `michaeljosephwork` (work). Development happens in the work profile. Screen Mirroring and pairing belong to whichever Studio profile is on screen; Bonjour is system-wide.
-- UxPlay advertises as "Air TV Display@Mikes-iMac" (it appends the hostname): `model=AppleTV3,2 features=0x527FFEE6,0x0`. Its feature bits are much narrower than the Studio's own, which is why Extend is uncertain.
-- `-fs` does nothing on macOS. The README recommends `-vsync no` for lower latency. Use `-pin`/`-reg` only if pairing requires them.
-- Don't build our TXT record from the Studio's own record (`Mac15,14`, AirPlay 2 / HomeKit pairing). UxPlay's record is the template.
+
+- Releases don't use Xcode. The scripts sign with the Developer ID directly, so ignore Xcode signing errors.
+- `stage-release.sh` refuses an ad-hoc DMG unless `ALLOW_UNSIGNED=1`. Don't use that for a real release.
+- The production machine mappings are shared with other projects. PMO-PROD-VM is deliberately offline, so a FAIL for it in `lymedeploy doctor` is expected.
+- The deployment mode is Promoted with AllowDirectDeploy false. Production is the only rung, so deploying straight to it is fine.
+- Keep the repo public and the LICENSE files in the bundle (GPLv3).
