@@ -2,7 +2,8 @@
 # SPDX-License-Identifier: MIT
 # Builds a Release AirTVDisplay.app, verifies the bundle and its signature, and copies it to
 # dist/. Signing: ad-hoc ("-") unless SIGN_IDENTITY names a codesigning identity in the
-# keychain (security find-identity -v -p codesigning). Notarization is a later step.
+# keychain (security find-identity -v -p codesigning). For a universal, Developer ID signed,
+# notarized DMG use scripts/make-dmg.sh instead.
 #
 #   scripts/package-app.sh                 # ad-hoc
 #   SIGN_IDENTITY="Apple Development: ..." scripts/package-app.sh
