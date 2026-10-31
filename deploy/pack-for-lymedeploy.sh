@@ -69,7 +69,7 @@ if [ -z "$(ls -A "$UPLOAD" 2>/dev/null)" ]; then
     exit 1
 fi
 
-for required in "$DMG_NAME" appcast.xml web.config; do
+for required in "$DMG_NAME" appcast.xml index.html screenshot.png web.config; do
     if [ ! -f "$UPLOAD/$required" ]; then
         echo "!! $UPLOAD/$required is missing." >&2
         if [ "$required" = "$DMG_NAME" ]; then
@@ -116,7 +116,7 @@ nuspec = f'''<?xml version="1.0" encoding="utf-8"?>
     <id>{pid}</id>
     <version>{ver}</version>
     <authors>Interapp Development, Inc.</authors>
-    <description>Air TV Display {ver} download and auto-update artifacts (DMG, appcast.xml) published to the public download folder by LymeDeploy.</description>
+    <description>Air TV Display {ver} download and auto-update artifacts (DMG, appcast.xml, landing page) published to the public download folder by LymeDeploy.</description>
   </metadata>
 </package>
 '''
@@ -129,6 +129,8 @@ content_types = '''<?xml version="1.0" encoding="utf-8"?>
   <Default Extension="nuspec" ContentType="application/octet" />
   <Default Extension="dmg" ContentType="application/octet-stream" />
   <Default Extension="xml" ContentType="application/xml" />
+  <Default Extension="html" ContentType="text/html" />
+  <Default Extension="png" ContentType="image/png" />
   <Default Extension="config" ContentType="application/xml" />
 </Types>
 '''

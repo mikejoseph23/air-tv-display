@@ -32,7 +32,7 @@ One-time setup on the Studio: clone the repo with submodules and run `scripts/se
    ```
 
    `mrm-notary` is the profile mac-resource-monitor uses; any `notarytool store-credentials` profile for team UU626VCLYW works.
-4. `scripts/stage-release.sh` EdDSA-signs the DMG, rewrites the appcast and stages `dist/upload/` (versioned DMG, `appcast.xml`, `web.config`).
+4. `scripts/stage-release.sh` EdDSA-signs the DMG, rewrites the appcast and stages `dist/upload/` (versioned DMG, `appcast.xml`, `web.config`, and the landing page `index.html` + `screenshot.png` from `website/`, with the DMG name and version in `index.html` rewritten to the release).
 5. `deploy/pack-for-lymedeploy.sh` packs and pushes `AirTVDisplay.Downloads <version>`, then create and deploy a release of project `air-tv-display-downloads` (defined in `deploy/deploy.yaml`). It publishes to `https://iadev.net/air-tv-display/` and purges Cloudflare's cache for the appcast.
 6. Commit the rewritten `deploy/updates/appcast.xml` and the version bump.
 

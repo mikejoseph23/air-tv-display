@@ -2,8 +2,7 @@
 # Schema: ~/git/lymedeploy/docs/reference/deploy-yaml-schema.md (schema: 1)
 # Apply:  lymedeploy apply -f deploy/deploy.yaml --dry-run    # read the diff, THEN run without --dry-run
 #
-# Modelled on `lymedeploy export --project mac-resource-monitor-downloads` (2026-10-31), minus the
-# landing-page smoke test (no index.html here). Playbook:
+# Modelled on `lymedeploy export --project mac-resource-monitor-downloads` (2026-10-31). Playbook:
 # ~/git/lymedeploy/docs/playbooks/downloads-file-drop-playbook.md.
 #
 # NOT YET APPLIED. Before the first apply (Mike):
@@ -21,7 +20,7 @@ schema: 1
 project:
   slug: air-tv-display-downloads
   name: Air TV Display Downloads
-  description: Publishes Air TV Display release artifacts (DMG, appcast.xml) to the public download folder on iadev-2025, served via the Interapp /air-tv-display virtual directory. Packaged on the Mac by deploy/pack-for-lymedeploy.sh after scripts/stage-release.sh; not TeamCity, since a notarized DMG cannot be produced on a Windows agent.
+  description: Publishes Air TV Display release artifacts (DMG, appcast.xml, landing page) to the public download folder on iadev-2025, served via the Interapp /air-tv-display virtual directory. Packaged on the Mac by deploy/pack-for-lymedeploy.sh after scripts/stage-release.sh; not TeamCity, since a notarized DMG cannot be produced on a Windows agent.
   group: Software Updates
   enabled: true
   active: true
@@ -64,9 +63,23 @@ steps:
     retryDelaySeconds: 5
     requestTimeoutSeconds: 30
     url: https://www.iadev.net/air-tv-display/appcast.xml
-- name: Purge Cloudflare cache for the appcast
-  type: http-request
+- name: Verify the landing page is served
+  type: smoke-test
   sortOrder: 3
+  enabled: true
+  targetRole: webserver
+  config:
+    cacheBust: true
+    followRedirects: true
+    expectedStatus: 200
+    retries: 3
+    retryDelaySeconds: 5
+    requestTimeoutSeconds: 30
+    url: https://www.iadev.net/air-tv-display/
+# index.html keeps its URL but its download link changes every release, so purge it with the appcast.
+- name: Purge Cloudflare cache for the appcast and landing page
+  type: http-request
+  sortOrder: 4
   enabled: true
   targetRole: webserver
   config:
@@ -79,7 +92,7 @@ steps:
     url: https://api.cloudflare.com/client/v4/zones/#{CloudflareZoneId}/purge_cache
     headers:
     - 'Authorization: Bearer #{CloudflareToken}'
-    body: '{"files": ["https://iadev.net/air-tv-display/appcast.xml", "https://www.iadev.net/air-tv-display/appcast.xml"]}'
+    body: '{"files": ["https://iadev.net/air-tv-display/appcast.xml", "https://www.iadev.net/air-tv-display/appcast.xml", "https://iadev.net/air-tv-display/", "https://www.iadev.net/air-tv-display/", "https://iadev.net/air-tv-display/index.html", "https://www.iadev.net/air-tv-display/index.html"]}'
     successBodyContains: '"success":true'
 variables:
 - name: CloudflareToken
