@@ -417,3 +417,4 @@ Reverse‑chronological. Newest first.
 
 [Return to Top](#air-tv-display--planning-document)
 - **2026-10-31 00:15** M9 done (12ce8b5, 8cdbe80, f8a801f): GPLv3 + MIT headers, Sparkle 2, universal deps/build, make-dmg/stage-release/pack-for-lymedeploy, deploy.yaml draft, CLAUDE.md runbook, README. 88/88 tests; ad-hoc universal DMG ran on both Macs. Pending: signed release on the Studio, IIS folder + `lymedeploy apply`, Cloudflare token secret.
+- **2026-10-31 00:25** M9W landing page (8711979, 6 min): `website/index.html` (problem/how/setup/requirements/FAQ/credits, Apple facts sourced), staged by stage-release.sh and packed for LymeDeploy. `website/screenshot.png` is a placeholder pending a real capture or photo.
