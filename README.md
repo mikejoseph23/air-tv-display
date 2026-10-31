@@ -25,7 +25,7 @@ xcodebuild -project AirTVDisplay.xcodeproj -scheme AirTVDisplay -derivedDataPath
 open build/Build/Products/Debug/AirTVDisplay.app
 ```
 
-`scripts/make-dmg.sh` builds a universal Release DMG (ad-hoc signed unless `SIGN_ID` is set). Release steps are in `CLAUDE.md`. The download page at https://iadev.net/air-tv-display/ lives in `website/` (`index.html`, `screenshot.png`); `scripts/stage-release.sh` stages it with the DMG and appcast.
+`scripts/make-dmg.sh` builds a universal Release DMG (ad-hoc signed unless `SIGN_ID` is set). Release steps are in `CLAUDE.md`. The download page at https://iadev.net/air-tv-display/ lives in `website/index.html`; `scripts/stage-release.sh` stages it with the DMG and appcast.
 
 ## License
 

@@ -69,7 +69,7 @@ if [ -z "$(ls -A "$UPLOAD" 2>/dev/null)" ]; then
     exit 1
 fi
 
-for required in "$DMG_NAME" appcast.xml index.html screenshot.png web.config; do
+for required in "$DMG_NAME" appcast.xml index.html web.config; do
     if [ ! -f "$UPLOAD/$required" ]; then
         echo "!! $UPLOAD/$required is missing." >&2
         if [ "$required" = "$DMG_NAME" ]; then

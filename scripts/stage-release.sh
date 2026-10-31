@@ -9,8 +9,7 @@
 #      "ed25519", the key SUPublicEDKey pins; shared by all of Mike's apps, never in the repo)
 #   3. rewrites deploy/updates/appcast.xml: enclosure url, sparkle:version (CFBundleVersion),
 #      sparkle:shortVersionString, length, edSignature, pubDate
-#   4. stages the versioned DMG + appcast.xml + web.config + website/index.html +
-#      website/screenshot.png into dist/upload/ (website/ is the single source of truth for
+#   4. stages the versioned DMG + appcast.xml + web.config + website/index.html into dist/upload/ (website/ is the single source of truth for
 #      the landing page; the DMG name and version labels in index.html are rewritten to this
 #      release on the way)
 #
@@ -25,7 +24,6 @@ cd "$(dirname "$0")/.."
 SRC_DMG="${1:-dist/Air TV Display.dmg}"
 [ -f "$SRC_DMG" ] || { echo "!! DMG not found: $SRC_DMG (run scripts/make-dmg.sh first)" >&2; exit 1; }
 [ -f "website/index.html" ] || { echo "!! website/index.html not found" >&2; exit 1; }
-[ -f "website/screenshot.png" ] || { echo "!! website/screenshot.png not found" >&2; exit 1; }
 
 APPCAST="deploy/updates/appcast.xml"
 UPLOAD="dist/upload"
@@ -86,7 +84,7 @@ PY
 
 echo "==> Staging upload folder: $UPLOAD"
 rm -rf "$UPLOAD"; mkdir -p "$UPLOAD"
-cp "$VERSIONED_DMG" "$APPCAST" deploy/updates/web.config website/screenshot.png "$UPLOAD/"
+cp "$VERSIONED_DMG" "$APPCAST" deploy/updates/web.config "$UPLOAD/"
 # Landing page: rewrite the DMG filename + version labels to this release so the download
 # button and version text track the release without a manual edit.
 sed -e "s|AirTVDisplay-v[0-9][0-9.]*\.dmg|$DMG_NAME|g" \
