@@ -34,7 +34,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         receiver.onStateChange = { [weak self] state in
             print("[state] \(state.rawValue)")
             self?.statusController?.refresh()
-            self?.window?.setState(state)
+            self?.window?.setState(state, deviceName: self?.receiver.serviceName ?? "")
         }
         // Start receiving on launch (a Finder launch passes no flags); --no-autostart opts out.
         if !selfTest && !args.contains("--no-autostart") { receiver.start() }

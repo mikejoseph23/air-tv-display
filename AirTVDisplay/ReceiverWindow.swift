@@ -6,7 +6,9 @@ import AppKit
 /// running.
 final class ReceiverWindow: NSWindow {
     private let label = NSTextField(labelWithString: "Waiting for AirPlay…")
-    private let hint = NSTextField(labelWithString: "Right-click or \u{2318}, for Settings")
+    private let hint = NSTextField(labelWithString: "")
+    private var cursorTimer: Timer?
+    private var mouseMonitor: Any?
     private let video: VideoPipeline?
     private var hud: VideoHUD?
     private let onShowSettings: () -> Void
@@ -21,6 +23,7 @@ final class ReceiverWindow: NSWindow {
         isOpaque = true
         isReleasedWhenClosed = false
         collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
+        acceptsMouseMovedEvents = true
 
         let content = NSView(frame: frame)
         content.wantsLayer = true
@@ -34,6 +37,7 @@ final class ReceiverWindow: NSWindow {
         content.addSubview(label)
         hint.font = .systemFont(ofSize: 16, weight: .regular)
         hint.textColor = .gray
+        hint.alignment = .center
         hint.translatesAutoresizingMaskIntoConstraints = false
         content.addSubview(hint)
         NSLayoutConstraint.activate([
@@ -93,12 +97,30 @@ final class ReceiverWindow: NSWindow {
         if let screen = NSScreen.main { setFrame(screen.frame, display: true) }
         makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
+        if mouseMonitor == nil {
+            mouseMonitor = NSEvent.addLocalMonitorForEvents(matching: [.mouseMoved]) { [weak self] event in
+                self?.scheduleCursorHide()
+                return event
+            }
+        }
+        scheduleCursorHide()
     }
 
-    func setState(_ state: ReceiverState) {
+    /// Hides the pointer after 2 s without movement; it comes back on the next move.
+    private func scheduleCursorHide() {
+        cursorTimer?.invalidate()
+        cursorTimer = Timer.scheduledTimer(withTimeInterval: 2, repeats: false) { [weak self] _ in
+            guard let self, self.isKeyWindow else { return }
+            NSCursor.setHiddenUntilMouseMoves(true)
+        }
+    }
+
+    func setState(_ state: ReceiverState, deviceName: String) {
         label.isHidden = state == .streaming
         hint.isHidden = label.isHidden
         label.stringValue = "Waiting for AirPlay…"
+        hint.stringValue = "On your Mac: Control Center \u{2192} Screen Mirroring \u{2192} \u{201C}\(deviceName)\u{201D}\n"
+            + "Both Macs must be on the same network.\n\nRight-click or \u{2318}, for Settings"
         // Sender gone without a mirror teardown (reset / last connection closed): blank the
         // last frame so the waiting view is not drawn over a stale picture.
         if state == .idle || state == .stopped { video?.clearScreen() }
