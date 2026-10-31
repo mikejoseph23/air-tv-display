@@ -63,7 +63,7 @@ Goal: the iMac app runs fullscreen, presents itself as an Apple‑TV‑class Air
 | M7T — Testing: mirror vs extend | Sonnet | ⏸ Hands‑on deferred | — | Hands‑on with Studio picker. |
 | M8 — Latency & robustness hardening | Opus | ✅ Done (phone latency deferred) | 24 | End‑to‑end polish, reconnect, drop handling. |
 | M8T — Testing: end‑to‑end | Opus | ⏸ Hands‑on deferred (see hands-on-checklist.md) | — | Full hands‑on workflow over ethernet. |
-| M9 — Distribution: GPLv3, Sparkle, universal, LymeDeploy | Opus | ✅ Done (first release + server setup pending, Mike) | 26 | Ship like mac-resource-monitor: auto-update, notarized DMG, iadev.net/air-tv-display/. |
+| M9 — Distribution: GPLv3, Sparkle, universal, LymeDeploy | Opus | ✅ Done (1.0.0 released 2026-10-31) | 26 | Ship like mac-resource-monitor: auto-update, notarized DMG, iadev.net/air-tv-display/. |
 
 > **Model Assignment Guidelines** — *Haiku*: mechanical/boilerplate. *Sonnet*: most feature work, standard well‑defined tasks. *Opus*: complex architecture, ambiguous/undocumented protocol work, realtime systems, and any user‑facing interface design. Wrapping C protocol code and realtime decode qualify for Opus even though there's little "UI."
 
@@ -344,7 +344,7 @@ Make sure macOS offers **Extend**, not just Mirror, against our app — expected
 - [x] Universal build: arm64 + x86_64 dependency envs, lipo'd libcrypto and static libplist.
 - [x] `scripts/make-dmg.sh` (build, inside-out Developer ID sign, notarize, staple), `scripts/stage-release.sh` (EdDSA sign, appcast), `deploy/pack-for-lymedeploy.sh`, `deploy/updates/` (appcast + web.config).
 - [x] LymeDeploy project definition (`deploy/deploy.yaml`) drafted; applying it to the server and the IIS download folder are confirmed with Mike first.
-- [ ] Release runbook in `CLAUDE.md`/README; first release built on the Mac Studio (hands-on).
+- [x] Release runbook in `CLAUDE.md`/README; first release built on the Mac Studio (hands-on). 1.0.0 shipped 2026-10-31.
 
 [Return to Top](#air-tv-display--planning-document)
 
@@ -418,3 +418,4 @@ Reverse‑chronological. Newest first.
 [Return to Top](#air-tv-display--planning-document)
 - **2026-10-31 00:15** M9 done (12ce8b5, 8cdbe80, f8a801f): GPLv3 + MIT headers, Sparkle 2, universal deps/build, make-dmg/stage-release/pack-for-lymedeploy, deploy.yaml draft, CLAUDE.md runbook, README. 88/88 tests; ad-hoc universal DMG ran on both Macs. Pending: signed release on the Studio, IIS folder + `lymedeploy apply`, Cloudflare token secret.
 - **2026-10-31 00:25** M9W landing page (8711979, 6 min): `website/index.html` (problem/how/setup/requirements/FAQ/credits, Apple facts sourced), staged by stage-release.sh and packed for LymeDeploy. `website/screenshot.png` is a placeholder pending a real capture or photo.
+- **2026-10-31** 1.0.0 released from the Mac Studio (2a715af, 913c3ad): universal, Developer ID signed, notarized (9376ce10) and stapled; LymeDeploy release 336 deployed to Production; landing page, appcast and DMG are live at iadev.net/air-tv-display/ (hashes match). Script fixes: per-arch `lipo -verify_arch`, `codesign -dvv` captured before grep. Follow-up: iadev.net 301s to www, so the Sparkle feed goes through a redirect (see BACKLOG).
