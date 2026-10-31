@@ -37,7 +37,8 @@ FEED_URL="https://iadev.net/air-tv-display/$DMG_NAME"
 
 # A DMG that isn't Developer ID signed and notarized would install fine via Sparkle but fail
 # Gatekeeper for anyone downloading it, so refuse to stage one.
-if ! codesign -dv "$SRC_DMG" 2>&1 | grep -q '^Authority=Developer ID Application'; then
+SIG_INFO="$(codesign -dvv "$SRC_DMG" 2>&1 || true)"  # capture first: grep -q on a pipe can SIGPIPE codesign under pipefail
+if ! grep -q '^Authority=Developer ID Application' <<<"$SIG_INFO"; then
     echo "!! $SRC_DMG is not Developer ID signed. Build it on the Mac Studio with" >&2
     echo "   SIGN_ID=... NOTARIZE_PROFILE=... scripts/make-dmg.sh (see CLAUDE.md, Release)." >&2
     [ "${ALLOW_UNSIGNED:-0}" = 1 ] || exit 1

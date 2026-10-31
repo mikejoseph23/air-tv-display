@@ -57,7 +57,7 @@ else
 fi
 
 DEPS="${AIRTV_DEPS_PREFIX:-$HOME/.cache/airtv-deps/universal}"
-if ! lipo "$DEPS/lib/libcrypto.3.dylib" -verify_arch arm64 x86_64 2>/dev/null; then
+if ! { lipo "$DEPS/lib/libcrypto.3.dylib" -verify_arch arm64 && lipo "$DEPS/lib/libcrypto.3.dylib" -verify_arch x86_64; } 2>/dev/null; then
     echo "!! $DEPS/lib/libcrypto.3.dylib is missing or not universal; run scripts/setup-deps.sh" >&2
     exit 1
 fi
@@ -74,7 +74,7 @@ xcodebuild -project AirTVDisplay.xcodeproj -scheme AirTVDisplay -configuration R
 ditto "$BUILT_APP" "$APP"
 
 for bin in "$APP/Contents/MacOS/$BIN_NAME" "$APP/Contents/Frameworks/libcrypto.3.dylib"; do
-    if ! lipo "$bin" -verify_arch arm64 x86_64; then
+    if ! { lipo "$bin" -verify_arch arm64 && lipo "$bin" -verify_arch x86_64; }; then
         echo "!! not universal: $bin ($(lipo -archs "$bin"))" >&2
         exit 1
     fi
