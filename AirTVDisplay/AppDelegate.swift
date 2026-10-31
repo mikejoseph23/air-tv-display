@@ -31,7 +31,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             self?.statusController?.refresh()
             self?.window?.setState(state)
         }
-        if args.contains("--autostart") { receiver.start() }
+        // Start receiving on launch (a Finder launch passes no flags); --no-autostart opts out.
+        if !selfTest && !args.contains("--no-autostart") { receiver.start() }
 
         if selfTest {
             // Exercise start -> stop -> start (restart safety), then hold the server up for
