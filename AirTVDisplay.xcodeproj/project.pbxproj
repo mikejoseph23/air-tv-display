@@ -603,7 +603,6 @@
 				};
 			};
 			buildConfigurationList = DDA37514EA9313DBB86B2270 /* Build configuration list for PBXProject "AirTVDisplay" */;
-			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -616,6 +615,7 @@
 				15EC39C593FE70D73FF9BB41 /* XCRemoteSwiftPackageReference "Sparkle" */,
 			);
 			preferredProjectObjectVersion = 77;
+			productRefGroup = E5FFEAD3EDB5EFF9C5F776E0 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
