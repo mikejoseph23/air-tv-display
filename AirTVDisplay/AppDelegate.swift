@@ -22,7 +22,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
         receiver.videoSink = video
         if !selfTest { showWindow() }
-        statusController = StatusItemController(receiver: receiver, onShowWindow: { [weak self] in self?.showWindow() })
+        statusController = StatusItemController(receiver: receiver, onShowWindow: { [weak self] in self?.showWindow() },
+                                                onToggleHUD: { [weak self] in self?.window?.toggleHUD() })
 
         receiver.onNetworkChange = { [weak self] in self?.statusController?.refresh() }
         receiver.onStateChange = { [weak self] state in

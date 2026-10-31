@@ -4,13 +4,15 @@ final class StatusItemController: NSObject {
     private let item = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
     private let receiver: ReceiverController
     private let onShowWindow: () -> Void
+    private let onToggleHUD: () -> Void
     private let stateLine = NSMenuItem(title: "", action: nil, keyEquivalent: "")
     private let addrLine = NSMenuItem(title: "", action: nil, keyEquivalent: "")
     private let toggle = NSMenuItem(title: "", action: #selector(toggleReceiver), keyEquivalent: "")
 
-    init(receiver: ReceiverController, onShowWindow: @escaping () -> Void) {
+    init(receiver: ReceiverController, onShowWindow: @escaping () -> Void, onToggleHUD: @escaping () -> Void) {
         self.receiver = receiver
         self.onShowWindow = onShowWindow
+        self.onToggleHUD = onToggleHUD
         super.init()
         let menu = NSMenu()
         menu.addItem(stateLine)
@@ -24,6 +26,10 @@ final class StatusItemController: NSObject {
         let show = NSMenuItem(title: "Show Window", action: #selector(showWindow), keyEquivalent: "")
         show.target = self
         menu.addItem(show)
+        // Same as pressing H in the receiver window.
+        let hud = NSMenuItem(title: "Toggle Diagnostics (H)", action: #selector(toggleHUD), keyEquivalent: "")
+        hud.target = self
+        menu.addItem(hud)
         menu.addItem(.separator())
         menu.addItem(NSMenuItem(title: "Quit", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
         item.menu = menu
@@ -46,4 +52,6 @@ final class StatusItemController: NSObject {
     @objc private func resetConnection() { receiver.resetConnections(); refresh() }
 
     @objc private func showWindow() { onShowWindow() }
+
+    @objc private func toggleHUD() { onToggleHUD() }
 }

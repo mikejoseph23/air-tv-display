@@ -50,9 +50,11 @@ final class ReceiverWindow: NSWindow {
 
     override func keyDown(with event: NSEvent) {
         if event.keyCode == 53 { NSApp.terminate(nil) }
-        else if event.charactersIgnoringModifiers == "h" { hud?.toggle() }
+        else if event.charactersIgnoringModifiers == "h" { toggleHUD() }
         else { super.keyDown(with: event) }
     }
+
+    func toggleHUD() { hud?.toggle() }
 
     func present() {
         if let screen = NSScreen.main { setFrame(screen.frame, display: true) }
