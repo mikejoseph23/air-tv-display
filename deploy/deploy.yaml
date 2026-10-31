@@ -29,8 +29,9 @@ project:
 environments:
 - name: Production
   sortOrder: 1
-# Only the box that serves iadev.net. (mac-resource-monitor-downloads also maps DEVCENTER2019 and
-# PMO-PROD-VM to Production; this project deliberately doesn't.)
+# Only the box that serves iadev.net is declared. Machine mappings are per machine, not per project,
+# so DEVCENTER2019 and PMO-PROD-VM (deliberately offline) still serve Production and show as DRIFT.
+# Never run apply --prune on this file: it would un-map them from Production for every project.
 machines:
 - name: IADEV-2025
   environments:
