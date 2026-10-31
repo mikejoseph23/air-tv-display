@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 import CoreVideo
 import Foundation
 import QuartzCore

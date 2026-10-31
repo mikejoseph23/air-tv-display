@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: MIT
 """Replays the M0 sender's handshake (GET /info, POST /fp-setup x2) over RTSP against a
 running receiver and compares the FairPlay replies byte-for-byte with what stock UxPlay sent
 the Mac Studio (Tests/Fixtures/m0-fp-setup.json).

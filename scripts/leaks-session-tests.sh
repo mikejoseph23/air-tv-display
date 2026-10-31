@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: MIT
 # Runs the M4T session tests under `leaks --atExit` and fails on any leak whose allocation
 # stack is ours (XCTest's own SwiftTestingExecutionExtension leaks one 32-byte weak ref; ignored).
 # Build the tests first: xcodebuild build-for-testing -project AirTVDisplay.xcodeproj \

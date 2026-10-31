@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 // Generates Tests/Fixtures/synthetic-{alac,aac-eld}.pkts: one second of a stereo test tone
 // (440 Hz left, 880 Hz right, 44.1 kHz) encoded with AudioToolbox, stored as repeated
 // [u32 big-endian length][packet bytes]. Usage:

@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: MIT
 # Integration: launch the app executable, resolve its _airplay._tcp / _raop._tcp registrations
 # with dns-sd -L locally and on the Mac Studio (SSH), and diff the TXT keys against the M0 set.
 # Usage: scripts/integration-bonjour.sh [path/to/AirTVDisplay] [--no-studio]

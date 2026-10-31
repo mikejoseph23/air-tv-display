@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 import Foundation
 
 /// Maps UxPlay's "local NTP" timestamps to the monotonic host clock.

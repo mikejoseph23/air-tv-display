@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 // Air TV Display M1: register _airplay._tcp and _raop._tcp from our own process.
 // TXT records are UxPlay 1.74's (docs/discovery-findings.md), with our own deviceid/name/pk/pi.
 // Build: cc -o discovery-cli discovery-cli.c   (dns_sd is part of libSystem on macOS)

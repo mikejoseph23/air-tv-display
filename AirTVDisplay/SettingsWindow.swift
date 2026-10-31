@@ -1,8 +1,10 @@
+// SPDX-License-Identifier: MIT
 import AppKit
 
 /// Small fixed-size settings window; one instance, reused and brought to front.
 final class SettingsWindowController: NSObject, NSTextFieldDelegate {
     private let settings: AppSettings
+    private let updater: UpdaterModel?
     private let onNameChange: () -> Void
     private let onAudioChange: (Bool) -> Void
     private var window: NSWindow?
@@ -12,9 +14,11 @@ final class SettingsWindowController: NSObject, NSTextFieldDelegate {
     private let escBox = NSButton(checkboxWithTitle: "Esc quits the app", target: nil, action: nil)
     private let loginBox = NSButton(checkboxWithTitle: "Launch at login", target: nil, action: nil)
     private let loginNote = NSTextField(wrappingLabelWithString: "")
+    private let updateBox = NSButton(checkboxWithTitle: "Automatically check for updates", target: nil, action: nil)
 
-    init(settings: AppSettings, onNameChange: @escaping () -> Void, onAudioChange: @escaping (Bool) -> Void) {
+    init(settings: AppSettings, updater: UpdaterModel?, onNameChange: @escaping () -> Void, onAudioChange: @escaping (Bool) -> Void) {
         self.settings = settings
+        self.updater = updater
         self.onNameChange = onNameChange
         self.onAudioChange = onAudioChange
         super.init()
@@ -28,7 +32,7 @@ final class SettingsWindowController: NSObject, NSTextFieldDelegate {
     }
 
     private func build() {
-        let w = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 420, height: 270),
+        let w = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 420, height: 300),
                          styleMask: [.titled, .closable], backing: .buffered, defer: false)
         w.title = "Air TV Display Settings"
         w.isReleasedWhenClosed = false
@@ -49,7 +53,8 @@ final class SettingsWindowController: NSObject, NSTextFieldDelegate {
         loginNote.textColor = .systemOrange
 
         for (box, sel) in [(audioBox, #selector(audioToggled)), (hudBox, #selector(hudToggled)),
-                           (escBox, #selector(escToggled)), (loginBox, #selector(loginToggled))] {
+                           (escBox, #selector(escToggled)), (loginBox, #selector(loginToggled)),
+                           (updateBox, #selector(updateToggled))] {
             box.target = self
             box.action = sel
         }
@@ -59,7 +64,7 @@ final class SettingsWindowController: NSObject, NSTextFieldDelegate {
         nameRow.spacing = 8
         nameField.widthAnchor.constraint(greaterThanOrEqualToConstant: 300).isActive = true
 
-        let stack = NSStackView(views: [nameRow, audioBox, audioNote, hudBox, escBox, loginBox, loginNote])
+        let stack = NSStackView(views: [nameRow, audioBox, audioNote, hudBox, escBox, loginBox, loginNote, updateBox])
         stack.orientation = .vertical
         stack.alignment = .leading
         stack.spacing = 10
@@ -86,6 +91,8 @@ final class SettingsWindowController: NSObject, NSTextFieldDelegate {
         escBox.state = settings.escQuits ? .on : .off
         loginBox.state = LoginItem.isEnabled ? .on : (settings.launchAtLogin ? .on : .off)
         loginNote.stringValue = LoginItem.statusMessage() ?? ""
+        updateBox.state = updater?.automaticallyChecksForUpdates == true ? .on : .off
+        updateBox.isEnabled = updater != nil
     }
 
     // Commit on Return / end editing, not per keystroke.
@@ -107,6 +114,8 @@ final class SettingsWindowController: NSObject, NSTextFieldDelegate {
     @objc private func hudToggled() { settings.showHUDAtLaunchStored = hudBox.state == .on }
 
     @objc private func escToggled() { settings.escQuits = escBox.state == .on }
+
+    @objc private func updateToggled() { updater?.automaticallyChecksForUpdates = updateBox.state == .on }
 
     @objc private func loginToggled() {
         let on = loginBox.state == .on

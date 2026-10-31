@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 import Foundation
 
 /// Minimal H.264 Annex-B inspection: split a byte stream at 00 00 01 / 00 00 00 01 start

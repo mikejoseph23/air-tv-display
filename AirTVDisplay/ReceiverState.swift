@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 import Foundation
 
 /// What the status item shows. `pairing` covers everything between the first RTSP connection

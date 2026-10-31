@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 import Darwin
 import XCTest
 

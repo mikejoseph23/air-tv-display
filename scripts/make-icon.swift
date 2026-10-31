@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 // Draws the app icon (a display with an AirPlay triangle) at 1024 px into the PNG given as
 // the first argument. Used by scripts/make-icon.sh; no external tools beyond AppKit.
 import AppKit

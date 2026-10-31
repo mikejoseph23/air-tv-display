@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 import AppKit
 
 /// Toggleable perf overlay: fps, decode ms/frame, dropped frames, queue depth, and the

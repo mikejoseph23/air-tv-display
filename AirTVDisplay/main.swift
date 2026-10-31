@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 import AppKit
 
 let app = NSApplication.shared

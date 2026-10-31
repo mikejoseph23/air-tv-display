@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 import CoreMedia
 import Foundation
 

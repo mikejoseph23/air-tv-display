@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: MIT
 # Sanity-checks a raw H.264 Annex-B file (default: logs/stream.h264, the app's debug dump):
 # codec/profile, frame count, every distinct resolution in order, and a full decode for errors.
 # Exit 1 if it isn't H.264, has no frames, or the decoder reports errors.

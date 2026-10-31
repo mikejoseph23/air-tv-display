@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 import AppKit
 
 /// Fullscreen borderless window on the main screen. Esc quits (only if enabled in Settings), "h" toggles the perf HUD.
@@ -12,10 +13,13 @@ final class ReceiverWindow: NSWindow {
     private let video: VideoPipeline?
     private var hud: VideoHUD?
     private let onShowSettings: () -> Void
+    private let onCheckForUpdates: () -> Void
 
-    init(video: VideoPipeline? = nil, showHUD: Bool = false, onShowSettings: @escaping () -> Void = {}) {
+    init(video: VideoPipeline? = nil, showHUD: Bool = false, onShowSettings: @escaping () -> Void = {},
+         onCheckForUpdates: @escaping () -> Void = {}) {
         self.video = video
         self.onShowSettings = onShowSettings
+        self.onCheckForUpdates = onCheckForUpdates
         let frame = NSScreen.main?.frame ?? NSRect(x: 0, y: 0, width: 1920, height: 1080)
         super.init(contentRect: frame, styleMask: [.borderless], backing: .buffered, defer: false)
         level = .mainMenu + 1
@@ -84,12 +88,17 @@ final class ReceiverWindow: NSWindow {
         menu.addItem(withTitle: "Settings\u{2026}", action: #selector(menuSettings), keyEquivalent: ",").target = self
         menu.addItem(withTitle: "Toggle Diagnostics (H)", action: #selector(menuToggleHUD), keyEquivalent: "").target = self
         menu.addItem(.separator())
+        menu.addItem(withTitle: "About Air TV Display", action: #selector(menuAbout), keyEquivalent: "").target = self
+        menu.addItem(withTitle: "Check for Updates\u{2026}", action: #selector(menuCheckForUpdates), keyEquivalent: "").target = self
+        menu.addItem(.separator())
         menu.addItem(withTitle: "Quit", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
         NSMenu.popUpContextMenu(menu, with: event, for: contentView ?? NSView())
     }
 
     @objc private func menuSettings() { onShowSettings() }
     @objc private func menuToggleHUD() { toggleHUD() }
+    @objc private func menuAbout() { AboutPanel.show() }
+    @objc private func menuCheckForUpdates() { onCheckForUpdates() }
 
     func toggleHUD() { hud?.toggle() }
 

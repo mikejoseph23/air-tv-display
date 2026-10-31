@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 import XCTest
 
 /// M4T: the M4 stream dump, produced the way the app produces it (`AIRTV_DUMP_SECONDS` read by

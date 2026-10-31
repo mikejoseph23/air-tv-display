@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 import Foundation
 
 /// Debug hook: writes the first N seconds of each mirror session's decrypted Annex-B video

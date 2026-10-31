@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: MIT
 # Builds a Release AirTVDisplay.app, verifies the bundle and its signature, and copies it to
 # dist/. Signing: ad-hoc ("-") unless SIGN_IDENTITY names a codesigning identity in the
 # keychain (security find-identity -v -p codesigning). Notarization is a later step.

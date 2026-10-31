@@ -15,11 +15,13 @@
 		0AAD3365E606C4CBC9B8A91E /* compat.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = D20D7AD95D0FF61B35C0C3B4 /* compat.h */; };
 		10E53BD32E091576DFBA0054 /* http_response.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3A2295901D59826D292269D4 /* http_response.h */; };
 		12197E6C8F2D2125841A608D /* AVSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98B91ED5CB70BD2C01E78687 /* AVSync.swift */; };
+		145BE1A57B3EEBFC2ADC9B38 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = A0128D121CF5946C9230467E /* LICENSE */; };
 		1641561E51A86F728725D92B /* libUxPlayLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AD6A71498A9A153E24ABB37 /* libUxPlayLib.a */; };
 		192F8E3FE36974FCC457B3E9 /* raop_handlers.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 384E2AD721433BB44657E1C4 /* raop_handlers.h */; };
 		19E770840CAA075E0D6E8916 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E01CE8F07CAA7B1C0F804DA /* AppSettings.swift */; };
 		1AF3901AF67EEA807A06058F /* AudioTiming.swift in Sources */ = {isa = PBXBuildFile; fileRef = 749B73C3E420D8DEE0234E87 /* AudioTiming.swift */; };
 		1AF967D3692ACEC608994E1B /* srp.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 878A27B2049451EA5B354842 /* srp.h */; };
+		1E8FD0FDFB9868D8C318398C /* UpdaterModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B5596FF62A0359F639F676 /* UpdaterModel.swift */; };
 		1EFB576CA15D34AEAA9C70F2 /* SettingsWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C29D1417945184BB715BF21 /* SettingsWindow.swift */; };
 		214218C47CF2445106A9659B /* fcup_request.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = F549488F6065DBCF458E0E68 /* fcup_request.h */; };
 		23AD473BC9BE874A8C9FC164 /* AudioRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D77B0D90C1D3B8DC33E25DDC /* AudioRenderer.swift */; };
@@ -52,10 +54,12 @@
 		5DFD0E792C7736D00A05B772 /* NetworkInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFB10ED5A265994D7918374D /* NetworkInfo.swift */; };
 		5E0E368DAEF911C2BEE00682 /* utils.c in Sources */ = {isa = PBXBuildFile; fileRef = 9B9DA4B8A408CEDDB6F1C5E3 /* utils.c */; };
 		63215A09D16A36E72B4B1B58 /* dns_sd.c in Sources */ = {isa = PBXBuildFile; fileRef = C4FE0E33BC75DA0DCFC47DCB /* dns_sd.c */; };
+		6765915AD7A8168EBD4867A3 /* LICENSES.md in Resources */ = {isa = PBXBuildFile; fileRef = 4718882D1C7F121B694201B8 /* LICENSES.md */; };
 		68413C075E0C727D47020A33 /* AudioTiming.swift in Sources */ = {isa = PBXBuildFile; fileRef = 749B73C3E420D8DEE0234E87 /* AudioTiming.swift */; };
 		6A8675548ADC676E0D85B7EC /* mirror_buffer.c in Sources */ = {isa = PBXBuildFile; fileRef = A163BCB46B5F9F3AC7600DD2 /* mirror_buffer.c */; };
 		6AC9812C3D36C511F816D191 /* netutils.c in Sources */ = {isa = PBXBuildFile; fileRef = 174A8527EB6B3FCB82DBF57D /* netutils.c */; };
 		6E24C1B6D0D393E533247DCD /* byteutils.c in Sources */ = {isa = PBXBuildFile; fileRef = A5E3122902E36E15F09FD334 /* byteutils.c */; };
+		71E0B5FF722A65D9C1CFF615 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 82CDFE96D9FDAABD09EC2099 /* Sparkle */; };
 		747936CD6D81778FA2724ECD /* llhttp.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = E5003202A2E20E924FEBC792 /* llhttp.h */; };
 		74DCE71204F4F763590EB80C /* dnssd.c in Sources */ = {isa = PBXBuildFile; fileRef = 2B8ACF8CF620B1AF88F2CBE1 /* dnssd.c */; };
 		75FD4CE71590A9B5F8ED7998 /* AppSettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFA29CBD7A760040E6B369FD /* AppSettingsTests.swift */; };
@@ -198,7 +202,6 @@
 		14816F88B9ADF2DBC235E242 /* airplay_video.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = airplay_video.c; sourceTree = "<group>"; };
 		156F8C8B1E1B0B82887E005B /* AppIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = AppIcon.icns; sourceTree = "<group>"; };
 		174A8527EB6B3FCB82DBF57D /* netutils.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = netutils.c; sourceTree = "<group>"; };
-		1984BB941F9CB5DDC92BE326 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		1CC29A647D80DCDD486015F4 /* compat.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = compat.c; sourceTree = "<group>"; };
 		1D895F70F0E052D9DC3C95FA /* SessionLifecycleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionLifecycleTests.swift; sourceTree = "<group>"; };
 		1F84360A466645CD0D9A23BC /* playfair.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = playfair.h; sourceTree = "<group>"; };
@@ -222,6 +225,7 @@
 		43D51B50CCDBF3425256CA4E /* AudioDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioDecoder.swift; sourceTree = "<group>"; };
 		443F0150E3098B8092A5182A /* AirTVDisplayTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AirTVDisplayTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		46A99BDF714D6A1864F5CF52 /* raop_ntp.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = raop_ntp.h; sourceTree = "<group>"; };
+		4718882D1C7F121B694201B8 /* LICENSES.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = LICENSES.md; sourceTree = "<group>"; };
 		475B5D1990FD3CEA51640BE9 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		47C1FCCCA0F0EF1D6CD8DECB /* raop.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = raop.c; sourceTree = "<group>"; };
 		489CA60284E4C4BA7EE8796E /* byteutils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = byteutils.h; sourceTree = "<group>"; };
@@ -252,6 +256,7 @@
 		988D3BDD45FC61B77C4F6079 /* raop_buffer.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = raop_buffer.c; sourceTree = "<group>"; };
 		98B91ED5CB70BD2C01E78687 /* AVSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVSync.swift; sourceTree = "<group>"; };
 		9B9DA4B8A408CEDDB6F1C5E3 /* utils.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = utils.c; sourceTree = "<group>"; };
+		A0128D121CF5946C9230467E /* LICENSE */ = {isa = PBXFileReference; path = LICENSE; sourceTree = "<group>"; };
 		A163BCB46B5F9F3AC7600DD2 /* mirror_buffer.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = mirror_buffer.c; sourceTree = "<group>"; };
 		A2BB67B0B925D87B4CDAAE27 /* AVSyncTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVSyncTests.swift; sourceTree = "<group>"; };
 		A3AA4CD9785E879B5A5E78D6 /* netutils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = netutils.h; sourceTree = "<group>"; };
@@ -272,6 +277,7 @@
 		C2844F5A6FBD6635C794AC52 /* omg_hax.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = omg_hax.c; sourceTree = "<group>"; };
 		C2E2953EC8E7267DAC531CCB /* pairing.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = pairing.c; sourceTree = "<group>"; };
 		C4FE0E33BC75DA0DCFC47DCB /* dns_sd.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = dns_sd.c; sourceTree = "<group>"; };
+		C6B5596FF62A0359F639F676 /* UpdaterModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdaterModel.swift; sourceTree = "<group>"; };
 		C95CA176345014187F3A01DD /* AirTVDisplay.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AirTVDisplay.entitlements; sourceTree = "<group>"; };
 		CE6251A026DB7ABEAE00F1B7 /* AnnexB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnexB.swift; sourceTree = "<group>"; };
 		CE77C08CA7E7D58ED22A3EC7 /* VideoDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoDecoder.swift; sourceTree = "<group>"; };
@@ -305,6 +311,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1641561E51A86F728725D92B /* libUxPlayLib.a in Frameworks */,
+				71E0B5FF722A65D9C1CFF615 /* Sparkle in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -341,7 +348,6 @@
 				98B91ED5CB70BD2C01E78687 /* AVSync.swift */,
 				F619758C2E38812E89D4C640 /* BonjourRegistrar.swift */,
 				CEF1C5A52E4E961075ECCE0B /* DisplaySleepGuard.swift */,
-				1984BB941F9CB5DDC92BE326 /* Info.plist */,
 				475B5D1990FD3CEA51640BE9 /* main.swift */,
 				AFB10ED5A265994D7918374D /* NetworkInfo.swift */,
 				FBCB9F83DCD55ABF3B6F359D /* RaopServer.swift */,
@@ -352,6 +358,7 @@
 				3C29D1417945184BB715BF21 /* SettingsWindow.swift */,
 				B103A0C73154FD6243599FAD /* StatusItemController.swift */,
 				B3E129CE65C6BDF65CBA3D8F /* StreamDump.swift */,
+				C6B5596FF62A0359F639F676 /* UpdaterModel.swift */,
 				BF17C0DD7A13B35C0E7F5CAF /* UxPlayBridge.swift */,
 				CE77C08CA7E7D58ED22A3EC7 /* VideoDecoder.swift */,
 				E063FE60E1F1CBC7C83DD3F2 /* VideoFormat.swift */,
@@ -367,6 +374,7 @@
 		581232A927A0BA870B7AEF9D /* thirdparty */ = {
 			isa = PBXGroup;
 			children = (
+				4718882D1C7F121B694201B8 /* LICENSES.md */,
 				278154AC93BE910D9D5DB1A5 /* UxPlay */,
 			);
 			path = thirdparty;
@@ -504,6 +512,7 @@
 		FC5DBAAEA1D8F357665F82A9 = {
 			isa = PBXGroup;
 			children = (
+				A0128D121CF5946C9230467E /* LICENSE */,
 				3C93CC22779B30379FFF141C /* AirTVDisplay */,
 				D9B75794FE06620280E4A7E7 /* Tests */,
 				581232A927A0BA870B7AEF9D /* thirdparty */,
@@ -548,6 +557,7 @@
 			);
 			name = AirTVDisplay;
 			packageProductDependencies = (
+				82CDFE96D9FDAABD09EC2099 /* Sparkle */,
 			);
 			productName = AirTVDisplay;
 			productReference = 4D1442780D0702AE67A3177B /* AirTVDisplay.app */;
@@ -602,6 +612,9 @@
 			);
 			mainGroup = FC5DBAAEA1D8F357665F82A9;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				15EC39C593FE70D73FF9BB41 /* XCRemoteSwiftPackageReference "Sparkle" */,
+			);
 			preferredProjectObjectVersion = 77;
 			projectDirPath = "";
 			projectRoot = "";
@@ -619,6 +632,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				ECEF8EDC60094DEEB02EE2B7 /* AppIcon.icns in Resources */,
+				145BE1A57B3EEBFC2ADC9B38 /* LICENSE in Resources */,
+				6765915AD7A8168EBD4867A3 /* LICENSES.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -744,6 +759,7 @@
 				1EFB576CA15D34AEAA9C70F2 /* SettingsWindow.swift in Sources */,
 				81F86DEA98B8448A049F1F62 /* StatusItemController.swift in Sources */,
 				821FD9DF81E1E9F12D15A048 /* StreamDump.swift in Sources */,
+				1E8FD0FDFB9868D8C318398C /* UpdaterModel.swift in Sources */,
 				5D0BC2F8D4224F61E7B673AE /* UxPlayBridge.swift in Sources */,
 				E5C99FC9839149AD93C484C9 /* VideoDecoder.swift in Sources */,
 				DEEDF2243B55ED0AD6A5275F /* VideoFormat.swift in Sources */,
@@ -857,7 +873,7 @@
 		40F5CBE53A06B5DE5C7B09DF /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				AIRTV_DEPS_PREFIX = "$(HOME)/.cache/m0-mamba/root/envs/ux";
+				AIRTV_DEPS_PREFIX = "$(HOME)/.cache/airtv-deps/universal";
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -961,8 +977,9 @@
 		4F07443F711B0502DB45A925 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				AIRTV_DEPS_PREFIX = "$(HOME)/.cache/m0-mamba/root/envs/ux";
+				AIRTV_DEPS_PREFIX = "$(HOME)/.cache/airtv-deps/universal";
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "arm64 x86_64";
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -1009,6 +1026,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -1122,6 +1140,25 @@
 			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		15EC39C593FE70D73FF9BB41 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sparkle-project/Sparkle";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.9.4;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		82CDFE96D9FDAABD09EC2099 /* Sparkle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 15EC39C593FE70D73FF9BB41 /* XCRemoteSwiftPackageReference "Sparkle" */;
+			productName = Sparkle;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 7903EE8B560FC015B9975099 /* Project object */;
 }

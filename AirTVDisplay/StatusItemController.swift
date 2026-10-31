@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 import AppKit
 
 final class StatusItemController: NSObject {
@@ -6,16 +7,18 @@ final class StatusItemController: NSObject {
     private let onShowWindow: () -> Void
     private let onToggleHUD: () -> Void
     private let onShowSettings: () -> Void
+    private let updater: UpdaterModel?
     private let stateLine = NSMenuItem(title: "", action: nil, keyEquivalent: "")
     private let addrLine = NSMenuItem(title: "", action: nil, keyEquivalent: "")
     private let toggle = NSMenuItem(title: "", action: #selector(toggleReceiver), keyEquivalent: "")
 
     init(receiver: ReceiverController, onShowWindow: @escaping () -> Void, onToggleHUD: @escaping () -> Void,
-         onShowSettings: @escaping () -> Void) {
+         onShowSettings: @escaping () -> Void, updater: UpdaterModel?) {
         self.receiver = receiver
         self.onShowWindow = onShowWindow
         self.onToggleHUD = onToggleHUD
         self.onShowSettings = onShowSettings
+        self.updater = updater
         super.init()
         let menu = NSMenu()
         menu.addItem(stateLine)
@@ -36,6 +39,13 @@ final class StatusItemController: NSObject {
         let settings = NSMenuItem(title: "Settings\u{2026}", action: #selector(showSettings), keyEquivalent: ",")
         settings.target = self
         menu.addItem(settings)
+        menu.addItem(.separator())
+        let about = NSMenuItem(title: "About Air TV Display", action: #selector(showAbout), keyEquivalent: "")
+        about.target = self
+        menu.addItem(about)
+        let update = NSMenuItem(title: "Check for Updates\u{2026}", action: #selector(checkForUpdates), keyEquivalent: "")
+        update.target = self
+        menu.addItem(update)
         menu.addItem(.separator())
         menu.addItem(NSMenuItem(title: "Quit", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
         item.menu = menu
@@ -62,4 +72,14 @@ final class StatusItemController: NSObject {
     @objc private func toggleHUD() { onToggleHUD() }
 
     @objc private func showSettings() { onShowSettings() }
+
+    @objc private func showAbout() { AboutPanel.show() }
+
+    @objc private func checkForUpdates() { updater?.checkForUpdates() }
+}
+
+extension StatusItemController: NSMenuItemValidation {
+    func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
+        menuItem.action == #selector(checkForUpdates) ? updater?.canCheckForUpdates ?? false : true
+    }
 }

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 import Foundation
 
 /// A/V sync policy (M8): **video presents as soon as it is decoded; audio follows video.**

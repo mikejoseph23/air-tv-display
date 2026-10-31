@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 import XCTest
 
 final class AppSettingsTests: XCTestCase {

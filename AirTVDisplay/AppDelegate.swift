@@ -1,12 +1,15 @@
+// SPDX-License-Identifier: MIT
 import AppKit
 
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private var window: ReceiverWindow?
     private var statusController: StatusItemController?
     private let receiver = ReceiverController()
+    /// Sparkle updater; not started for --selftest / --play-fixture runs.
+    private var updater: UpdaterModel?
     private lazy var video = VideoPipeline(requireHardware: !CommandLine.arguments.contains("--software-decode"))
     private lazy var settingsWindow = SettingsWindowController(
-        settings: .shared,
+        settings: .shared, updater: updater,
         onNameChange: { [weak self] in self?.receiver.renameFromSettings(); self?.statusController?.refresh() },
         onAudioChange: { [weak self] _ in self?.receiver.applyAudioSetting() })
     private var fixturePlayer: VideoFixturePlayer?
@@ -25,10 +28,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             return
         }
         receiver.videoSink = video
+        if !selfTest { updater = UpdaterModel() }
         if !selfTest { showWindow() }
         statusController = StatusItemController(receiver: receiver, onShowWindow: { [weak self] in self?.showWindow() },
                                                 onToggleHUD: { [weak self] in self?.window?.toggleHUD() },
-                                                onShowSettings: { [weak self] in self?.settingsWindow.show() })
+                                                onShowSettings: { [weak self] in self?.settingsWindow.show() },
+                                                updater: updater)
 
         receiver.onNetworkChange = { [weak self] in self?.statusController?.refresh() }
         receiver.onStateChange = { [weak self] state in
@@ -98,7 +103,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private func showWindow() {
         if window == nil {
             window = ReceiverWindow(video: video, showHUD: AppSettings.shared.showHUDAtLaunch,
-                                    onShowSettings: { [weak self] in self?.settingsWindow.show() })
+                                    onShowSettings: { [weak self] in self?.settingsWindow.show() },
+                                    onCheckForUpdates: { [weak self] in self?.updater?.checkForUpdates() })
         }
         window?.present()
     }

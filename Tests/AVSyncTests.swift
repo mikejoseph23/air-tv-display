@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 import XCTest
 
 /// M8: video-first A/V sync with synthetic timestamps. Video presents ASAP; audio is scheduled

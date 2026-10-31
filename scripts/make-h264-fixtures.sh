@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: MIT
 # Generates synthetic H.264 Annex-B fixtures for the video path (M5) without a live capture:
 #   Tests/Fixtures/synthetic-1080p.h264       1920x1080 main, 30 fps, 3 s, SPS/PPS on every IDR
 #   Tests/Fixtures/synthetic-res-change.h264  1920x1080 for 1.5 s, then 1280x720 for 1.5 s

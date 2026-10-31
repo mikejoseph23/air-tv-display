@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 import Foundation
 import IOKit.pwr_mgt
 

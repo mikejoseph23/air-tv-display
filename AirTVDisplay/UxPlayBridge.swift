@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 import Foundation
 
 /// Trivial proof that the bridged C library compiles, links and runs.

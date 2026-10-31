@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: MIT
 # Regenerates AirTVDisplay/Resources/AppIcon.icns from scripts/make-icon.swift.
 set -euo pipefail
 repo="$(cd "$(dirname "$0")/.." && pwd)"
