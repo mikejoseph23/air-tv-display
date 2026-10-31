@@ -97,7 +97,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private func showWindow() {
         if window == nil {
-            window = ReceiverWindow(video: video, showHUD: AppSettings.shared.showHUDAtLaunch)
+            window = ReceiverWindow(video: video, showHUD: AppSettings.shared.showHUDAtLaunch,
+                                    onShowSettings: { [weak self] in self?.settingsWindow.show() })
         }
         window?.present()
     }
