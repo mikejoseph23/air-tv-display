@@ -63,6 +63,7 @@ Goal: the iMac app runs fullscreen, presents itself as an Apple‑TV‑class Air
 | M7T — Testing: mirror vs extend | Sonnet | ⏸ Hands‑on deferred | — | Hands‑on with Studio picker. |
 | M8 — Latency & robustness hardening | Opus | ✅ Done (phone latency deferred) | 24 | End‑to‑end polish, reconnect, drop handling. |
 | M8T — Testing: end‑to‑end | Opus | ⏸ Hands‑on deferred (see hands-on-checklist.md) | — | Full hands‑on workflow over ethernet. |
+| M9 — Distribution: GPLv3, Sparkle, universal, LymeDeploy | Opus | 🔄 In Progress | — | Ship like mac-resource-monitor: auto-update, notarized DMG, iadev.net/air-tv-display/. |
 
 > **Model Assignment Guidelines** — *Haiku*: mechanical/boilerplate. *Sonnet*: most feature work, standard well‑defined tasks. *Opus*: complex architecture, ambiguous/undocumented protocol work, realtime systems, and any user‑facing interface design. Wrapping C protocol code and realtime decode qualify for Opus even though there's little "UI."
 
@@ -329,6 +330,21 @@ Make sure macOS offers **Extend**, not just Mirror, against our app — expected
 - [ ] Hands‑on (Mike, **gigabit ethernet**): cold launch app → Studio extends to iMac → work for a few minutes (move/resize windows, open apps) → put Studio to sleep → wake → confirm it re‑connects → stop mirroring → app returns to "waiting…". Walk each step; note latency and any dropouts.
 - [ ] Latency measured and recorded in `docs/discovery-findings.md`, alongside the M0 stock‑UxPlay number for comparison.
 - [ ] App is stable across ≥10 connect/disconnect cycles.
+
+[Return to Top](#air-tv-display--planning-document)
+
+---
+
+## Milestone 9 — Distribution: GPLv3, Sparkle, universal, LymeDeploy
+
+**Model: Opus** · Added 2026-10-30 after the hands-on pass ("works real nice"). Mirror `~/git/mac-resource-monitor`'s release setup. Decisions: app licensed **GPLv3** (own files MIT-headered), releases signed on the **Mac Studio**, **universal** (arm64 + x86_64).
+
+- [ ] GPLv3 `LICENSE` at repo root, MIT headers on our own sources, `thirdparty/LICENSES.md` decision recorded, About/credits with source link.
+- [ ] Sparkle 2 auto-update (Check for Updates…, automatic-check toggle in Settings), feed `https://iadev.net/air-tv-display/appcast.xml`, shared EdDSA public key.
+- [ ] Universal build: arm64 + x86_64 dependency envs, lipo'd libcrypto and static libplist.
+- [ ] `scripts/make-dmg.sh` (build, inside-out Developer ID sign, notarize, staple), `scripts/stage-release.sh` (EdDSA sign, appcast), `deploy/pack-for-lymedeploy.sh`, `deploy/updates/` (appcast + web.config).
+- [ ] LymeDeploy project definition (`deploy/deploy.yaml`) drafted; applying it to the server and the IIS download folder are confirmed with Mike first.
+- [ ] Release runbook in `CLAUDE.md`/README; first release built on the Mac Studio (hands-on).
 
 [Return to Top](#air-tv-display--planning-document)
 
