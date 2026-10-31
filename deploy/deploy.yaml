@@ -98,7 +98,7 @@ steps:
 variables:
 - name: CloudflareToken
   secret: true
-  value_home: TODO-set-locator
+  value_home: "lastpass:LymeScribe note (Cloudflare cache-purge token)"
 - name: CloudflareZoneId
   value: 6c660caacd3e4715244d022b07fe5aac
 - name: PublishRoot
