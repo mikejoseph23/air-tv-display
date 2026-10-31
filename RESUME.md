@@ -12,9 +12,15 @@ Air TV Display is a native macOS AppKit/Swift AirPlay mirroring receiver that tu
 - The notary profile `mrm-notary` works on the Studio.
 - Release scripts were fixed during the release (per-arch `lipo -verify_arch`, `codesign -dvv` captured before grep).
 
+## What's Done
+
+- M0 to M9: receiver, video/audio, Extend mode, hardening, GPLv3 + Sparkle 2 + universal build + LymeDeploy.
+- Landing page at `website/index.html`, staged with each release.
+- 1.0.0 shipped 2026-10-31.
+
 ## What's Next
 
-1. Push `main` once Mike approves (the release commits 2a715af, 913c3ad and the doc updates).
+1. Push `main` once Mike approves (4 commits: 2a715af, 913c3ad and two doc commits).
 2. Pick from `BACKLOG.md` or `hands-on-checklist.md`.
 
 ## Planning Docs
@@ -41,6 +47,7 @@ thirdparty/LICENSES.md        # GPLv3 licensing decision
 ## Recent Git Log
 
 ```
+d1a12ad Docs: 1.0.0 released; backlog the Sparkle feed redirect
 913c3ad Release scripts: check lipo arches one at a time, capture codesign output before grep
 2a715af Release 1.0.0
 f3735c6 RESUME.md: hand off the 1.0.0 release to the Mac Studio
@@ -55,3 +62,13 @@ f3735c6 RESUME.md: hand off the 1.0.0 release to the Mac Studio
 - The production machine mappings are shared with other projects. PMO-PROD-VM is deliberately offline, so a FAIL for it in `lymedeploy doctor` is expected.
 - The deployment mode is Promoted with AllowDirectDeploy false. Production is the only rung, so deploying straight to it is fine.
 - Keep the repo public and the LICENSE files in the bundle (GPLv3).
+
+## Last Session Summary (2026-10-31)
+
+1. Ran the 1.0.0 release from the Mac Studio: build, Developer ID signing, notarization (9376ce10), stapling, EdDSA appcast, LymeDeploy release 336 to Production. Checked the live landing page, appcast and DMG against the staged files.
+2. Fixed two release-script bugs found on the Studio: `lipo -verify_arch` with two arches fails there, and `codesign -dv | grep` missed the Authority lines and could SIGPIPE.
+3. Marked the release done in `airplay-receiver-plan.md` and added the feed-redirect item to `BACKLOG.md`.
+
+Decisions: kept the first-release note that was already in the appcast; skipped the LymeDeploy dry run (Mike's call).
+
+Open: push `main` (4 commits ahead, needs Mike's OK); whether to point SUFeedURL at `www.iadev.net`.
