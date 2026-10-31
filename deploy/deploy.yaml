@@ -1,0 +1,92 @@
+# deploy.yaml — LymeDeploy project configuration for `air-tv-display-downloads`. NO SECRET VALUES. Committed.
+# Schema: ~/git/lymedeploy/docs/reference/deploy-yaml-schema.md (schema: 1)
+# Apply:  lymedeploy apply -f deploy/deploy.yaml --dry-run    # read the diff, THEN run without --dry-run
+#
+# Modelled on `lymedeploy export --project mac-resource-monitor-downloads` (2026-10-31), minus the
+# landing-page smoke test (no index.html here). Playbook:
+# ~/git/lymedeploy/docs/playbooks/downloads-file-drop-playbook.md.
+#
+# NOT YET APPLIED. Before the first apply (Mike):
+#   1. Create the physical folder on iadev-2025 and an IIS virtual directory /air-tv-display under
+#      the Interapp site pointing at it (PublishRoot below), the same way mac-resource-monitor is
+#      served. Check with: Get-WebVirtualDirectory | %{ $_.Path + " => " + $_.PhysicalPath }
+#   2. Add the CloudflareToken secret in the LymeDeploy UI (tick Sensitive before pasting). It is the
+#      same iadev.net zone cache-purge token mac-resource-monitor-downloads uses; replace the
+#      value_home placeholder with its real locator.
+#   3. web.config is protected: the first deploy writes it; later deploys fail if it differs.
+#
+# Package: AirTVDisplay.Downloads, built by deploy/pack-for-lymedeploy.sh after scripts/stage-release.sh.
+
+schema: 1
+project:
+  slug: air-tv-display-downloads
+  name: Air TV Display Downloads
+  description: Publishes Air TV Display release artifacts (DMG, appcast.xml) to the public download folder on iadev-2025, served via the Interapp /air-tv-display virtual directory. Packaged on the Mac by deploy/pack-for-lymedeploy.sh after scripts/stage-release.sh; not TeamCity, since a notarized DMG cannot be produced on a Windows agent.
+  group: Software Updates
+  enabled: true
+  active: true
+  allowDirectDeploy: false
+  retain: 3
+environments:
+- name: Production
+  sortOrder: 1
+# Only the box that serves iadev.net. (mac-resource-monitor-downloads also maps DEVCENTER2019 and
+# PMO-PROD-VM to Production; this project deliberately doesn't.)
+machines:
+- name: IADEV-2025
+  environments:
+  - Production
+steps:
+- name: Publish Air TV Display downloads
+  type: publish-files
+  sortOrder: 1
+  enabled: true
+  targetRole: webserver
+  config:
+    skipIfHashMatches: true
+    resetAcls: true
+    packageId: AirTVDisplay.Downloads
+    targetPath: '#{PublishRoot}'
+    publishLast:
+    - appcast.xml
+    protectedFiles:
+    - web.config
+- name: Verify appcast.xml is served
+  type: smoke-test
+  sortOrder: 2
+  enabled: true
+  targetRole: webserver
+  config:
+    cacheBust: true
+    followRedirects: true
+    expectedStatus: 200
+    retries: 3
+    retryDelaySeconds: 5
+    requestTimeoutSeconds: 30
+    url: https://www.iadev.net/air-tv-display/appcast.xml
+- name: Purge Cloudflare cache for the appcast
+  type: http-request
+  sortOrder: 3
+  enabled: true
+  targetRole: webserver
+  config:
+    method: POST
+    contentType: application/json
+    retries: 1
+    retryDelaySeconds: 5
+    timeoutSeconds: 60
+    expectedStatus: 200
+    url: https://api.cloudflare.com/client/v4/zones/#{CloudflareZoneId}/purge_cache
+    headers:
+    - 'Authorization: Bearer #{CloudflareToken}'
+    body: '{"files": ["https://iadev.net/air-tv-display/appcast.xml", "https://www.iadev.net/air-tv-display/appcast.xml"]}'
+    successBodyContains: '"success":true'
+variables:
+- name: CloudflareToken
+  secret: true
+  value_home: TODO-set-locator
+- name: CloudflareZoneId
+  value: 6c660caacd3e4715244d022b07fe5aac
+- name: PublishRoot
+  environment: Production
+  value: C:\WebApps\Downloads\air-tv-display

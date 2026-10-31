@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle">
+  <channel>
+    <title>Air TV Display</title>
+    <link>https://iadev.net/air-tv-display/appcast.xml</link>
+    <description>Air TV Display update feed</description>
+    <language>en</language>
+    <item>
+      <title>Air TV Display 1.0.0</title>
+      <description><![CDATA[
+        <ul>
+          <li>First release: turns this Mac into an AirPlay screen-mirroring receiver for your other Macs and iPhones.</li>
+        </ul>
+      ]]></description>
+      <pubDate>Sat, 31 Oct 2026 00:00:00 +0000</pubDate>
+      <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+      <!-- url, versions, edSignature, length and pubDate are filled in by scripts/stage-release.sh
+           at release time (EdDSA-signs the notarized DMG). Never upload with the placeholder
+           below: Sparkle rejects a mismatched signature. -->
+      <enclosure
+        url="https://iadev.net/air-tv-display/AirTVDisplay-v1.0.0.dmg"
+        sparkle:version="1"
+        sparkle:shortVersionString="1.0.0"
+        sparkle:edSignature="PLACEHOLDER-run-stage-release"
+        length="0"
+        type="application/octet-stream" />
+    </item>
+  </channel>
+</rss>

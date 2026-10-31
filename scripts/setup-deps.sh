@@ -97,7 +97,7 @@ lipo -create "$ROOT/env-arm64/lib/libcrypto.3.dylib" "$ROOT/env-x86_64/lib/libcr
     -output "$U/lib/libcrypto.3.dylib"
 ln -s libcrypto.3.dylib "$U/lib/libcrypto.dylib"
 install_name_tool -id "@rpath/libcrypto.3.dylib" "$U/lib/libcrypto.3.dylib" 2>/dev/null
-codesign --force --sign - "$U/lib/libcrypto.3.dylib"
+codesign --force --sign - "$U/lib/libcrypto.3.dylib" 2>/dev/null
 lipo -create "$ROOT/plist-arm64/lib/libplist-2.0.a" "$ROOT/plist-x86_64/lib/libplist-2.0.a" \
     -output "$U/lib/libplist-2.0.a"
 
